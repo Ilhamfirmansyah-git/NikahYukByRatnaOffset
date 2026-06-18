@@ -14,7 +14,15 @@ const nextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        protocol: "https",
+        hostname: "*.supabase.co",
+      },
     ],
+  },
+  // Paksa Prisma generate di build time Vercel
+  outputFileTracingIncludes: {
+    "/*": ["./node_modules/.prisma/**/*"],
   },
 };
 
