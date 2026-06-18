@@ -71,7 +71,7 @@ export default function DaftarPage() {
     });
 
     if (result?.ok) {
-      router.push("/dashboard");
+      router.push("/app");
       router.refresh();
     } else {
       router.push("/login");
@@ -80,7 +80,7 @@ export default function DaftarPage() {
 
   const handleGoogleSignup = async () => {
     setGoogleLoading(true);
-    await signIn("google", { callbackUrl: "/dashboard" });
+    await signIn("google", { callbackUrl: "/app" });
   };
 
   if (success) {
