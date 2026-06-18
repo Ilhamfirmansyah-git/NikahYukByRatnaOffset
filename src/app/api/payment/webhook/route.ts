@@ -38,19 +38,20 @@ export async function POST(req: NextRequest) {
     } = body;
 
     const serverKey = process.env.MIDTRANS_SERVER_KEY ?? '';
+    const isProduction = process.env.MIDTRANS_IS_PRODUCTION === 'true';
 
-    // Verify signature (skip in dev if no server key)
-    if (serverKey) {
-      const isValid = verifySignature(
-        order_id,
-        status_code,
-        gross_amount,
-        serverKey,
-        signature_key
-      );
-      if (!isValid) {
-        return NextResponse.json({ error: 'Signature tidak valid' }, { status: 403 });
+    if (!serverKey) {
+      if (isProduction) {
+        return NextResponse.json({ error: 'Server tidak terkonfigurasi' }, { status: 500 });
       }
+      // Dev only: log warning, still reject without explicit test flag
+      console.warn('[WEBHOOK] MIDTRANS_SERVER_KEY tidak diset — tolak webhook di dev mode');
+      return NextResponse.json({ error: 'Server key belum dikonfigurasi' }, { status: 403 });
+    }
+
+    const isValid = verifySignature(order_id, status_code, gross_amount, serverKey, signature_key);
+    if (!isValid) {
+      return NextResponse.json({ error: 'Signature tidak valid' }, { status: 403 });
     }
 
     const order = await prisma.order.findFirst({
