@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String       @id @default(cuid())
+  email        String       @unique
+  name         String?
+  passwordHash String?
+  role         Role         @default(USER)
+  invitations  Invitation[]
+  orders       Order[]
+  createdAt    DateTime     @default(now())
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Template {
+  id           String       @id @default(cuid())
+  name         String
+  slug         String       @unique
+  description  String?
+  thumbnail    String
+  category     String
+  componentKey String
+  isActive     Boolean      @default(true)
+  invitations  Invitation[]
+  createdAt    DateTime     @default(now())
+}
+
+model Package {
+  id           String  @id @default(cuid())
+  name         String
+  price        Int
+  durationDays Int
+  features     Json
+  isActive     Boolean @default(true)
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  packageId       String
+  templateId      String
+  amount          Int
+  status          OrderStatus @default(PENDING)
+  midtransOrderId String?     @unique
+  paymentMethod   String?
+  paidAt          DateTime?
+  invitation      Invitation?
+  createdAt       DateTime    @default(now())
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  EXPIRED
+  FAILED
+  REFUNDED
+}
+
+model Invitation {
+  id          String      @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+  templateId  String
+  template    Template    @relation(fields: [templateId], references: [id])
+  orderId     String?     @unique
+  order       Order?      @relation(fields: [orderId], references: [id])
+  slug        String      @unique
+  isPublished Boolean     @default(false)
+  expiresAt   DateTime?
+  data        Json
+  rsvps       Rsvp[]
+  guestbook   Guestbook[]
+  guests      Guest[]
+  createdAt   DateTime    @default(now())
+}
+
+model Guest {
+  id           String     @id @default(cuid())
+  invitationId String
+  invitation   Invitation @relation(fields: [invitationId], references: [id])
+  name         String
+  slug         String
+  group        String?
+}
+
+model Rsvp {
+  id           String     @id @default(cuid())
+  invitationId String
+  invitation   Invitation @relation(fields: [invitationId], references: [id])
+  name         String
+  attendance   Attendance
+  guestCount   Int        @default(1)
+  createdAt    DateTime   @default(now())
+}
+
+enum Attendance {
+  HADIR
+  TIDAK_HADIR
+  RAGU
+}
+
+model Guestbook {
+  id           String     @id @default(cuid())
+  invitationId String
+  invitation   Invitation @relation(fields: [invitationId], references: [id])
+  name         String
+  message      String
+  createdAt    DateTime   @default(now())
+}
