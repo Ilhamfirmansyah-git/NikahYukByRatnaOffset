@@ -203,7 +203,7 @@ export default function BeliPage() {
                     : 'border-cream-200 hover:border-primary/40'
                 }`}
               >
-                <div className="h-48 bg-gradient-to-br from-cream-200 to-cream-300 flex items-center justify-center">
+                <div className="h-48 bg-gradient-to-br from-cream-200 to-cream-300 flex items-center justify-center relative group">
                   <div className="text-center p-4">
                     <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-3">
                       <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -211,6 +211,22 @@ export default function BeliPage() {
                       </svg>
                     </div>
                     <span className="text-xs text-primary/60 font-medium">{categoryLabel[tmpl.category] ?? tmpl.category}</span>
+                  </div>
+                  {/* Preview overlay on hover */}
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <a
+                      href={`/preview/${tmpl.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={e => e.stopPropagation()}
+                      className="bg-white text-gray-900 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-cream-50 transition-colors flex items-center gap-2"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                      Lihat Preview
+                    </a>
                   </div>
                 </div>
                 <div className="p-4">
@@ -223,9 +239,23 @@ export default function BeliPage() {
                     )}
                   </div>
                   <p className="text-sm text-gray-500">{tmpl.description}</p>
-                  <span className="mt-2 inline-block px-2 py-0.5 rounded-full text-xs bg-cream-100 text-primary-700 font-medium">
-                    {categoryLabel[tmpl.category] ?? tmpl.category}
-                  </span>
+                  <div className="mt-3 flex items-center justify-between">
+                    <span className="px-2 py-0.5 rounded-full text-xs bg-cream-100 text-primary-700 font-medium">
+                      {categoryLabel[tmpl.category] ?? tmpl.category}
+                    </span>
+                    <a
+                      href={`/preview/${tmpl.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={e => e.stopPropagation()}
+                      className="text-xs text-primary hover:underline flex items-center gap-1"
+                    >
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                      Lihat Preview
+                    </a>
+                  </div>
                 </div>
               </div>
             ))}
