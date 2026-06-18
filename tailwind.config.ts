@@ -37,8 +37,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["Inter", "sans-serif"],
-        display: ["Playfair Display", "serif"],
+        sans: ["var(--font-inter)", "Inter", "sans-serif"],
+        display: ["var(--font-playfair)", "Playfair Display", "serif"],
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
