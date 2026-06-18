@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createHash } from 'crypto';
 import { defaultInvitationData } from '@/types/invitation';
+import { sendOrderConfirmation } from '@/lib/email';
 
 function generateSlug(): string {
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -98,7 +99,7 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        await prisma.invitation.create({
+        const invitation = await prisma.invitation.create({
           data: {
             userId: order.userId,
             templateId: order.templateId,
@@ -108,7 +109,20 @@ export async function POST(req: NextRequest) {
             expiresAt,
             isPublished: false,
           },
+          include: { template: true },
         });
+
+        // Send order confirmation email
+        const baseUrl = process.env.NEXTAUTH_URL ?? 'https://nikahyuk.id';
+        sendOrderConfirmation({
+          to: order.user.email,
+          name: order.user.name ?? order.user.email,
+          packageName: pkg?.name ?? 'Paket',
+          templateName: invitation.template.name,
+          amount: order.amount,
+          orderId: order.id,
+          invitationUrl: `${baseUrl}/app/undangan/${invitation.id}/edit`,
+        }).catch(err => console.error('Email error:', err));
       }
     } else if (transaction_status === 'expire') {
       await prisma.order.update({

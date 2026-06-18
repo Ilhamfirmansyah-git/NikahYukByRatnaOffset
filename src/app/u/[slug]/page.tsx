@@ -83,5 +83,39 @@ export default async function InvitationPage({ params, searchParams }: PageProps
     })),
   };
 
-  return <InvitationClient invitation={serialized} guestName={guestName} />;
+  const data = invitation.data as unknown as InvitationData;
+  const pria = data.mempelai?.pria?.namaPanggilan || data.mempelai?.pria?.namaLengkap || 'Pria';
+  const wanita = data.mempelai?.wanita?.namaPanggilan || data.mempelai?.wanita?.namaLengkap || 'Wanita';
+  const acaraUtama = data.acara?.find(a => a.nama?.toLowerCase().includes('akad') || a.nama?.toLowerCase().includes('resepsi')) ?? data.acara?.[0];
+  const baseUrl = process.env.NEXTAUTH_URL ?? 'https://nikahyuk.id';
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: `Pernikahan ${pria} & ${wanita}`,
+    description: `Undangan pernikahan digital ${pria} & ${wanita}`,
+    url: `${baseUrl}/u/${slug}`,
+    ...(acaraUtama ? {
+      startDate: acaraUtama.tanggal,
+      location: {
+        '@type': 'Place',
+        name: acaraUtama.lokasi,
+        address: acaraUtama.alamat,
+      },
+    } : {}),
+    organizer: {
+      '@type': 'Person',
+      name: `${pria} & ${wanita}`,
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <InvitationClient invitation={serialized} guestName={guestName} />
+    </>
+  );
 }

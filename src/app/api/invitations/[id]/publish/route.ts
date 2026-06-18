@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { sendInvitationPublished } from '@/lib/email';
 
 export async function POST(
   req: NextRequest,
@@ -15,6 +16,7 @@ export async function POST(
 
     const invitation = await prisma.invitation.findUnique({
       where: { id: params.id },
+      include: { user: true },
     });
 
     if (!invitation) {
@@ -25,7 +27,6 @@ export async function POST(
       return NextResponse.json({ error: 'Akses ditolak' }, { status: 403 });
     }
 
-    // Check if expired
     if (invitation.expiresAt && invitation.expiresAt < new Date()) {
       return NextResponse.json({ error: 'Undangan sudah kadaluarsa' }, { status: 400 });
     }
@@ -34,6 +35,17 @@ export async function POST(
       where: { id: params.id },
       data: { isPublished: !invitation.isPublished },
     });
+
+    // Send email notification only when first-time publishing
+    if (updated.isPublished && !invitation.isPublished) {
+      const baseUrl = process.env.NEXTAUTH_URL ?? 'https://nikahyuk.id';
+      sendInvitationPublished({
+        to: invitation.user.email,
+        name: invitation.user.name ?? invitation.user.email,
+        invitationUrl: `${baseUrl}/u/${invitation.slug}`,
+        slug: invitation.slug,
+      }).catch(err => console.error('Email error:', err));
+    }
 
     return NextResponse.json({ isPublished: updated.isPublished });
   } catch (error) {
