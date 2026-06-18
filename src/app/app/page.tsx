@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
+import { DevSeedButton } from './DevSeedButton';
 
 function StatusBadge({ isPublished, expiresAt }: { isPublished: boolean; expiresAt: Date | null }) {
   const isExpired = expiresAt && expiresAt < new Date();
@@ -30,11 +31,16 @@ export default async function DashboardPage() {
   return (
     <div>
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-display font-semibold text-gray-900">
-          Selamat datang, {session?.user?.name ?? 'Pengguna'}!
-        </h1>
-        <p className="text-gray-500 mt-1">Kelola undangan pernikahan Anda di sini.</p>
+      <div className="mb-8 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-display font-semibold text-gray-900">
+            Selamat datang, {session?.user?.name ?? 'Pengguna'}!
+          </h1>
+          <p className="text-gray-500 mt-1">Kelola undangan pernikahan Anda di sini.</p>
+        </div>
+        {process.env.MIDTRANS_IS_PRODUCTION !== 'true' && (
+          <DevSeedButton />
+        )}
       </div>
 
       {/* Stats cards */}
