@@ -5,9 +5,11 @@ import { TemplateProps } from './TemplateProps';
 import EleganGold from './EleganGold';
 import MinimalisPutih from './MinimalisPutih';
 import Islami from './Islami';
+import GelapRomantis from './GelapRomantis';
 
 export const TEMPLATE_REGISTRY: Record<string, ComponentType<TemplateProps>> = {
   'elegan-gold': EleganGold,
   'minimalis-putih': MinimalisPutih,
   'islami': Islami,
+  'gelap-romantis': GelapRomantis,
 };

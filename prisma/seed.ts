@@ -31,6 +31,14 @@ async function main() {
       thumbnail: '/templates/islami.jpg',
       description: 'Template bernuansa islami dengan ornamen arabesque',
     },
+    {
+      name: 'Gelap Romantis',
+      slug: 'gelap-romantis',
+      componentKey: 'gelap-romantis',
+      category: 'islami',
+      thumbnail: '/templates/gelap-romantis.jpg',
+      description: 'Template dark elegan dengan aksen emas, font sakral, dan navigasi bawah bergaya',
+    },
   ];
 
   for (const template of templates) {
