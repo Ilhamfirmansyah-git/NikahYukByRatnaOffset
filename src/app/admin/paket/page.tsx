@@ -11,6 +11,11 @@ interface Features {
   customDomain: boolean;
 }
 
+interface TemplateRef {
+  id: string;
+  name: string;
+}
+
 interface Package {
   id: string;
   name: string;
@@ -18,6 +23,7 @@ interface Package {
   durationDays: number;
   features: Features;
   isActive: boolean;
+  templates: TemplateRef[];
 }
 
 const EMPTY_FEATURES: Features = {
@@ -34,6 +40,7 @@ const EMPTY_FORM = {
   durationDays: '',
   features: EMPTY_FEATURES,
   isActive: true,
+  templateIds: [] as string[],
 };
 
 function formatRupiah(n: number) {
@@ -54,6 +61,7 @@ function CheckIcon({ on }: { on: boolean }) {
 
 export default function AdminPaketPage() {
   const [packages, setPackages] = useState<Package[]>([]);
+  const [allTemplates, setAllTemplates] = useState<TemplateRef[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<Package | null>(null);
@@ -63,8 +71,15 @@ export default function AdminPaketPage() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    const res = await fetch('/api/admin/packages');
-    if (res.ok) setPackages(await res.json());
+    const [pkgRes, tmplRes] = await Promise.all([
+      fetch('/api/admin/packages'),
+      fetch('/api/admin/templates'),
+    ]);
+    if (pkgRes.ok) setPackages(await pkgRes.json());
+    if (tmplRes.ok) {
+      const tmplData = await tmplRes.json();
+      setAllTemplates(tmplData.map((t: { id: string; name: string }) => ({ id: t.id, name: t.name })));
+    }
     setLoading(false);
   }, []);
 
@@ -84,12 +99,22 @@ export default function AdminPaketPage() {
       durationDays: String(p.durationDays),
       features: p.features,
       isActive: p.isActive,
+      templateIds: p.templates.map(t => t.id),
     });
     setShowModal(true);
   }
 
   function setFeature<K extends keyof Features>(key: K, value: Features[K]) {
     setForm(f => ({ ...f, features: { ...f.features, [key]: value } }));
+  }
+
+  function toggleTemplate(id: string) {
+    setForm(f => ({
+      ...f,
+      templateIds: f.templateIds.includes(id)
+        ? f.templateIds.filter(tid => tid !== id)
+        : [...f.templateIds, id],
+    }));
   }
 
   async function handleSave() {
@@ -110,6 +135,7 @@ export default function AdminPaketPage() {
           durationDays: Number(form.durationDays),
           features: form.features,
           isActive: form.isActive,
+          templateIds: form.templateIds,
         }),
       });
       const data = await res.json();
@@ -145,7 +171,7 @@ export default function AdminPaketPage() {
       const res = await fetch(`/api/admin/packages/${p.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...p, isActive: !p.isActive }),
+        body: JSON.stringify({ ...p, templateIds: p.templates.map(t => t.id), isActive: !p.isActive }),
       });
       if (!res.ok) throw new Error();
       toast.success(p.isActive ? 'Paket dinonaktifkan' : 'Paket diaktifkan');
@@ -207,7 +233,7 @@ export default function AdminPaketPage() {
                 </button>
               </div>
 
-              <div className="border-t border-gray-100 pt-3 mb-4 space-y-1.5">
+              <div className="border-t border-gray-100 pt-3 mb-3 space-y-1.5">
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -220,6 +246,21 @@ export default function AdminPaketPage() {
                     {label}
                   </div>
                 ))}
+              </div>
+
+              {/* Template count */}
+              <div className="mb-4 px-3 py-2 bg-gray-50 rounded-lg">
+                <p className="text-xs text-gray-500">
+                  <span className="font-semibold text-gray-700">
+                    {p.templates.length === 0 ? 'Semua template' : `${p.templates.length} template`}
+                  </span>
+                  {p.templates.length === 0 ? ' tersedia (tidak dibatasi)' : ' tersedia'}
+                </p>
+                {p.templates.length > 0 && (
+                  <p className="text-xs text-gray-400 mt-0.5 truncate">
+                    {p.templates.map(t => t.name).join(', ')}
+                  </p>
+                )}
               </div>
 
               <div className="flex gap-2">
@@ -320,6 +361,38 @@ export default function AdminPaketPage() {
                     </label>
                   ))}
                 </div>
+              </div>
+
+              {/* Template selection */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Template yang Tersedia
+                </label>
+                <p className="text-xs text-gray-400 mb-2">
+                  Kosongkan = semua template tersedia. Pilih untuk membatasi template di paket ini.
+                </p>
+                <div className="border border-gray-200 rounded-lg divide-y divide-gray-100 max-h-48 overflow-y-auto">
+                  {allTemplates.length === 0 ? (
+                    <p className="text-xs text-gray-400 p-3">Belum ada template aktif</p>
+                  ) : (
+                    allTemplates.map(t => (
+                      <label key={t.id} className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={form.templateIds.includes(t.id)}
+                          onChange={() => toggleTemplate(t.id)}
+                          className="w-4 h-4 accent-gray-900 rounded"
+                        />
+                        <span className="text-sm text-gray-700">{t.name}</span>
+                      </label>
+                    ))
+                  )}
+                </div>
+                {form.templateIds.length > 0 && (
+                  <p className="text-xs text-blue-600 mt-1">
+                    {form.templateIds.length} template dipilih
+                  </p>
+                )}
               </div>
 
               <div className="flex items-center gap-3">

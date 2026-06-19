@@ -35,16 +35,18 @@ model Template {
   componentKey String
   isActive     Boolean      @default(true)
   invitations  Invitation[]
+  packages     Package[]
   createdAt    DateTime     @default(now())
 }
 
 model Package {
-  id           String  @id @default(cuid())
+  id           String     @id @default(cuid())
   name         String
   price        Int
   durationDays Int
   features     Json
-  isActive     Boolean @default(true)
+  isActive     Boolean    @default(true)
+  templates    Template[]
 }
 
 model Order {

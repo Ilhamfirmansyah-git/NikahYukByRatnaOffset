@@ -22,11 +22,19 @@ export async function POST(req: NextRequest) {
 
     const [template, pkg] = await Promise.all([
       prisma.template.findUnique({ where: { id: templateId } }),
-      prisma.package.findUnique({ where: { id: packageId } }),
+      prisma.package.findUnique({
+        where: { id: packageId },
+        include: { templates: { select: { id: true } } },
+      }),
     ]);
 
     if (!template) return NextResponse.json({ error: 'Template tidak ditemukan' }, { status: 404 });
     if (!pkg) return NextResponse.json({ error: 'Paket tidak ditemukan' }, { status: 404 });
+
+    // If package restricts templates, validate the chosen template is included
+    if (pkg.templates.length > 0 && !pkg.templates.some(t => t.id === templateId)) {
+      return NextResponse.json({ error: 'Template tidak tersedia untuk paket ini' }, { status: 400 });
+    }
 
     const user = await prisma.user.findUnique({ where: { id: session.user.id } });
     if (!user) return NextResponse.json({ error: 'User tidak ditemukan' }, { status: 404 });

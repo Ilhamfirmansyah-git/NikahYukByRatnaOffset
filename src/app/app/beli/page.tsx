@@ -26,6 +26,7 @@ interface Package {
     livestream: boolean;
     guestManagement: boolean;
   };
+  templateIds: string[];
 }
 
 declare global {
@@ -92,9 +93,13 @@ export default function BeliPage() {
     fetch('/api/packages').then(r => r.json()).then(setPackages);
   }, []);
 
+  // Templates available for the selected package
+  const availableTemplates = selectedPackage?.templateIds?.length
+    ? templates.filter(t => selectedPackage.templateIds.includes(t.id))
+    : templates;
+
   function loadSnapScript(clientKey: string, isProduction: boolean): Promise<void> {
     return new Promise((resolve, reject) => {
-      // Remove any existing snap script
       document.querySelectorAll('script[data-snap]').forEach(s => s.remove());
       delete (window as { snap?: unknown }).snap;
 
@@ -188,20 +193,30 @@ export default function BeliPage() {
     }
   }
 
+  // When package changes, reset template if it's no longer available
+  function handleSelectPackage(pkg: Package) {
+    setSelectedPackage(pkg);
+    if (selectedTemplate && pkg.templateIds.length > 0 && !pkg.templateIds.includes(selectedTemplate.id)) {
+      setSelectedTemplate(null);
+    }
+  }
+
+  const STEPS = [
+    { num: 1, label: 'Pilih Paket' },
+    { num: 2, label: 'Pilih Template' },
+    { num: 3, label: 'Checkout' },
+  ];
+
   return (
     <div>
       <div className="mb-8">
         <h1 className="text-2xl font-display font-semibold text-gray-900">Beli Paket Undangan</h1>
-        <p className="text-gray-500 mt-1">Pilih template dan paket yang sesuai untuk pernikahan Anda.</p>
+        <p className="text-gray-500 mt-1">Pilih paket yang sesuai, lalu pilih template undangan Anda.</p>
       </div>
 
       {/* Step indicator */}
       <div className="flex items-center gap-0 mb-8">
-        {[
-          { num: 1, label: 'Pilih Template' },
-          { num: 2, label: 'Pilih Paket' },
-          { num: 3, label: 'Checkout' },
-        ].map((s, i) => (
+        {STEPS.map((s, i) => (
           <div key={s.num} className="flex items-center">
             <div className="flex items-center gap-2">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold border-2 transition-colors ${
@@ -226,98 +241,17 @@ export default function BeliPage() {
         ))}
       </div>
 
-      {/* Step 1: Template */}
+      {/* Step 1: Package */}
       {step === 1 && (
-        <div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {templates.map((tmpl) => (
-              <div
-                key={tmpl.id}
-                onClick={() => setSelectedTemplate(tmpl)}
-                className={`bg-white rounded-xl border-2 cursor-pointer transition-all overflow-hidden hover:shadow-md ${
-                  selectedTemplate?.id === tmpl.id
-                    ? 'border-primary shadow-md ring-2 ring-primary/20'
-                    : 'border-cream-200 hover:border-primary/40'
-                }`}
-              >
-                <div className="h-48 bg-gradient-to-br from-cream-200 to-cream-300 flex items-center justify-center relative group">
-                  <div className="text-center p-4">
-                    <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-3">
-                      <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <span className="text-xs text-primary/60 font-medium">{categoryLabel[tmpl.category] ?? tmpl.category}</span>
-                  </div>
-                  {/* Preview overlay on hover */}
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <a
-                      href={`/preview/${tmpl.slug}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={e => e.stopPropagation()}
-                      className="bg-white text-gray-900 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-cream-50 transition-colors flex items-center gap-2"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                      </svg>
-                      Lihat Preview
-                    </a>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <div className="flex items-start justify-between mb-1">
-                    <h3 className="font-semibold text-gray-900">{tmpl.name}</h3>
-                    {selectedTemplate?.id === tmpl.id && (
-                      <svg className="w-5 h-5 text-primary flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                    )}
-                  </div>
-                  <p className="text-sm text-gray-500">{tmpl.description}</p>
-                  <div className="mt-3 flex items-center justify-between">
-                    <span className="px-2 py-0.5 rounded-full text-xs bg-cream-100 text-primary-700 font-medium">
-                      {categoryLabel[tmpl.category] ?? tmpl.category}
-                    </span>
-                    <a
-                      href={`/preview/${tmpl.slug}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={e => e.stopPropagation()}
-                      className="text-xs text-primary hover:underline flex items-center gap-1"
-                    >
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                      Lihat Preview
-                    </a>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-6 flex justify-end">
-            <Button
-              disabled={!selectedTemplate}
-              onClick={() => setStep(2)}
-            >
-              Lanjut ke Pilih Paket →
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* Step 2: Package */}
-      {step === 2 && (
         <div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {packages.map((pkg) => {
               const isPopular = pkg.name === 'Premium';
+              const tmplCount = pkg.templateIds.length;
               return (
                 <div
                   key={pkg.id}
-                  onClick={() => setSelectedPackage(pkg)}
+                  onClick={() => handleSelectPackage(pkg)}
                   className={`relative bg-white rounded-xl border-2 cursor-pointer transition-all p-6 hover:shadow-md ${
                     selectedPackage?.id === pkg.id
                       ? 'border-primary shadow-md ring-2 ring-primary/20'
@@ -346,7 +280,7 @@ export default function BeliPage() {
                   </p>
                   <p className="text-xs text-gray-400 mb-5">aktif {pkg.durationDays} hari · bayar sekali</p>
 
-                  <div className="border-t border-cream-100 pt-4 mb-2">
+                  <div className="border-t border-cream-100 pt-4 mb-3">
                     <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-2">Selalu termasuk</p>
                     <ul className="space-y-1.5 text-sm mb-4">
                       {['RSVP online', 'Buku tamu digital', 'Countdown timer', 'Link undangan unik'].map(f => (
@@ -376,17 +310,130 @@ export default function BeliPage() {
                       </li>
                       <li className="flex items-center gap-2">
                         {pkg.features.customDomain ? <CheckIcon /> : <XIcon />}
-                        <span className={pkg.features.customDomain ? 'text-gray-700 font-medium' : 'text-gray-400 line-through'}>Custom domain</span>
+                        <span className={pkg.features.customDomain ? 'text-gray-700 font-medium' : 'text-gray-400 line-through'}>Link subdomain eksklusif</span>
                       </li>
                     </ul>
+                  </div>
+
+                  {/* Template count badge */}
+                  <div className="pt-3 border-t border-cream-100">
+                    <p className="text-xs text-gray-500">
+                      <span className="font-semibold text-gray-700">
+                        {tmplCount === 0 ? 'Semua' : tmplCount} template
+                      </span>
+                      {' '}tersedia
+                    </p>
                   </div>
                 </div>
               );
             })}
           </div>
+          <div className="mt-6 flex justify-end">
+            <Button
+              disabled={!selectedPackage}
+              onClick={() => setStep(2)}
+            >
+              Lanjut ke Pilih Template →
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Step 2: Template (filtered by package) */}
+      {step === 2 && (
+        <div>
+          {/* Info banner */}
+          <div className="mb-5 px-4 py-3 bg-cream-50 border border-cream-200 rounded-xl flex items-center gap-3">
+            <div className="flex-1">
+              <p className="text-sm text-gray-700">
+                Paket <strong>{selectedPackage?.name}</strong> · {availableTemplates.length} template tersedia
+              </p>
+            </div>
+            <button onClick={() => setStep(1)} className="text-xs text-primary hover:underline">
+              Ganti paket
+            </button>
+          </div>
+
+          {availableTemplates.length === 0 ? (
+            <div className="text-center py-16 text-gray-400">
+              <p>Belum ada template yang tersedia untuk paket ini.</p>
+              <button onClick={() => setStep(1)} className="mt-3 text-sm text-primary hover:underline">
+                Pilih paket lain
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {availableTemplates.map((tmpl) => (
+                <div
+                  key={tmpl.id}
+                  onClick={() => setSelectedTemplate(tmpl)}
+                  className={`bg-white rounded-xl border-2 cursor-pointer transition-all overflow-hidden hover:shadow-md ${
+                    selectedTemplate?.id === tmpl.id
+                      ? 'border-primary shadow-md ring-2 ring-primary/20'
+                      : 'border-cream-200 hover:border-primary/40'
+                  }`}
+                >
+                  <div className="h-48 bg-gradient-to-br from-cream-200 to-cream-300 flex items-center justify-center relative group">
+                    <div className="text-center p-4">
+                      <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-3">
+                        <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                      <span className="text-xs text-primary/60 font-medium">{categoryLabel[tmpl.category] ?? tmpl.category}</span>
+                    </div>
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <a
+                        href={`/preview/${tmpl.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={e => e.stopPropagation()}
+                        className="bg-white text-gray-900 text-sm font-semibold px-4 py-2 rounded-lg hover:bg-cream-50 transition-colors flex items-center gap-2"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        Lihat Preview
+                      </a>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <div className="flex items-start justify-between mb-1">
+                      <h3 className="font-semibold text-gray-900">{tmpl.name}</h3>
+                      {selectedTemplate?.id === tmpl.id && (
+                        <svg className="w-5 h-5 text-primary flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-500">{tmpl.description}</p>
+                    <div className="mt-3 flex items-center justify-between">
+                      <span className="px-2 py-0.5 rounded-full text-xs bg-cream-100 text-primary-700 font-medium">
+                        {categoryLabel[tmpl.category] ?? tmpl.category}
+                      </span>
+                      <a
+                        href={`/preview/${tmpl.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={e => e.stopPropagation()}
+                        className="text-xs text-primary hover:underline flex items-center gap-1"
+                      >
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                        Lihat Preview
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
           <div className="mt-6 flex justify-between">
             <Button variant="outline" onClick={() => setStep(1)}>← Kembali</Button>
-            <Button disabled={!selectedPackage} onClick={() => setStep(3)}>
+            <Button disabled={!selectedTemplate} onClick={() => setStep(3)}>
               Lanjut ke Checkout →
             </Button>
           </div>
@@ -402,30 +449,20 @@ export default function BeliPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between py-3 border-b border-cream-100">
                 <div>
-                  <p className="text-sm text-gray-500">Template</p>
-                  <p className="font-medium text-gray-900">{selectedTemplate.name}</p>
-                  <span className="text-xs text-primary-600">{categoryLabel[selectedTemplate.category] ?? selectedTemplate.category}</span>
-                </div>
-                <button
-                  onClick={() => setStep(1)}
-                  className="text-xs text-primary hover:underline"
-                >
-                  Ubah
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between py-3 border-b border-cream-100">
-                <div>
                   <p className="text-sm text-gray-500">Paket</p>
                   <p className="font-medium text-gray-900">Paket {selectedPackage.name}</p>
                   <span className="text-xs text-gray-400">{selectedPackage.durationDays} hari aktif</span>
                 </div>
-                <button
-                  onClick={() => setStep(2)}
-                  className="text-xs text-primary hover:underline"
-                >
-                  Ubah
-                </button>
+                <button onClick={() => setStep(1)} className="text-xs text-primary hover:underline">Ubah</button>
+              </div>
+
+              <div className="flex items-center justify-between py-3 border-b border-cream-100">
+                <div>
+                  <p className="text-sm text-gray-500">Template</p>
+                  <p className="font-medium text-gray-900">{selectedTemplate.name}</p>
+                  <span className="text-xs text-primary-600">{categoryLabel[selectedTemplate.category] ?? selectedTemplate.category}</span>
+                </div>
+                <button onClick={() => setStep(2)} className="text-xs text-primary hover:underline">Ubah</button>
               </div>
 
               {/* Coupon */}
@@ -487,11 +524,7 @@ export default function BeliPage() {
 
           <div className="flex gap-3">
             <Button variant="outline" onClick={() => setStep(2)} className="flex-1">← Kembali</Button>
-            <Button
-              onClick={handleBayar}
-              loading={paying}
-              className="flex-2"
-            >
+            <Button onClick={handleBayar} loading={paying} className="flex-2">
               Bayar Sekarang {formatRupiah(Math.max(0, selectedPackage.price - calcDiscount(selectedPackage.price)))}
             </Button>
           </div>

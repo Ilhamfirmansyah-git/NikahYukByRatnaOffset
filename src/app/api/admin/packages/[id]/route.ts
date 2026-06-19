@@ -15,7 +15,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   if (!admin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const body = await req.json();
-  const { name, price, durationDays, features, isActive } = body;
+  const { name, price, durationDays, features, isActive, templateIds } = body;
 
   if (!name?.trim() || price === undefined || !durationDays) {
     return NextResponse.json({ error: 'name, price, dan durationDays wajib diisi' }, { status: 400 });
@@ -29,7 +29,13 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       durationDays: Number(durationDays),
       features,
       isActive: Boolean(isActive),
+      templates: {
+        set: Array.isArray(templateIds)
+          ? templateIds.map((id: string) => ({ id }))
+          : [],
+      },
     },
+    include: { templates: { select: { id: true, name: true } } },
   });
 
   return NextResponse.json(pkg);

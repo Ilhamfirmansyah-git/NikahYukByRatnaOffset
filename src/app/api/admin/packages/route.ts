@@ -18,6 +18,7 @@ export async function GET() {
 
   const packages = await prisma.package.findMany({
     orderBy: { price: 'asc' },
+    include: { templates: { select: { id: true, name: true } } },
   });
 
   return NextResponse.json(packages);
@@ -28,7 +29,7 @@ export async function POST(req: NextRequest) {
   if (!admin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const body = await req.json();
-  const { name, price, durationDays, features, isActive } = body;
+  const { name, price, durationDays, features, isActive, templateIds } = body;
 
   if (!name?.trim() || price === undefined || !durationDays) {
     return NextResponse.json({ error: 'name, price, dan durationDays wajib diisi' }, { status: 400 });
@@ -47,7 +48,11 @@ export async function POST(req: NextRequest) {
         customDomain: false,
       },
       isActive: isActive !== false,
+      templates: Array.isArray(templateIds) && templateIds.length > 0
+        ? { connect: templateIds.map((id: string) => ({ id })) }
+        : undefined,
     },
+    include: { templates: { select: { id: true, name: true } } },
   });
 
   return NextResponse.json(pkg, { status: 201 });
