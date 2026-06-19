@@ -73,22 +73,23 @@ enum OrderStatus {
 }
 
 model Invitation {
-  id          String      @id @default(cuid())
-  userId      String
-  user        User        @relation(fields: [userId], references: [id])
-  templateId  String
-  template    Template    @relation(fields: [templateId], references: [id])
-  orderId     String?     @unique
-  order       Order?      @relation(fields: [orderId], references: [id])
-  slug        String      @unique
-  isPublished Boolean     @default(false)
-  expiresAt   DateTime?
-  data        Json
-  rsvps       Rsvp[]
-  guestbook   Guestbook[]
-  guests      Guest[]
-  visits      Visit[]
-  createdAt   DateTime    @default(now())
+  id           String      @id @default(cuid())
+  userId       String
+  user         User        @relation(fields: [userId], references: [id])
+  templateId   String
+  template     Template    @relation(fields: [templateId], references: [id])
+  orderId      String?     @unique
+  order        Order?      @relation(fields: [orderId], references: [id])
+  slug         String      @unique
+  customDomain String?     @unique
+  isPublished  Boolean     @default(false)
+  expiresAt    DateTime?
+  data         Json
+  rsvps        Rsvp[]
+  guestbook    Guestbook[]
+  guests       Guest[]
+  visits       Visit[]
+  createdAt    DateTime    @default(now())
 }
 
 model Visit {

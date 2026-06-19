@@ -80,19 +80,24 @@ export default function EditInvitationPage() {
 
   const [activeTab, setActiveTab] = useState('mempelai');
   const [data, setData] = useState<InvitationData | null>(null);
-  const [invitation, setInvitation] = useState<{ slug: string; isPublished: boolean; expiresAt: string | null } | null>(null);
+  const [invitation, setInvitation] = useState<{ slug: string; isPublished: boolean; expiresAt: string | null; customDomain: string | null } | null>(null);
+  const [packageFeatures, setPackageFeatures] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [extending, setExtending] = useState(false);
   const [extendDays, setExtendDays] = useState(30);
+  const [customDomainInput, setCustomDomainInput] = useState('');
+  const [savingDomain, setSavingDomain] = useState(false);
 
   useEffect(() => {
     fetch(`/api/invitations/${id}`)
       .then(r => r.json())
       .then(inv => {
         setData(inv.data as InvitationData);
-        setInvitation({ slug: inv.slug, isPublished: inv.isPublished, expiresAt: inv.expiresAt });
+        setInvitation({ slug: inv.slug, isPublished: inv.isPublished, expiresAt: inv.expiresAt, customDomain: inv.customDomain ?? null });
+        setPackageFeatures((inv.packageFeatures as Record<string, unknown>) ?? null);
+        setCustomDomainInput(inv.customDomain ?? '');
         setLoading(false);
       })
       .catch(() => {
@@ -162,6 +167,25 @@ export default function EditInvitationPage() {
     const url = `${window.location.origin}/u/${invitation.slug}`;
     navigator.clipboard.writeText(url);
     toast.success('Link berhasil disalin!');
+  }
+
+  async function handleSaveDomain() {
+    setSavingDomain(true);
+    try {
+      const res = await fetch(`/api/invitations/${id}/custom-domain`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ domain: customDomainInput.trim() || null }),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error ?? 'Gagal menyimpan domain');
+      setInvitation(prev => prev ? { ...prev, customDomain: result.customDomain } : prev);
+      toast.success(result.customDomain ? 'Custom domain berhasil disimpan!' : 'Custom domain dihapus');
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Gagal menyimpan domain');
+    } finally {
+      setSavingDomain(false);
+    }
   }
 
   if (loading) {
@@ -650,6 +674,86 @@ export default function EditInvitationPage() {
               </div>
             </div>
           </SectionCard>
+
+          {/* Custom Domain — only for Exclusive users */}
+          {packageFeatures?.customDomain === true ? (
+            <SectionCard title="Custom Domain" description="Tampilkan undangan di domain milik Anda sendiri">
+              <div className="space-y-4">
+                {invitation?.customDomain && (
+                  <div className="flex items-center gap-2 px-4 py-2.5 bg-green-50 border border-green-200 rounded-xl">
+                    <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-sm text-green-800 font-medium">{invitation.customDomain}</span>
+                    <span className="ml-auto text-xs text-green-600 bg-green-100 px-2 py-0.5 rounded-full">Aktif</span>
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Domain Anda</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={customDomainInput}
+                      onChange={e => setCustomDomainInput(e.target.value)}
+                      placeholder="undangan.namakamu.com"
+                      className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary bg-gray-50 focus:bg-white font-mono"
+                    />
+                    <Button size="sm" onClick={handleSaveDomain} loading={savingDomain}>
+                      Simpan
+                    </Button>
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1.5">Tanpa http:// atau www. Contoh: <span className="font-mono">undangan.ilham-ica.com</span></p>
+                </div>
+
+                <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl space-y-3">
+                  <p className="text-sm font-semibold text-amber-900">Langkah konfigurasi DNS:</p>
+                  <ol className="space-y-2 text-sm text-amber-800 list-decimal list-inside">
+                    <li>Login ke panel domain Anda (Niagahoster, Namecheap, Cloudflare, dll.)</li>
+                    <li>Tambahkan record <span className="font-mono bg-amber-100 px-1 rounded">CNAME</span> yang mengarah ke domain aplikasi ini</li>
+                    <li>Tunggu propagasi DNS (biasanya 5 menit – 1 jam)</li>
+                    <li>Hubungi kami agar domain Anda ditambahkan ke server</li>
+                  </ol>
+                  <div className="mt-2 p-3 bg-white border border-amber-200 rounded-lg font-mono text-xs">
+                    <div className="grid grid-cols-3 gap-2 text-amber-900">
+                      <span className="font-semibold">Type</span>
+                      <span className="font-semibold">Name</span>
+                      <span className="font-semibold">Value</span>
+                      <span>CNAME</span>
+                      <span>undangan</span>
+                      <span className="truncate">{typeof window !== 'undefined' ? window.location.hostname : 'nikahyuk.vercel.app'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {invitation?.customDomain && (
+                  <button
+                    onClick={() => { setCustomDomainInput(''); }}
+                    className="text-xs text-red-500 hover:underline"
+                  >
+                    Hapus custom domain
+                  </button>
+                )}
+              </div>
+            </SectionCard>
+          ) : (
+            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5 mb-4">
+              <div className="flex items-start gap-3">
+                <div className="w-9 h-9 bg-gray-200 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-gray-700 text-sm">Custom Domain</p>
+                  <p className="text-xs text-gray-500 mt-0.5">Fitur ini hanya tersedia di paket Exclusive. Upgrade untuk menampilkan undangan di domain milik Anda sendiri.</p>
+                  <a href="/app/beli" className="inline-block mt-2.5 text-xs font-semibold text-primary hover:underline">
+                    Upgrade ke Exclusive →
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
