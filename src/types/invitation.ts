@@ -98,23 +98,87 @@ export interface InvitationData {
 }
 
 export function defaultInvitationData(): InvitationData {
+  const year = new Date().getFullYear() + 1;
   return {
     mempelai: {
-      pria: {},
-      wanita: {},
+      pria: {
+        namaLengkap: 'Ahmad Rizki Firmansyah',
+        namaPanggilan: 'Rizki',
+        anakKe: '2',
+        ayah: 'Hendra Firmansyah',
+        ibu: 'Ratna Dewi',
+        instagram: '@rizki.firmansyah',
+        foto: 'https://picsum.photos/seed/groom-demo/400/500',
+      },
+      wanita: {
+        namaLengkap: 'Siti Aminah Rahayu',
+        namaPanggilan: 'Aminah',
+        anakKe: '1',
+        ayah: 'Agus Rahayu',
+        ibu: 'Sri Wahyuni',
+        instagram: '@aminah.rahayu',
+        foto: 'https://picsum.photos/seed/bride-demo/400/500',
+      },
       urutanTampil: 'pria-dulu',
     },
-    acara: [],
-    countdown: {},
-    galeri: [],
-    loveStory: [],
-    quote: {},
+    acara: [
+      {
+        nama: 'Akad Nikah',
+        tanggal: `${year}-06-15`,
+        waktuMulai: '08:00',
+        waktuSelesai: '10:00',
+        lokasi: 'Masjid Agung Al-Falah',
+        alamat: 'Jl. Merdeka No. 1, Kota Bandung, Jawa Barat',
+        mapsUrl: 'https://maps.google.com',
+      },
+      {
+        nama: 'Resepsi Pernikahan',
+        tanggal: `${year}-06-15`,
+        waktuMulai: '11:00',
+        waktuSelesai: '16:00',
+        lokasi: 'Gedung Serbaguna Graha Indah',
+        alamat: 'Jl. Sudirman No. 45, Kota Bandung, Jawa Barat',
+        mapsUrl: 'https://maps.google.com',
+      },
+    ],
+    countdown: { tanggal: `${year}-06-15` },
+    galeri: [
+      'https://picsum.photos/seed/wed-g1/600/600',
+      'https://picsum.photos/seed/wed-g2/600/600',
+      'https://picsum.photos/seed/wed-g3/600/600',
+      'https://picsum.photos/seed/wed-g4/600/600',
+      'https://picsum.photos/seed/wed-g5/600/600',
+      'https://picsum.photos/seed/wed-g6/600/600',
+    ],
+    loveStory: [
+      { tahun: '2019', judul: 'Pertama Bertemu', cerita: 'Kami pertama kali bertemu di sebuah seminar pendidikan di Bandung. Pertemuan sederhana yang ternyata menjadi awal segalanya.' },
+      { tahun: '2020', judul: 'Saling Mengenal', cerita: 'Dari obrolan singkat berubah menjadi percakapan panjang setiap hari. Kami mulai menyadari betapa banyak kesamaan di antara kami.' },
+      { tahun: '2022', judul: 'Resmi Bersama', cerita: 'Dengan restu kedua keluarga, kami memulai perjalanan baru yang lebih bermakna dan penuh harapan.' },
+      { tahun: '2024', judul: 'Lamaran', cerita: 'Di bawah senja yang indah, Rizki mengungkapkan niatnya untuk menjadikan Aminah sebagai pendamping hidup selamanya.' },
+    ],
+    quote: {
+      teks: 'Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan hidup dari jenismu sendiri, supaya kamu merasa tenteram kepadanya, dan dijadikan-Nya di antaramu rasa kasih dan sayang.',
+      sumber: 'QS. Ar-Rum: 21',
+    },
     musik: { autoplay: false },
-    amplopDigital: { aktif: false, rekening: [], eWallet: [] },
-    livestream: { aktif: false },
+    amplopDigital: {
+      aktif: true,
+      rekening: [
+        { bank: 'BCA', nomor: '1234567890', atasNama: 'Ahmad Rizki Firmansyah' },
+        { bank: 'BRI', nomor: '0987654321', atasNama: 'Siti Aminah Rahayu' },
+      ],
+      eWallet: [
+        { jenis: 'GoPay', nomor: '081234567890' },
+        { jenis: 'OVO', nomor: '081234567890' },
+      ],
+    },
+    livestream: { aktif: false, platform: 'YouTube', url: '' },
     rsvpAktif: true,
     guestbookAktif: true,
-    protokolKesehatan: { aktif: false },
+    protokolKesehatan: {
+      aktif: true,
+      catatan: 'Mohon hadir dalam kondisi sehat. Gunakan masker apabila diperlukan. Patuhi protokol kesehatan yang berlaku di venue.',
+    },
     tema: {
       warnaPrimer: '#8B5E3C',
       warnaSekunder: '#F5E6D3',

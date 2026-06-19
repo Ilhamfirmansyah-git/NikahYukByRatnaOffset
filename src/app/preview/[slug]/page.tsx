@@ -22,7 +22,8 @@ export default async function PreviewPage({ params }: Props) {
 
   if (!template || !template.isActive) notFound();
 
-  const data = defaultInvitationData();
+  const config = await prisma.previewConfig.findUnique({ where: { id: 'singleton' } });
+  const data = config ? (config.data as unknown as ReturnType<typeof defaultInvitationData>) : defaultInvitationData();
 
   return (
     <div className="relative">

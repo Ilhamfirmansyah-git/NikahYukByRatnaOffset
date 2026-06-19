@@ -159,3 +159,9 @@ model Song {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 }
+
+model PreviewConfig {
+  id        String   @id @default("singleton")
+  data      Json
+  updatedAt DateTime @updatedAt
+}
