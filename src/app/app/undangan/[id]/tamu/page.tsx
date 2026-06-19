@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import Button from '@/components/ui/Button';
@@ -19,6 +19,8 @@ const GROUP_OPTIONS = [
   { value: 'teman', label: 'Teman' },
   { value: 'rekan kerja', label: 'Rekan Kerja' },
 ];
+
+const VALID_GROUPS = GROUP_OPTIONS.map(o => o.value);
 
 function buildDefaultTemplate(priaNama: string, wanitaNama: string): string {
   return `Kepada Yth.
@@ -47,18 +49,53 @@ Hormat kami,
 ${priaNama} & ${wanitaNama}`;
 }
 
+function parseCSV(text: string): Array<{ name: string; group: string }> {
+  const lines = text.trim().split(/\r?\n/);
+  if (lines.length < 1) return [];
+  // Detect if first line is a header
+  const firstLine = lines[0].toLowerCase();
+  const hasHeader = firstLine.includes('nama') || firstLine.includes('name');
+  const dataLines = hasHeader ? lines.slice(1) : lines;
+  return dataLines
+    .map(line => {
+      // Handle quoted CSV fields
+      const cols = line.match(/(".*?"|[^,]+|(?<=,)(?=,)|^(?=,)|(?<=,)$)/g) ?? line.split(',');
+      const name = (cols[0] ?? '').replace(/^"|"$/g, '').trim();
+      const rawGroup = (cols[1] ?? '').replace(/^"|"$/g, '').trim().toLowerCase();
+      const group = VALID_GROUPS.includes(rawGroup) ? rawGroup : 'keluarga';
+      return { name, group };
+    })
+    .filter(r => r.name.length > 0);
+}
+
+function downloadCSV(filename: string, rows: string[][], headers: string[]) {
+  const csv = [headers, ...rows].map(r => r.map(c => `"${c.replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function TamuPage() {
   const params = useParams();
   const id = params.id as string;
+  const importRef = useRef<HTMLInputElement>(null);
 
   const [guests, setGuests] = useState<Guest[]>([]);
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState('');
   const [group, setGroup] = useState('keluarga');
   const [adding, setAdding] = useState(false);
+  const [importing, setImporting] = useState(false);
   const [invitationSlug, setInvitationSlug] = useState('');
   const [waTemplate, setWaTemplate] = useState('');
   const [defaultTemplate, setDefaultTemplate] = useState('');
+
+  // Import preview modal state
+  const [importPreview, setImportPreview] = useState<Array<{ name: string; group: string }> | null>(null);
 
   const loadGuests = useCallback(async () => {
     try {
@@ -139,6 +176,65 @@ export default function TamuPage() {
       .replace(/\{link\}/g, personalLink);
     const waUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
     window.open(waUrl, '_blank', 'noopener,noreferrer');
+  }
+
+  function handleDownloadTemplate() {
+    downloadCSV('template-tamu.csv', [
+      ['Budi Santoso', 'keluarga'],
+      ['Siti Rahayu', 'teman'],
+      ['Ahmad Rizki', 'rekan kerja'],
+    ], ['Nama', 'Kelompok']);
+  }
+
+  function handleExport() {
+    if (guests.length === 0) { toast.error('Belum ada tamu untuk diekspor'); return; }
+    const rows = guests.map((g, i) => [
+      String(i + 1),
+      g.name,
+      g.group ?? '',
+      getPersonalLink(g.name),
+    ]);
+    downloadCSV('daftar-tamu.csv', rows, ['No', 'Nama', 'Kelompok', 'Link Undangan']);
+    toast.success(`${guests.length} tamu berhasil diekspor`);
+  }
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const text = ev.target?.result as string;
+      const parsed = parseCSV(text);
+      if (parsed.length === 0) {
+        toast.error('Tidak ada data tamu yang ditemukan dalam file');
+      } else {
+        setImportPreview(parsed);
+      }
+    };
+    reader.readAsText(file, 'UTF-8');
+    // Reset so same file can be re-selected
+    e.target.value = '';
+  }
+
+  async function handleConfirmImport() {
+    if (!importPreview || importPreview.length === 0) return;
+    setImporting(true);
+    try {
+      const res = await fetch(`/api/invitations/${id}/guests/import`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guests: importPreview }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Gagal mengimpor');
+      setImportPreview(null);
+      await loadGuests();
+      toast.success(`${data.imported} tamu berhasil diimpor!`);
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Gagal mengimpor tamu');
+    } finally {
+      setImporting(false);
+    }
   }
 
   const groupColor: Record<string, string> = {
@@ -223,10 +319,51 @@ export default function TamuPage() {
 
       {/* Guest list */}
       <div className="bg-white rounded-xl border border-cream-200">
-        <div className="p-6 border-b border-cream-100 flex items-center justify-between">
-          <h2 className="font-semibold text-gray-900">
+        <div className="p-6 border-b border-cream-100 flex flex-col sm:flex-row sm:items-center gap-3">
+          <h2 className="font-semibold text-gray-900 flex-1">
             Daftar Tamu <span className="text-gray-400 font-normal">({guests.length})</span>
           </h2>
+          <div className="flex flex-wrap gap-2">
+            {/* Download template */}
+            <button
+              onClick={handleDownloadTemplate}
+              className="flex items-center gap-1.5 text-xs text-gray-600 px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+              </svg>
+              Unduh Template
+            </button>
+
+            {/* Import CSV */}
+            <input
+              ref={importRef}
+              type="file"
+              accept=".csv,text/csv"
+              className="hidden"
+              onChange={handleFileChange}
+            />
+            <button
+              onClick={() => importRef.current?.click()}
+              className="flex items-center gap-1.5 text-xs text-primary px-3 py-2 rounded-lg border border-primary/30 hover:bg-primary/5 transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+              Import CSV
+            </button>
+
+            {/* Export CSV */}
+            <button
+              onClick={handleExport}
+              className="flex items-center gap-1.5 text-xs text-green-700 px-3 py-2 rounded-lg border border-green-200 hover:bg-green-50 transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Export CSV
+            </button>
+          </div>
         </div>
 
         {guests.length === 0 ? (
@@ -236,7 +373,7 @@ export default function TamuPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </div>
-            <p className="text-gray-500 text-sm">Belum ada tamu. Tambahkan tamu di atas.</p>
+            <p className="text-gray-500 text-sm">Belum ada tamu. Tambahkan tamu di atas atau import CSV.</p>
           </div>
         ) : (
           <div className="divide-y divide-cream-100">
@@ -284,6 +421,59 @@ export default function TamuPage() {
           </div>
         )}
       </div>
+
+      {/* Import preview modal */}
+      {importPreview && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[80vh] flex flex-col">
+            <div className="p-6 border-b border-gray-100">
+              <h3 className="font-semibold text-gray-900 text-lg">Konfirmasi Import</h3>
+              <p className="text-sm text-gray-500 mt-1">
+                {importPreview.length} tamu ditemukan dari file CSV. Periksa sebelum mengimpor.
+              </p>
+            </div>
+
+            <div className="overflow-y-auto flex-1 p-4">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-xs text-gray-400 uppercase tracking-wide border-b">
+                    <th className="pb-2 pr-4">Nama</th>
+                    <th className="pb-2">Kelompok</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {importPreview.map((g, i) => (
+                    <tr key={i}>
+                      <td className="py-2 pr-4 font-medium text-gray-800">{g.name}</td>
+                      <td className="py-2">
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${groupColor[g.group] ?? 'bg-gray-100 text-gray-600'}`}>
+                          {g.group}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="p-6 border-t border-gray-100 flex gap-3">
+              <button
+                onClick={() => setImportPreview(null)}
+                className="flex-1 py-2.5 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+              >
+                Batal
+              </button>
+              <Button
+                onClick={handleConfirmImport}
+                loading={importing}
+                className="flex-1"
+              >
+                Import {importPreview.length} Tamu
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
