@@ -1,72 +1,74 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import type { Musik } from '@/types/invitation';
 
-const DEFAULT_SONGS = [
+// Semua lagu dari Wikimedia Commons (public domain, CORS-enabled)
+const SONGS = [
   {
-    id: 'romantic',
-    title: 'Romantic',
-    artist: 'Bensound',
-    category: 'Romantis',
-    categoryColor: 'bg-pink-100 text-pink-700',
-    url: 'https://www.bensound.com/bensound-music/bensound-romantic.mp3',
-  },
-  {
-    id: 'tenderness',
-    title: 'Tenderness',
-    artist: 'Bensound',
+    id: 'canon-d',
+    title: 'Canon in D',
+    artist: 'Pachelbel',
     category: 'Klasik',
     categoryColor: 'bg-purple-100 text-purple-700',
-    url: 'https://www.bensound.com/bensound-music/bensound-tenderness.mp3',
+    savedUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Johann_Pachelbel_-_Canon_in_D_major.ogg',
   },
   {
-    id: 'love',
-    title: 'Love',
-    artist: 'Bensound',
+    id: 'fur-elise',
+    title: 'Für Elise',
+    artist: 'Beethoven',
     category: 'Romantis',
     categoryColor: 'bg-pink-100 text-pink-700',
-    url: 'https://www.bensound.com/bensound-music/bensound-love.mp3',
+    savedUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Elise.ogg',
   },
   {
-    id: 'slowmotion',
-    title: 'Slow Motion',
-    artist: 'Bensound',
-    category: 'Romantis',
-    categoryColor: 'bg-pink-100 text-pink-700',
-    url: 'https://www.bensound.com/bensound-music/bensound-slowmotion.mp3',
-  },
-  {
-    id: 'memories',
-    title: 'Memories',
-    artist: 'Bensound',
+    id: 'moonlight',
+    title: 'Moonlight Sonata',
+    artist: 'Beethoven',
     category: 'Melankolis',
     categoryColor: 'bg-blue-100 text-blue-700',
-    url: 'https://www.bensound.com/bensound-music/bensound-memories.mp3',
+    savedUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a7/Beethoven_Moonlight_Sonata_Op.27_No.2_Mvmt1.ogg',
   },
   {
-    id: 'dreams',
-    title: 'Dreams',
-    artist: 'Bensound',
+    id: 'air-g-string',
+    title: 'Air on G String',
+    artist: 'J.S. Bach',
+    category: 'Klasik',
+    categoryColor: 'bg-purple-100 text-purple-700',
+    savedUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Johann_Sebastian_Bach_-_Air.ogg',
+  },
+  {
+    id: 'ave-maria',
+    title: 'Ave Maria',
+    artist: 'Schubert',
+    category: 'Sakral',
+    categoryColor: 'bg-green-100 text-green-700',
+    savedUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Schubert_Ave_Maria_-_Standchen_D.957_no.4.ogg',
+  },
+  {
+    id: 'wedding-march',
+    title: 'Wedding March',
+    artist: 'Mendelssohn',
+    category: 'Pernikahan',
+    categoryColor: 'bg-yellow-100 text-yellow-700',
+    savedUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Mendelssohn_Wedding_March.ogg',
+  },
+  {
+    id: 'clair-de-lune',
+    title: 'Clair de Lune',
+    artist: 'Debussy',
     category: 'Romantis',
     categoryColor: 'bg-pink-100 text-pink-700',
-    url: 'https://www.bensound.com/bensound-music/bensound-dreams.mp3',
+    savedUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Claude_Debussy_-_Clair_de_lune.ogg',
   },
   {
-    id: 'ukulele',
-    title: 'Ukulele',
-    artist: 'Bensound',
-    category: 'Ceria',
-    categoryColor: 'bg-yellow-100 text-yellow-700',
-    url: 'https://www.bensound.com/bensound-music/bensound-ukulele.mp3',
-  },
-  {
-    id: 'sunny',
-    title: 'Sunny',
-    artist: 'Bensound',
-    category: 'Ceria',
-    categoryColor: 'bg-yellow-100 text-yellow-700',
-    url: 'https://www.bensound.com/bensound-music/bensound-sunny.mp3',
+    id: 'liebestraum',
+    title: 'Liebestraum',
+    artist: 'Liszt',
+    category: 'Romantis',
+    categoryColor: 'bg-pink-100 text-pink-700',
+    savedUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Liebestraum_No._3_in_A_flat_major.ogg',
   },
 ];
 
@@ -78,8 +80,9 @@ interface MusicPickerProps {
 export default function MusicPicker({ value, onChange }: MusicPickerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playingId, setPlayingId] = useState<string | null>(null);
+  const [loadingId, setLoadingId] = useState<string | null>(null);
 
-  const matchingPreset = DEFAULT_SONGS.find(s => s.url === value.url);
+  const matchingPreset = SONGS.find(s => s.savedUrl === value.url);
   const isCustom = !!value.url && !matchingPreset;
   const selectedPresetId = matchingPreset?.id ?? null;
 
@@ -96,25 +99,47 @@ export default function MusicPicker({ value, onChange }: MusicPickerProps) {
       audioRef.current = null;
     }
     setPlayingId(null);
+    setLoadingId(null);
   }
 
-  function togglePreview(e: React.MouseEvent, song: (typeof DEFAULT_SONGS)[0]) {
+  function togglePreview(e: React.MouseEvent, song: (typeof SONGS)[0]) {
     e.stopPropagation();
     if (playingId === song.id) {
       stopPreview();
       return;
     }
     stopPreview();
-    const audio = new Audio(song.url);
+    setLoadingId(song.id);
+
+    const audio = new Audio();
+    audio.crossOrigin = 'anonymous';
+    audio.src = song.savedUrl;
     audioRef.current = audio;
-    setPlayingId(song.id);
-    audio.play().catch(() => {});
-    audio.addEventListener('ended', () => setPlayingId(null));
+
+    audio.addEventListener('canplay', () => {
+      setLoadingId(null);
+      setPlayingId(song.id);
+      audio.play().catch(() => {
+        stopPreview();
+        toast.error('Gagal memutar preview. Coba pilih lagu lain atau gunakan URL sendiri.');
+      });
+    });
+
+    audio.addEventListener('error', () => {
+      stopPreview();
+      toast.error(`Tidak bisa memuat "${song.title}". Coba lagu lain atau URL sendiri.`);
+    });
+
+    audio.addEventListener('ended', () => {
+      setPlayingId(null);
+    });
+
+    audio.load();
   }
 
-  function selectSong(song: (typeof DEFAULT_SONGS)[0]) {
+  function selectSong(song: (typeof SONGS)[0]) {
     stopPreview();
-    onChange({ ...value, url: song.url, judul: `${song.title} — ${song.artist}` });
+    onChange({ ...value, url: song.savedUrl, judul: `${song.title} — ${song.artist}` });
   }
 
   function selectCustom() {
@@ -127,9 +152,10 @@ export default function MusicPicker({ value, onChange }: MusicPickerProps) {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-        {DEFAULT_SONGS.map(song => {
+        {SONGS.map(song => {
           const isSelected = selectedPresetId === song.id;
           const isPlaying = playingId === song.id;
+          const isLoading = loadingId === song.id;
           return (
             <button
               key={song.id}
@@ -162,12 +188,14 @@ export default function MusicPicker({ value, onChange }: MusicPickerProps) {
                 <button
                   type="button"
                   onClick={e => togglePreview(e, song)}
-                  title={isPlaying ? 'Stop preview' : 'Preview lagu'}
+                  title={isPlaying ? 'Stop' : 'Preview'}
                   className={`w-5 h-5 rounded-full flex items-center justify-center transition-colors flex-shrink-0 ${
                     isPlaying ? 'bg-primary text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
                   }`}
                 >
-                  {isPlaying ? (
+                  {isLoading ? (
+                    <div className="w-2 h-2 border border-current border-t-transparent rounded-full animate-spin" />
+                  ) : isPlaying ? (
                     <svg className="w-2 h-2" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
                     </svg>
@@ -216,7 +244,7 @@ export default function MusicPicker({ value, onChange }: MusicPickerProps) {
       {isCustom && (
         <div className="space-y-3 p-4 bg-cream-50 rounded-xl border border-cream-200">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">URL Musik (MP3)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">URL Musik (MP3 / OGG)</label>
             <input
               type="url"
               value={value.url ?? ''}
@@ -224,6 +252,10 @@ export default function MusicPicker({ value, onChange }: MusicPickerProps) {
               placeholder="https://example.com/lagu.mp3"
               className="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm"
             />
+            <p className="text-xs text-gray-400 mt-1">
+              Tip: Upload ke Google Drive → klik kanan file → Dapatkan link → ubah ke{' '}
+              <span className="font-mono">drive.google.com/uc?id=FILE_ID&export=download</span>
+            </p>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">Judul Lagu</label>
@@ -264,11 +296,7 @@ export default function MusicPicker({ value, onChange }: MusicPickerProps) {
       </label>
 
       <p className="text-xs text-gray-400">
-        Lagu default dari{' '}
-        <a href="https://www.bensound.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">
-          Bensound.com
-        </a>{' '}
-        — bebas digunakan dengan atribusi.
+        Lagu default: domain publik dari Wikimedia Commons. Untuk lagu Indonesia/modern, gunakan opsi URL Sendiri.
       </p>
     </div>
   );
