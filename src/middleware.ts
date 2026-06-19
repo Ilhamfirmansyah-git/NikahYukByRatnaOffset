@@ -14,13 +14,13 @@ export async function middleware(req: NextRequest) {
 
   // Avoid rewriting already-internal paths
   const { pathname } = req.nextUrl;
-  if (pathname.startsWith('/_sub/') || pathname.startsWith('/u/')) {
+  if (pathname.startsWith('/sub/') || pathname.startsWith('/u/')) {
     return NextResponse.next();
   }
 
-  // Rewrite to /_sub/[prefix] — the Server Component there handles DB lookup
+  // Rewrite to /sub/[prefix] — the Server Component there handles DB lookup
   const url = req.nextUrl.clone();
-  url.pathname = `/_sub/${prefix}${pathname === '/' ? '' : pathname}`;
+  url.pathname = `/sub/${prefix}${pathname === '/' ? '' : pathname}`;
   return NextResponse.rewrite(url);
 }
 
