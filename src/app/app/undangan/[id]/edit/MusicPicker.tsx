@@ -111,30 +111,20 @@ export default function MusicPicker({ value, onChange }: MusicPickerProps) {
     stopPreview();
     setLoadingId(song.id);
 
-    const audio = new Audio();
-    audio.crossOrigin = 'anonymous';
-    audio.src = song.savedUrl;
+    const audio = new Audio(song.savedUrl);
     audioRef.current = audio;
 
-    audio.addEventListener('canplay', () => {
-      setLoadingId(null);
-      setPlayingId(song.id);
-      audio.play().catch(() => {
+    audio.addEventListener('ended', () => setPlayingId(null));
+
+    audio.play()
+      .then(() => {
+        setLoadingId(null);
+        setPlayingId(song.id);
+      })
+      .catch(() => {
         stopPreview();
-        toast.error('Gagal memutar preview. Coba pilih lagu lain atau gunakan URL sendiri.');
+        toast.error(`Gagal memutar "${song.title}". Coba lagu lain atau gunakan URL sendiri.`);
       });
-    });
-
-    audio.addEventListener('error', () => {
-      stopPreview();
-      toast.error(`Tidak bisa memuat "${song.title}". Coba lagu lain atau URL sendiri.`);
-    });
-
-    audio.addEventListener('ended', () => {
-      setPlayingId(null);
-    });
-
-    audio.load();
   }
 
   function selectSong(song: (typeof SONGS)[0]) {
