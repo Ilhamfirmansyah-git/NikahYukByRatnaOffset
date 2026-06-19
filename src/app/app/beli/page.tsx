@@ -318,10 +318,11 @@ export default function BeliPage() {
                   {/* Template count badge */}
                   <div className="pt-3 border-t border-cream-100">
                     <p className="text-xs text-gray-500">
-                      <span className="font-semibold text-gray-700">
-                        {tmplCount === 0 ? 'Semua' : tmplCount} template
-                      </span>
-                      {' '}tersedia
+                      {tmplCount === 0 ? (
+                        <span className="font-semibold text-gray-700">Semua template tersedia</span>
+                      ) : (
+                        <span className="font-semibold text-amber-600">Template terbatas</span>
+                      )}
                     </p>
                   </div>
                 </div>
@@ -346,7 +347,11 @@ export default function BeliPage() {
           <div className="mb-5 px-4 py-3 bg-cream-50 border border-cream-200 rounded-xl flex items-center gap-3">
             <div className="flex-1">
               <p className="text-sm text-gray-700">
-                Paket <strong>{selectedPackage?.name}</strong> · {availableTemplates.length} template tersedia
+                Paket <strong>{selectedPackage?.name}</strong>
+                {selectedPackage?.templateIds?.length
+                  ? <span className="text-amber-600 font-medium"> · Template terbatas ({availableTemplates.length} tersedia)</span>
+                  : <span className="text-gray-500"> · Semua template tersedia</span>
+                }
               </p>
             </div>
             <button onClick={() => setStep(1)} className="text-xs text-primary hover:underline">
