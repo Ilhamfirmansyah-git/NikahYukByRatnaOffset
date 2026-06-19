@@ -10,52 +10,64 @@ import type { InvitationData, Acara, LoveStoryItem, RekeningItem, EWalletItem } 
 import MusicPicker from './MusicPicker';
 
 const TABS = [
-  { id: 'mempelai', label: 'Mempelai' },
-  { id: 'acara', label: 'Acara' },
-  { id: 'galeri', label: 'Galeri & Musik' },
-  { id: 'lovestory', label: 'Love Story & Quote' },
-  { id: 'amplop', label: 'Amplop Digital' },
-  { id: 'pengaturan', label: 'Pengaturan' },
+  { id: 'mempelai', label: 'Mempelai', shortLabel: 'Mempelai' },
+  { id: 'acara', label: 'Acara', shortLabel: 'Acara' },
+  { id: 'galeri', label: 'Galeri & Musik', shortLabel: 'Galeri' },
+  { id: 'lovestory', label: 'Kisah & Quote', shortLabel: 'Kisah' },
+  { id: 'amplop', label: 'Amplop Digital', shortLabel: 'Amplop' },
+  { id: 'pengaturan', label: 'Pengaturan', shortLabel: 'Setelan' },
 ];
 
-function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
+function Toggle({ checked, onChange, label, description }: { checked: boolean; onChange: (v: boolean) => void; label: string; description?: string }) {
   return (
-    <label className="flex items-center gap-3 cursor-pointer">
-      <div className="relative">
+    <label className="flex items-start gap-3 cursor-pointer">
+      <div className="relative flex-shrink-0 mt-0.5">
         <input type="checkbox" className="sr-only" checked={checked} onChange={e => onChange(e.target.checked)} />
         <div className={`w-11 h-6 rounded-full transition-colors ${checked ? 'bg-primary' : 'bg-gray-200'}`} />
         <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${checked ? 'translate-x-5' : 'translate-x-0'}`} />
       </div>
-      <span className="text-sm text-gray-700">{label}</span>
+      <div>
+        <span className="text-sm font-medium text-gray-800">{label}</span>
+        {description && <p className="text-xs text-gray-400 mt-0.5">{description}</p>}
+      </div>
     </label>
   );
 }
 
-function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
+function SectionCard({ title, description, children }: { title: string; description?: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-xl border border-cream-200 p-6 mb-4">
-      <h3 className="font-semibold text-gray-900 mb-4">{title}</h3>
+    <div className="bg-white rounded-2xl border border-cream-200 p-5 mb-4">
+      <div className="mb-4">
+        <h3 className="font-semibold text-gray-900">{title}</h3>
+        {description && <p className="text-xs text-gray-400 mt-0.5">{description}</p>}
+      </div>
       {children}
     </div>
   );
 }
 
-function TextArea({ label, value, onChange, rows = 3, placeholder }: {
+function TextArea({ label, value, onChange, rows = 3, placeholder, description }: {
   label?: string;
   value: string;
   onChange: (v: string) => void;
   rows?: number;
   placeholder?: string;
+  description?: string;
 }) {
   return (
     <div className="w-full">
-      {label && <label className="block text-sm font-medium text-gray-700 mb-1.5">{label}</label>}
+      {label && (
+        <div className="mb-1.5">
+          <label className="block text-sm font-medium text-gray-700">{label}</label>
+          {description && <p className="text-xs text-gray-400">{description}</p>}
+        </div>
+      )}
       <textarea
         rows={rows}
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors text-sm resize-none"
+        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors text-sm resize-none bg-gray-50 focus:bg-white"
       />
     </div>
   );
@@ -154,8 +166,9 @@ export default function EditInvitationPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex flex-col items-center justify-center h-64 gap-3">
         <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full" />
+        <p className="text-sm text-gray-400">Memuat undangan...</p>
       </div>
     );
   }
@@ -164,50 +177,106 @@ export default function EditInvitationPage() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-display font-semibold text-gray-900">Edit Undangan</h1>
-          {invitation && (
-            <p className="text-sm text-gray-500 mt-1">
-              {invitation.isPublished
-                ? <span className="text-green-600 font-medium">● Dipublikasikan</span>
-                : <span className="text-yellow-600 font-medium">● Draft</span>}
-              {' · '}/u/{invitation.slug}
-            </p>
-          )}
-        </div>
-        <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" onClick={handlePublish} loading={publishing}>
-            {invitation?.isPublished ? 'Sembunyikan' : 'Publikasikan'}
-          </Button>
-          <Button size="sm" onClick={handleSave} loading={saving}>
-            Simpan Perubahan
-          </Button>
+      {/* Sticky header — top-14 on mobile to clear the app top bar, top-0 on desktop */}
+      <div className="sticky top-14 md:top-0 z-20 -mx-4 md:-mx-8 px-4 md:px-8 py-3 bg-white/95 backdrop-blur-sm border-b border-cream-200 mb-6">
+        <div className="flex items-center gap-3 max-w-5xl">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-base font-display font-semibold text-gray-900 leading-tight">Edit Undangan</h1>
+            <div className="flex items-center gap-2 mt-0.5">
+              {invitation?.isPublished ? (
+                <span className="flex items-center gap-1 text-xs text-green-600 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                  Aktif
+                </span>
+              ) : (
+                <span className="flex items-center gap-1 text-xs text-amber-600 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                  Draft
+                </span>
+              )}
+              <span className="text-xs text-gray-300">·</span>
+              <span className="text-xs text-gray-400 font-mono truncate">/u/{invitation?.slug}</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {invitation?.isPublished && (
+              <a
+                href={`/u/${invitation.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden sm:flex p-2 text-gray-400 hover:text-primary rounded-lg hover:bg-cream-50 transition-colors"
+                title="Lihat undangan"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            )}
+            <Button variant="outline" size="sm" onClick={handlePublish} loading={publishing}>
+              {invitation?.isPublished ? 'Sembunyikan' : 'Publikasikan'}
+            </Button>
+            <Button size="sm" onClick={handleSave} loading={saving}>
+              Simpan
+            </Button>
+          </div>
         </div>
       </div>
 
+      {/* Quick links bar */}
+      {invitation?.isPublished && (
+        <div className="bg-green-50 border border-green-100 rounded-xl px-4 py-3 mb-5 flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-2 text-sm text-green-700 flex-1 min-w-0">
+            <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            <span className="font-medium">Undangan aktif</span>
+            <span className="text-green-500 font-mono text-xs truncate">/u/{invitation.slug}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={copyLink}
+              className="text-xs text-green-700 font-medium px-3 py-1.5 rounded-lg bg-green-100 hover:bg-green-200 transition-colors"
+            >
+              Salin Link
+            </button>
+            <a
+              href={`/u/${invitation.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-green-700 font-medium px-3 py-1.5 rounded-lg bg-green-100 hover:bg-green-200 transition-colors"
+            >
+              Lihat →
+            </a>
+          </div>
+        </div>
+      )}
+
       {/* Tab navigation */}
-      <div className="flex gap-1 bg-white border border-cream-200 rounded-xl p-1 mb-6 overflow-x-auto">
-        {TABS.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              activeTab === tab.id
-                ? 'bg-primary text-white shadow-sm'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-cream-50'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+      <div className="relative mb-6">
+        <div className="flex gap-1 bg-white border border-cream-200 rounded-2xl p-1 overflow-x-auto scrollbar-none">
+          {TABS.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex-shrink-0 px-3 py-2 rounded-xl text-sm font-medium transition-all ${
+                activeTab === tab.id
+                  ? 'bg-primary text-white shadow-sm'
+                  : 'text-gray-500 hover:text-gray-800 hover:bg-cream-50'
+              }`}
+            >
+              <span className="hidden sm:inline">{tab.label}</span>
+              <span className="sm:hidden">{tab.shortLabel}</span>
+            </button>
+          ))}
+        </div>
+        {/* Right fade hint for scroll */}
+        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-cream-50 to-transparent pointer-events-none rounded-r-2xl sm:hidden" />
       </div>
 
       {/* Tab 1: Mempelai */}
       {activeTab === 'mempelai' && (
         <div>
-          <SectionCard title="Data Mempelai Pria">
+          <SectionCard title="Data Mempelai Pria" description="Informasi lengkap tentang pengantin pria">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input label="Nama Lengkap" value={data.mempelai.pria.namaLengkap ?? ''} onChange={e => updateData('mempelai', { ...data.mempelai, pria: { ...data.mempelai.pria, namaLengkap: e.target.value } })} placeholder="Muhammad Budi Santoso" />
               <Input label="Nama Panggilan" value={data.mempelai.pria.namaPanggilan ?? ''} onChange={e => updateData('mempelai', { ...data.mempelai, pria: { ...data.mempelai.pria, namaPanggilan: e.target.value } })} placeholder="Budi" />
@@ -225,7 +294,7 @@ export default function EditInvitationPage() {
             </div>
           </SectionCard>
 
-          <SectionCard title="Data Mempelai Wanita">
+          <SectionCard title="Data Mempelai Wanita" description="Informasi lengkap tentang pengantin wanita">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input label="Nama Lengkap" value={data.mempelai.wanita.namaLengkap ?? ''} onChange={e => updateData('mempelai', { ...data.mempelai, wanita: { ...data.mempelai.wanita, namaLengkap: e.target.value } })} placeholder="Siti Nurhaliza" />
               <Input label="Nama Panggilan" value={data.mempelai.wanita.namaPanggilan ?? ''} onChange={e => updateData('mempelai', { ...data.mempelai, wanita: { ...data.mempelai.wanita, namaPanggilan: e.target.value } })} placeholder="Siti" />
@@ -243,7 +312,7 @@ export default function EditInvitationPage() {
             </div>
           </SectionCard>
 
-          <SectionCard title="Urutan Tampil">
+          <SectionCard title="Urutan Tampil" description="Pilih siapa yang tampil lebih dulu di undangan">
             <div className="flex gap-6">
               {(['pria-dulu', 'wanita-dulu'] as const).map(opt => (
                 <label key={opt} className="flex items-center gap-2 cursor-pointer">
@@ -266,6 +335,11 @@ export default function EditInvitationPage() {
       {/* Tab 2: Acara */}
       {activeTab === 'acara' && (
         <div>
+          {data.acara.length === 0 && (
+            <div className="text-center py-8 text-gray-400 text-sm">
+              Belum ada acara. Tambahkan acara di bawah.
+            </div>
+          )}
           {data.acara.map((acara, i) => (
             <SectionCard key={i} title={`Acara ${i + 1}${acara.nama ? ` — ${acara.nama}` : ''}`}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -279,20 +353,19 @@ export default function EditInvitationPage() {
               <div className="mb-4">
                 <TextArea label="Alamat Lengkap" value={acara.alamat} onChange={v => { const a = [...data.acara]; a[i] = { ...a[i], alamat: v }; updateData('acara', a); }} placeholder="Jl. Contoh No. 123, Jakarta Selatan" />
               </div>
-              <Button
-                variant="danger"
-                size="sm"
-                onClick={() => updateData('acara', data.acara.filter((_, j) => j !== i))}
-              >
+              <Button variant="danger" size="sm" onClick={() => updateData('acara', data.acara.filter((_, j) => j !== i))}>
                 Hapus Acara Ini
               </Button>
             </SectionCard>
           ))}
           <button
             onClick={() => updateData('acara', [...data.acara, { nama: '', tanggal: '', waktuMulai: '', waktuSelesai: '', lokasi: '', alamat: '', mapsUrl: '' } as Acara])}
-            className="w-full py-3 border-2 border-dashed border-cream-300 rounded-xl text-primary hover:border-primary hover:bg-cream-50 transition-colors text-sm font-medium"
+            className="w-full py-4 border-2 border-dashed border-cream-300 rounded-2xl text-primary hover:border-primary hover:bg-cream-50 transition-colors text-sm font-semibold flex items-center justify-center gap-2"
           >
-            + Tambah Acara
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Tambah Acara
           </button>
         </div>
       )}
@@ -300,42 +373,43 @@ export default function EditInvitationPage() {
       {/* Tab 3: Galeri & Musik */}
       {activeTab === 'galeri' && (
         <div>
-          <SectionCard title="Galeri Foto">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          <SectionCard title="Galeri Foto" description="Tambah foto-foto indah untuk ditampilkan di undangan">
+            <div className="grid grid-cols-3 md:grid-cols-4 gap-3 mb-3">
               {data.galeri.map((url, i) => (
-                <div key={i} className="relative group">
-                  <img src={url} alt={`Foto ${i + 1}`} className="w-full h-32 object-cover rounded-lg border border-cream-200" onError={e => { (e.target as HTMLImageElement).src = '/placeholder-image.jpg'; }} />
+                <div key={i} className="relative group aspect-square">
+                  <img src={url} alt={`Foto ${i + 1}`} className="w-full h-full object-cover rounded-xl border border-cream-200" onError={e => { (e.target as HTMLImageElement).src = '/placeholder-image.jpg'; }} />
                   <button
                     onClick={() => updateData('galeri', data.galeri.filter((_, j) => j !== i))}
-                    className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs"
+                    className="absolute top-1.5 right-1.5 w-6 h-6 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs shadow-md"
                   >
                     ×
                   </button>
+                  <div className="absolute inset-0 rounded-xl ring-1 ring-inset ring-black/5" />
                 </div>
               ))}
-              <div>
+              <div className="aspect-square">
                 <ImageUpload
                   value=""
                   onChange={url => { if (url) updateData('galeri', [...data.galeri, url]); }}
-                  className="h-32"
+                  className="h-full"
                 />
               </div>
             </div>
-            <p className="text-xs text-gray-400">Klik foto untuk menghapus. Klik kotak + untuk menambah foto baru.</p>
+            <p className="text-xs text-gray-400">Hover foto lalu klik × untuk menghapus.</p>
           </SectionCard>
 
-          <SectionCard title="Musik Latar">
+          <SectionCard title="Musik Latar" description="Pilih musik yang diputar saat tamu membuka undangan">
             <MusicPicker value={data.musik} onChange={v => updateData('musik', v)} />
           </SectionCard>
         </div>
       )}
 
-      {/* Tab 4: Love Story & Quote */}
+      {/* Tab 4: Kisah & Quote */}
       {activeTab === 'lovestory' && (
         <div>
-          <SectionCard title="Love Story">
+          <SectionCard title="Love Story" description="Ceritakan perjalanan cinta kalian">
             {data.loveStory.map((item, i) => (
-              <div key={i} className="mb-4 p-4 bg-cream-50 rounded-lg border border-cream-200">
+              <div key={i} className="mb-4 p-4 bg-cream-50 rounded-xl border border-cream-200">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                   <Input label="Tahun" value={item.tahun} onChange={e => { const l = [...data.loveStory]; l[i] = { ...l[i], tahun: e.target.value }; updateData('loveStory', l); }} placeholder="2020" />
                   <Input label="Judul" value={item.judul} onChange={e => { const l = [...data.loveStory]; l[i] = { ...l[i], judul: e.target.value }; updateData('loveStory', l); }} placeholder="Pertama Kali Bertemu" />
@@ -343,21 +417,24 @@ export default function EditInvitationPage() {
                 <TextArea label="Cerita" value={item.cerita} onChange={v => { const l = [...data.loveStory]; l[i] = { ...l[i], cerita: v }; updateData('loveStory', l); }} placeholder="Cerita singkat tentang momen ini..." />
                 <button
                   onClick={() => updateData('loveStory', data.loveStory.filter((_, j) => j !== i))}
-                  className="mt-3 text-xs text-red-500 hover:text-red-700"
+                  className="mt-3 text-xs text-red-500 hover:text-red-700 font-medium"
                 >
-                  Hapus
+                  Hapus cerita ini
                 </button>
               </div>
             ))}
             <button
               onClick={() => updateData('loveStory', [...data.loveStory, { tahun: '', judul: '', cerita: '' } as LoveStoryItem])}
-              className="w-full py-3 border-2 border-dashed border-cream-300 rounded-xl text-primary hover:border-primary hover:bg-cream-50 transition-colors text-sm font-medium"
+              className="w-full py-4 border-2 border-dashed border-cream-300 rounded-2xl text-primary hover:border-primary hover:bg-cream-50 transition-colors text-sm font-semibold flex items-center justify-center gap-2"
             >
-              + Tambah Cerita
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              Tambah Cerita
             </button>
           </SectionCard>
 
-          <SectionCard title="Kutipan">
+          <SectionCard title="Kutipan" description="Ayat atau kata-kata yang ingin ditampilkan di undangan">
             <div className="space-y-4">
               <TextArea label="Teks Kutipan" value={data.quote.teks ?? ''} onChange={v => updateData('quote', { ...data.quote, teks: v })} placeholder="Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu istri-istri dari jenismu sendiri..." rows={4} />
               <Input label="Sumber" value={data.quote.sumber ?? ''} onChange={e => updateData('quote', { ...data.quote, sumber: e.target.value })} placeholder="QS. Ar-Rum: 21" />
@@ -375,12 +452,13 @@ export default function EditInvitationPage() {
                 checked={data.amplopDigital.aktif}
                 onChange={v => updateData('amplopDigital', { ...data.amplopDigital, aktif: v })}
                 label="Aktifkan fitur amplop digital"
+                description="Tamu dapat mengirim hadiah melalui transfer bank atau e-wallet"
               />
             </div>
 
             {data.amplopDigital.aktif && (
               <>
-                <div className="mb-4">
+                <div className="mb-5">
                   <Input
                     label="Alamat Pengiriman Kado Fisik (opsional)"
                     value={data.amplopDigital.alamatKado ?? ''}
@@ -389,35 +467,39 @@ export default function EditInvitationPage() {
                   />
                 </div>
 
-                <h4 className="font-medium text-gray-800 mb-3">Rekening Bank</h4>
-                {data.amplopDigital.rekening.map((rek, i) => (
-                  <div key={i} className="p-4 bg-cream-50 rounded-lg border border-cream-200 mb-3">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                      <Input label="Nama Bank" value={rek.bank} onChange={e => { const r = [...data.amplopDigital.rekening]; r[i] = { ...r[i], bank: e.target.value }; updateData('amplopDigital', { ...data.amplopDigital, rekening: r }); }} placeholder="BCA" />
-                      <Input label="Nomor Rekening" value={rek.nomor} onChange={e => { const r = [...data.amplopDigital.rekening]; r[i] = { ...r[i], nomor: e.target.value }; updateData('amplopDigital', { ...data.amplopDigital, rekening: r }); }} placeholder="1234567890" />
-                      <Input label="Atas Nama" value={rek.atasNama} onChange={e => { const r = [...data.amplopDigital.rekening]; r[i] = { ...r[i], atasNama: e.target.value }; updateData('amplopDigital', { ...data.amplopDigital, rekening: r }); }} placeholder="Muhammad Budi" />
+                <div className="mb-5">
+                  <h4 className="font-semibold text-gray-800 mb-3">Rekening Bank</h4>
+                  {data.amplopDigital.rekening.map((rek, i) => (
+                    <div key={i} className="p-4 bg-cream-50 rounded-xl border border-cream-200 mb-3">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <Input label="Nama Bank" value={rek.bank} onChange={e => { const r = [...data.amplopDigital.rekening]; r[i] = { ...r[i], bank: e.target.value }; updateData('amplopDigital', { ...data.amplopDigital, rekening: r }); }} placeholder="BCA" />
+                        <Input label="Nomor Rekening" value={rek.nomor} onChange={e => { const r = [...data.amplopDigital.rekening]; r[i] = { ...r[i], nomor: e.target.value }; updateData('amplopDigital', { ...data.amplopDigital, rekening: r }); }} placeholder="1234567890" />
+                        <Input label="Atas Nama" value={rek.atasNama} onChange={e => { const r = [...data.amplopDigital.rekening]; r[i] = { ...r[i], atasNama: e.target.value }; updateData('amplopDigital', { ...data.amplopDigital, rekening: r }); }} placeholder="Muhammad Budi" />
+                      </div>
+                      <button onClick={() => updateData('amplopDigital', { ...data.amplopDigital, rekening: data.amplopDigital.rekening.filter((_, j) => j !== i) })} className="mt-2 text-xs text-red-500 hover:text-red-700 font-medium">Hapus</button>
                     </div>
-                    <button onClick={() => updateData('amplopDigital', { ...data.amplopDigital, rekening: data.amplopDigital.rekening.filter((_, j) => j !== i) })} className="mt-2 text-xs text-red-500 hover:text-red-700">Hapus</button>
-                  </div>
-                ))}
-                <button onClick={() => updateData('amplopDigital', { ...data.amplopDigital, rekening: [...data.amplopDigital.rekening, { bank: '', nomor: '', atasNama: '' } as RekeningItem] })} className="w-full py-2.5 border-2 border-dashed border-cream-300 rounded-lg text-primary hover:border-primary text-sm font-medium mb-4">
-                  + Tambah Rekening
-                </button>
+                  ))}
+                  <button onClick={() => updateData('amplopDigital', { ...data.amplopDigital, rekening: [...data.amplopDigital.rekening, { bank: '', nomor: '', atasNama: '' } as RekeningItem] })} className="w-full py-3 border-2 border-dashed border-cream-300 rounded-xl text-primary hover:border-primary text-sm font-medium transition-colors">
+                    + Tambah Rekening
+                  </button>
+                </div>
 
-                <h4 className="font-medium text-gray-800 mb-3">E-Wallet</h4>
-                {data.amplopDigital.eWallet.map((ew, i) => (
-                  <div key={i} className="p-4 bg-cream-50 rounded-lg border border-cream-200 mb-3">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                      <Input label="Jenis E-Wallet" value={ew.jenis} onChange={e => { const w = [...data.amplopDigital.eWallet]; w[i] = { ...w[i], jenis: e.target.value }; updateData('amplopDigital', { ...data.amplopDigital, eWallet: w }); }} placeholder="GoPay / OVO / Dana" />
-                      <Input label="Nomor" value={ew.nomor} onChange={e => { const w = [...data.amplopDigital.eWallet]; w[i] = { ...w[i], nomor: e.target.value }; updateData('amplopDigital', { ...data.amplopDigital, eWallet: w }); }} placeholder="0812345678" />
-                      <Input label="URL QR Code (opsional)" value={ew.qrUrl ?? ''} onChange={e => { const w = [...data.amplopDigital.eWallet]; w[i] = { ...w[i], qrUrl: e.target.value }; updateData('amplopDigital', { ...data.amplopDigital, eWallet: w }); }} placeholder="https://..." />
+                <div>
+                  <h4 className="font-semibold text-gray-800 mb-3">E-Wallet</h4>
+                  {data.amplopDigital.eWallet.map((ew, i) => (
+                    <div key={i} className="p-4 bg-cream-50 rounded-xl border border-cream-200 mb-3">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <Input label="Jenis E-Wallet" value={ew.jenis} onChange={e => { const w = [...data.amplopDigital.eWallet]; w[i] = { ...w[i], jenis: e.target.value }; updateData('amplopDigital', { ...data.amplopDigital, eWallet: w }); }} placeholder="GoPay / OVO / Dana" />
+                        <Input label="Nomor" value={ew.nomor} onChange={e => { const w = [...data.amplopDigital.eWallet]; w[i] = { ...w[i], nomor: e.target.value }; updateData('amplopDigital', { ...data.amplopDigital, eWallet: w }); }} placeholder="0812345678" />
+                        <Input label="URL QR Code (opsional)" value={ew.qrUrl ?? ''} onChange={e => { const w = [...data.amplopDigital.eWallet]; w[i] = { ...w[i], qrUrl: e.target.value }; updateData('amplopDigital', { ...data.amplopDigital, eWallet: w }); }} placeholder="https://..." />
+                      </div>
+                      <button onClick={() => updateData('amplopDigital', { ...data.amplopDigital, eWallet: data.amplopDigital.eWallet.filter((_, j) => j !== i) })} className="mt-2 text-xs text-red-500 hover:text-red-700 font-medium">Hapus</button>
                     </div>
-                    <button onClick={() => updateData('amplopDigital', { ...data.amplopDigital, eWallet: data.amplopDigital.eWallet.filter((_, j) => j !== i) })} className="mt-2 text-xs text-red-500 hover:text-red-700">Hapus</button>
-                  </div>
-                ))}
-                <button onClick={() => updateData('amplopDigital', { ...data.amplopDigital, eWallet: [...data.amplopDigital.eWallet, { jenis: '', nomor: '', qrUrl: '' } as EWalletItem] })} className="w-full py-2.5 border-2 border-dashed border-cream-300 rounded-lg text-primary hover:border-primary text-sm font-medium">
-                  + Tambah E-Wallet
-                </button>
+                  ))}
+                  <button onClick={() => updateData('amplopDigital', { ...data.amplopDigital, eWallet: [...data.amplopDigital.eWallet, { jenis: '', nomor: '', qrUrl: '' } as EWalletItem] })} className="w-full py-3 border-2 border-dashed border-cream-300 rounded-xl text-primary hover:border-primary text-sm font-medium transition-colors">
+                    + Tambah E-Wallet
+                  </button>
+                </div>
               </>
             )}
           </SectionCard>
@@ -427,9 +509,30 @@ export default function EditInvitationPage() {
       {/* Tab 6: Pengaturan */}
       {activeTab === 'pengaturan' && (
         <div>
-          <SectionCard title="Livestream">
+          <SectionCard title="Fitur Interaktif" description="Aktifkan fitur yang ingin ditampilkan di undangan">
+            <div className="space-y-5">
+              <Toggle
+                checked={data.rsvpAktif}
+                onChange={v => updateData('rsvpAktif', v)}
+                label="RSVP — Konfirmasi Kehadiran"
+                description="Tamu dapat mengkonfirmasi apakah mereka akan hadir"
+              />
+              <Toggle
+                checked={data.guestbookAktif}
+                onChange={v => updateData('guestbookAktif', v)}
+                label="Buku Tamu — Ucapan & Doa"
+                description="Tamu dapat menuliskan ucapan dan doa untuk pasangan"
+              />
+            </div>
+          </SectionCard>
+
+          <SectionCard title="Livestream" description="Siarkan acara secara online untuk tamu yang tidak bisa hadir">
             <div className="space-y-4">
-              <Toggle checked={data.livestream.aktif} onChange={v => updateData('livestream', { ...data.livestream, aktif: v })} label="Aktifkan fitur livestream" />
+              <Toggle
+                checked={data.livestream.aktif}
+                onChange={v => updateData('livestream', { ...data.livestream, aktif: v })}
+                label="Aktifkan fitur livestream"
+              />
               {data.livestream.aktif && (
                 <>
                   <Input label="Platform" value={data.livestream.platform ?? ''} onChange={e => updateData('livestream', { ...data.livestream, platform: e.target.value })} placeholder="YouTube / Zoom / dll" />
@@ -439,38 +542,38 @@ export default function EditInvitationPage() {
             </div>
           </SectionCard>
 
-          <SectionCard title="Fitur Interaktif">
+          <SectionCard title="Protokol Kesehatan" description="Tambahkan panduan kesehatan untuk para tamu">
             <div className="space-y-4">
-              <Toggle checked={data.rsvpAktif} onChange={v => updateData('rsvpAktif', v)} label="Aktifkan RSVP (konfirmasi kehadiran)" />
-              <Toggle checked={data.guestbookAktif} onChange={v => updateData('guestbookAktif', v)} label="Aktifkan Buku Tamu" />
-            </div>
-          </SectionCard>
-
-          <SectionCard title="Protokol Kesehatan">
-            <div className="space-y-4">
-              <Toggle checked={data.protokolKesehatan.aktif} onChange={v => updateData('protokolKesehatan', { ...data.protokolKesehatan, aktif: v })} label="Tampilkan protokol kesehatan" />
+              <Toggle
+                checked={data.protokolKesehatan.aktif}
+                onChange={v => updateData('protokolKesehatan', { ...data.protokolKesehatan, aktif: v })}
+                label="Tampilkan protokol kesehatan"
+              />
               {data.protokolKesehatan.aktif && (
                 <TextArea label="Catatan Protokol" value={data.protokolKesehatan.catatan ?? ''} onChange={v => updateData('protokolKesehatan', { ...data.protokolKesehatan, catatan: v })} placeholder="Harap memakai masker, menjaga jarak, dan membawa hand sanitizer..." />
               )}
             </div>
           </SectionCard>
 
-          <SectionCard title="Masa Berlaku">
+          <SectionCard title="Masa Berlaku" description="Perpanjang undangan agar tetap dapat diakses tamu">
             <div className="space-y-4">
-              <div>
-                <p className="text-sm text-gray-600 mb-1">
-                  {invitation?.expiresAt
-                    ? <>Aktif hingga: <strong className="text-gray-900">{new Date(invitation.expiresAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</strong></>
-                    : <span className="text-gray-400">Belum ada tanggal kadaluarsa</span>}
-                </p>
+              <div className="p-4 bg-cream-50 rounded-xl border border-cream-100">
+                <p className="text-xs text-gray-500 mb-1">Aktif hingga</p>
+                {invitation?.expiresAt ? (
+                  <p className="text-base font-semibold text-gray-900">
+                    {new Date(invitation.expiresAt).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                  </p>
+                ) : (
+                  <p className="text-gray-400">Belum ada tanggal kadaluarsa</p>
+                )}
               </div>
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-1">
                   <label className="text-sm text-gray-700 whitespace-nowrap">Perpanjang</label>
                   <select
                     value={extendDays}
                     onChange={e => setExtendDays(Number(e.target.value))}
-                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                    className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary bg-white"
                   >
                     {[7, 14, 30, 60, 90, 180, 365].map(d => (
                       <option key={d} value={d}>{d} hari</option>
@@ -487,17 +590,17 @@ export default function EditInvitationPage() {
           <SectionCard title="Link Undangan">
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Slug URL (tidak dapat diubah)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">URL Undangan</label>
                 <div className="flex items-center gap-2">
-                  <div className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-600 font-mono">
+                  <div className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-600 font-mono truncate">
                     {typeof window !== 'undefined' ? window.location.origin : 'https://nikahyuk.com'}/u/{invitation?.slug}
                   </div>
                   <Button size="sm" variant="outline" onClick={copyLink}>
-                    Salin Link
+                    Salin
                   </Button>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 flex-wrap">
                 <Button
                   variant={invitation?.isPublished ? 'danger' : 'primary'}
                   onClick={handlePublish}
@@ -510,30 +613,33 @@ export default function EditInvitationPage() {
                     href={`/u/${invitation.slug}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-primary hover:underline"
+                    className="flex items-center gap-1.5 text-sm text-primary hover:underline font-medium"
                   >
-                    Lihat Undangan →
+                    Lihat Undangan
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
                   </a>
                 )}
               </div>
             </div>
           </SectionCard>
 
-          <SectionCard title="QR Code Undangan">
-            <p className="text-sm text-gray-600 mb-4">
-              Download QR code undangan untuk dicetak atau dibagikan. Tamu bisa scan untuk membuka undangan langsung.
-            </p>
-            <div className="flex items-center gap-4">
-              <img
-                src={`/api/invitations/${id}/qrcode`}
-                alt="QR Code"
-                className="w-32 h-32 border border-cream-200 rounded-lg"
-              />
-              <div className="space-y-2">
+          <SectionCard title="QR Code Undangan" description="Download QR code untuk dicetak atau dibagikan">
+            <div className="flex items-center gap-5">
+              <div className="flex-shrink-0 p-3 bg-white border border-cream-200 rounded-xl shadow-sm">
+                <img
+                  src={`/api/invitations/${id}/qrcode`}
+                  alt="QR Code"
+                  className="w-28 h-28"
+                />
+              </div>
+              <div className="space-y-3">
+                <p className="text-sm text-gray-600">Tamu scan QR code ini untuk membuka undangan langsung di ponsel mereka.</p>
                 <a
                   href={`/api/invitations/${id}/qrcode`}
                   download="qrcode-undangan.png"
-                  className="flex items-center gap-2 bg-primary text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors"
+                  className="inline-flex items-center gap-2 bg-primary text-white text-sm font-medium px-4 py-2.5 rounded-xl hover:bg-primary-600 transition-colors shadow-sm shadow-primary/20"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -547,11 +653,27 @@ export default function EditInvitationPage() {
         </div>
       )}
 
-      {/* Floating save bar */}
-      <div className="fixed bottom-6 right-6">
-        <Button onClick={handleSave} loading={saving} size="lg" className="shadow-lg">
-          Simpan Perubahan
-        </Button>
+      {/* Bottom save bar on mobile */}
+      <div className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-10">
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="flex items-center gap-2 bg-primary text-white text-sm font-semibold px-5 py-3 rounded-full shadow-lg shadow-primary/30 hover:bg-primary-600 active:scale-95 transition-all disabled:opacity-60"
+        >
+          {saving ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+              Menyimpan...
+            </>
+          ) : (
+            <>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              Simpan
+            </>
+          )}
+        </button>
       </div>
     </div>
   );
