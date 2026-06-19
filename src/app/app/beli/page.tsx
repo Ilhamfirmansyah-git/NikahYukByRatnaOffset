@@ -48,6 +48,7 @@ const categoryLabel: Record<string, string> = {
   elegan: 'Elegan',
   minimalis: 'Minimalis',
   islami: 'Islami',
+  romantis: 'Romantis',
 };
 
 function formatRupiah(amount: number): string {
