@@ -69,7 +69,7 @@ function CheckIcon() {
 
 function XIcon() {
   return (
-    <svg className="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="w-4 h-4 text-red-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
     </svg>
   );
@@ -341,32 +341,45 @@ export default function BeliPage() {
                     )}
                   </div>
 
-                  <p className="text-3xl font-bold text-primary mb-6">
+                  <p className="text-3xl font-bold text-primary mb-1">
                     {formatRupiah(pkg.price)}
                   </p>
+                  <p className="text-xs text-gray-400 mb-5">aktif {pkg.durationDays} hari · bayar sekali</p>
 
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-center gap-2">
-                      <CheckIcon />
-                      <span className="text-gray-600">Maks. {pkg.features.maxPhotos} foto galeri</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      {pkg.features.musik ? <CheckIcon /> : <XIcon />}
-                      <span className={pkg.features.musik ? 'text-gray-600' : 'text-gray-400'}>Musik latar</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      {pkg.features.livestream ? <CheckIcon /> : <XIcon />}
-                      <span className={pkg.features.livestream ? 'text-gray-600' : 'text-gray-400'}>Livestream</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      {pkg.features.guestManagement ? <CheckIcon /> : <XIcon />}
-                      <span className={pkg.features.guestManagement ? 'text-gray-600' : 'text-gray-400'}>Manajemen tamu</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      {pkg.features.customDomain ? <CheckIcon /> : <XIcon />}
-                      <span className={pkg.features.customDomain ? 'text-gray-600' : 'text-gray-400'}>Custom domain</span>
-                    </li>
-                  </ul>
+                  <div className="border-t border-cream-100 pt-4 mb-2">
+                    <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-2">Selalu termasuk</p>
+                    <ul className="space-y-1.5 text-sm mb-4">
+                      {['RSVP online', 'Buku tamu digital', 'Countdown timer', 'Link undangan unik'].map(f => (
+                        <li key={f} className="flex items-center gap-2">
+                          <CheckIcon />
+                          <span className="text-gray-500">{f}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="text-[10px] uppercase tracking-widest text-gray-400 font-medium mb-2">Fitur paket</p>
+                    <ul className="space-y-1.5 text-sm">
+                      <li className="flex items-center gap-2">
+                        <CheckIcon />
+                        <span className="text-gray-700 font-medium">Maks. {pkg.features.maxPhotos} foto galeri</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        {pkg.features.musik ? <CheckIcon /> : <XIcon />}
+                        <span className={pkg.features.musik ? 'text-gray-700 font-medium' : 'text-gray-400 line-through'}>Musik latar</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        {pkg.features.livestream ? <CheckIcon /> : <XIcon />}
+                        <span className={pkg.features.livestream ? 'text-gray-700 font-medium' : 'text-gray-400 line-through'}>Live streaming</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        {pkg.features.guestManagement ? <CheckIcon /> : <XIcon />}
+                        <span className={pkg.features.guestManagement ? 'text-gray-700 font-medium' : 'text-gray-400 line-through'}>Manajemen tamu</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        {pkg.features.customDomain ? <CheckIcon /> : <XIcon />}
+                        <span className={pkg.features.customDomain ? 'text-gray-700 font-medium' : 'text-gray-400 line-through'}>Custom domain</span>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               );
             })}
