@@ -105,11 +105,14 @@ export default function AppShell({ children, userName, userEmail, userInitial, i
     <>
       {/* Logo */}
       <div className="p-6 border-b border-cream-200 flex items-center justify-between">
-        <Link href="/app" className="flex items-center gap-2" onClick={() => setSidebarOpen(false)}>
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+        <Link href="/app" className="flex items-center gap-2.5" onClick={() => setSidebarOpen(false)}>
+          <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
             <span className="text-white text-sm font-bold">N</span>
           </div>
-          <span className="font-display text-primary font-semibold text-lg">NikahYuk</span>
+          <div>
+            <span className="font-display text-primary font-semibold text-lg leading-none block">NikahYuk</span>
+            <span className="text-xs text-gray-400 leading-none">by Ratna Offset</span>
+          </div>
         </Link>
         {/* Close button — mobile only */}
         <button
@@ -178,7 +181,10 @@ export default function AppShell({ children, userName, userEmail, userInitial, i
           <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center">
             <span className="text-white text-xs font-bold">N</span>
           </div>
-          <span className="font-display text-primary font-semibold">NikahYuk</span>
+          <div>
+            <span className="font-display text-primary font-semibold leading-none block">NikahYuk</span>
+            <span className="text-[10px] text-gray-400 leading-none">by Ratna Offset</span>
+          </div>
         </Link>
         <div className="w-9" />
       </header>
