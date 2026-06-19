@@ -1,10 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Button from "@/components/ui/Button";
+
+interface Template {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  category: string;
+}
 
 // ──── DATA ────────────────────────────────────────────────────────────────────
 
@@ -74,29 +82,26 @@ const steps = [
   },
 ];
 
-const templates = [
-  {
-    name: "Jasmine",
-    category: "Elegan",
-    description: "Nuansa gold dan bunga yang romantis",
-    color: "from-amber-50 to-amber-100",
-    accent: "bg-amber-600",
-  },
-  {
-    name: "Sakura Putih",
-    category: "Minimalis",
-    description: "Bersih, modern, dan berkelas",
-    color: "from-rose-50 to-pink-100",
-    accent: "bg-rose-600",
-  },
-  {
-    name: "Batik Klasik",
-    category: "Islami",
-    description: "Motif batik dengan sentuhan islami",
-    color: "from-emerald-50 to-teal-100",
-    accent: "bg-emerald-700",
-  },
-];
+const categoryGradient: Record<string, string> = {
+  elegan: 'from-amber-50 to-amber-100',
+  minimalis: 'from-gray-50 to-gray-100',
+  islami: 'from-emerald-50 to-teal-100',
+  romantis: 'from-rose-50 to-pink-100',
+};
+
+const categoryAccent: Record<string, string> = {
+  elegan: 'bg-amber-600',
+  minimalis: 'bg-gray-500',
+  islami: 'bg-emerald-700',
+  romantis: 'bg-rose-500',
+};
+
+const categoryLabel: Record<string, string> = {
+  elegan: 'Elegan',
+  minimalis: 'Minimalis',
+  islami: 'Islami',
+  romantis: 'Romantis',
+};
 
 const pricingTiers = [
   {
@@ -227,6 +232,15 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 // ──── PAGE ────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
+  const [templates, setTemplates] = useState<Template[]>([]);
+
+  useEffect(() => {
+    fetch('/api/templates')
+      .then(r => r.json())
+      .then((data: Template[]) => setTemplates(Array.isArray(data) ? data.slice(0, 3) : []))
+      .catch(() => {});
+  }, []);
+
   return (
     <>
       <Navbar />
@@ -386,27 +400,43 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-            {templates.map((tmpl) => (
-              <div key={tmpl.name} className="card group cursor-pointer hover:shadow-lg transition-shadow">
-                <div className={`h-48 bg-gradient-to-br ${tmpl.color} flex items-center justify-center`}>
-                  <div className="text-center">
-                    <div className={`w-12 h-12 ${tmpl.accent} rounded-full mx-auto mb-2 flex items-center justify-center`}>
-                      <span className="text-white font-display font-bold text-lg">{tmpl.name[0]}</span>
+            {templates.length === 0
+              ? Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="card animate-pulse">
+                    <div className="h-48 bg-cream-100 rounded-t-2xl" />
+                    <div className="p-4 space-y-2">
+                      <div className="h-4 bg-cream-200 rounded w-1/2" />
+                      <div className="h-3 bg-cream-100 rounded w-3/4" />
                     </div>
-                    <p className="font-display font-semibold text-gray-800">{tmpl.name}</p>
-                    <p className="text-sm text-gray-600">{tmpl.description}</p>
                   </div>
-                </div>
-                <div className="p-4 flex items-center justify-between">
-                  <span className="text-xs font-medium bg-primary/10 text-primary px-2.5 py-1 rounded-full">
-                    {tmpl.category}
-                  </span>
-                  <button className="text-sm text-primary font-medium hover:underline">
-                    Lihat Preview →
-                  </button>
-                </div>
-              </div>
-            ))}
+                ))
+              : templates.map((tmpl) => (
+                  <div key={tmpl.id} className="card group cursor-pointer hover:shadow-lg transition-shadow">
+                    <div className={`h-48 bg-gradient-to-br ${categoryGradient[tmpl.category] ?? 'from-primary-50 to-primary-100'} flex items-center justify-center`}>
+                      <div className="text-center">
+                        <div className={`w-12 h-12 ${categoryAccent[tmpl.category] ?? 'bg-primary'} rounded-full mx-auto mb-2 flex items-center justify-center`}>
+                          <span className="text-white font-display font-bold text-lg">{tmpl.name[0]}</span>
+                        </div>
+                        <p className="font-display font-semibold text-gray-800">{tmpl.name}</p>
+                        <p className="text-sm text-gray-600">{tmpl.description}</p>
+                      </div>
+                    </div>
+                    <div className="p-4 flex items-center justify-between">
+                      <span className="text-xs font-medium bg-primary/10 text-primary px-2.5 py-1 rounded-full">
+                        {categoryLabel[tmpl.category] ?? tmpl.category}
+                      </span>
+                      <a
+                        href={`/preview/${tmpl.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-primary font-medium hover:underline"
+                      >
+                        Lihat Preview →
+                      </a>
+                    </div>
+                  </div>
+                ))
+            }
           </div>
 
           <div className="text-center">
