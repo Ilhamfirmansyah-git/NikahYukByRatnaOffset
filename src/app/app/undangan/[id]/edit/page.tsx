@@ -89,6 +89,9 @@ export default function EditInvitationPage() {
   const [extendDays, setExtendDays] = useState(30);
   const [customDomainInput, setCustomDomainInput] = useState('');
   const [savingDomain, setSavingDomain] = useState(false);
+  const [regeneratingSlug, setRegeneratingSlug] = useState(false);
+
+  const appDomain = process.env.NEXT_PUBLIC_APP_DOMAIN ?? 'ratnaoffset.com';
 
   useEffect(() => {
     fetch(`/api/invitations/${id}`)
@@ -162,11 +165,42 @@ export default function EditInvitationPage() {
     }
   }
 
+  function getInvitationUrl() {
+    if (!invitation) return '';
+    if (invitation.customDomain) return `https://${invitation.customDomain}.${appDomain}`;
+    return `${window.location.origin}/u/${invitation.slug}`;
+  }
+
   function copyLink() {
     if (!invitation) return;
-    const url = `${window.location.origin}/u/${invitation.slug}`;
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText(getInvitationUrl());
     toast.success('Link berhasil disalin!');
+  }
+
+  async function handleGenerateSlugFromNames() {
+    if (!data) return;
+    const namaPria = data.mempelai.pria.namaPanggilan || data.mempelai.pria.namaLengkap;
+    const namaWanita = data.mempelai.wanita.namaPanggilan || data.mempelai.wanita.namaLengkap;
+    if (!namaPria || !namaWanita) {
+      toast.error('Isi nama panggilan kedua pengantin terlebih dahulu');
+      return;
+    }
+    setRegeneratingSlug(true);
+    try {
+      const res = await fetch(`/api/invitations/${id}/slug`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ namaPria, namaWanita }),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error ?? 'Gagal');
+      setInvitation(prev => prev ? { ...prev, slug: result.slug } : prev);
+      toast.success('Link berhasil diperbarui!');
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Gagal memperbarui link');
+    } finally {
+      setRegeneratingSlug(false);
+    }
   }
 
   async function handleSaveDomain() {
@@ -219,13 +253,15 @@ export default function EditInvitationPage() {
                 </span>
               )}
               <span className="text-xs text-gray-300">·</span>
-              <span className="text-xs text-gray-400 font-mono truncate">/u/{invitation?.slug}</span>
+              <span className="text-xs text-gray-400 font-mono truncate">
+                {invitation?.customDomain ? `${invitation.customDomain}.${appDomain}` : `/u/${invitation?.slug}`}
+              </span>
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             {invitation?.isPublished && (
               <a
-                href={`/u/${invitation.slug}`}
+                href={invitation.customDomain ? `https://${invitation.customDomain}.${appDomain}` : `/u/${invitation.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hidden sm:flex p-2 text-gray-400 hover:text-primary rounded-lg hover:bg-cream-50 transition-colors"
@@ -254,7 +290,9 @@ export default function EditInvitationPage() {
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
             <span className="font-medium">Undangan aktif</span>
-            <span className="text-green-500 font-mono text-xs truncate">/u/{invitation.slug}</span>
+            <span className="text-green-500 font-mono text-xs truncate">
+              {invitation.customDomain ? `${invitation.customDomain}.${appDomain}` : `/u/${invitation.slug}`}
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -264,7 +302,7 @@ export default function EditInvitationPage() {
               Salin Link
             </button>
             <a
-              href={`/u/${invitation.slug}`}
+              href={invitation.customDomain ? `https://${invitation.customDomain}.${appDomain}` : `/u/${invitation.slug}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs text-green-700 font-medium px-3 py-1.5 rounded-lg bg-green-100 hover:bg-green-200 transition-colors"
@@ -617,13 +655,31 @@ export default function EditInvitationPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">URL Undangan</label>
                 <div className="flex items-center gap-2">
                   <div className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-600 font-mono truncate">
-                    {typeof window !== 'undefined' ? window.location.origin : 'https://nikahyuk.com'}/u/{invitation?.slug}
+                    {invitation?.customDomain
+                      ? `https://${invitation.customDomain}.${appDomain}`
+                      : `${typeof window !== 'undefined' ? window.location.origin : `https://${appDomain}`}/u/${invitation?.slug}`}
                   </div>
                   <Button size="sm" variant="outline" onClick={copyLink}>
                     Salin
                   </Button>
                 </div>
               </div>
+
+              {/* Non-exclusive: button to generate slug from couple names */}
+              {packageFeatures?.customDomain !== true && (
+                <div className="flex items-center gap-3 p-3 bg-cream-50 border border-cream-200 rounded-xl">
+                  <div className="flex-1">
+                    <p className="text-xs text-gray-600 font-medium">Buat link dari nama pengantin</p>
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      Contoh: <span className="font-mono">ilham-ica</span> → <span className="font-mono">/u/ilham-ica</span>
+                    </p>
+                  </div>
+                  <Button size="sm" variant="outline" onClick={handleGenerateSlugFromNames} loading={regeneratingSlug}>
+                    Perbarui
+                  </Button>
+                </div>
+              )}
+
               <div className="flex items-center gap-3 flex-wrap">
                 <Button
                   variant={invitation?.isPublished ? 'danger' : 'primary'}
@@ -634,7 +690,7 @@ export default function EditInvitationPage() {
                 </Button>
                 {invitation?.isPublished && (
                   <a
-                    href={`/u/${invitation.slug}`}
+                    href={invitation.customDomain ? `https://${invitation.customDomain}.${appDomain}` : `/u/${invitation.slug}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-1.5 text-sm text-primary hover:underline font-medium"
@@ -685,7 +741,7 @@ export default function EditInvitationPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     <span className="text-sm text-green-800 font-mono font-medium">
-                      {invitation.customDomain}.{typeof window !== 'undefined' ? window.location.hostname : 'nikahyuk.com'}
+                      {invitation.customDomain}.{appDomain}
                     </span>
                     <span className="ml-auto text-xs text-green-600 bg-green-100 px-2 py-0.5 rounded-full">Aktif</span>
                   </div>
@@ -703,7 +759,7 @@ export default function EditInvitationPage() {
                       className="flex-1 px-4 py-2.5 border border-r-0 border-gray-200 rounded-l-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary bg-gray-50 focus:bg-white font-mono"
                     />
                     <div className="px-3 py-2.5 bg-gray-100 border border-gray-200 text-sm text-gray-500 font-mono whitespace-nowrap">
-                      .{typeof window !== 'undefined' ? window.location.hostname : 'nikahyuk.com'}
+                      .{appDomain}
                     </div>
                     <Button size="sm" onClick={handleSaveDomain} loading={savingDomain} className="rounded-l-none ml-2">
                       Simpan
@@ -718,7 +774,7 @@ export default function EditInvitationPage() {
                   <div className="px-4 py-3 bg-cream-50 border border-cream-200 rounded-xl">
                     <p className="text-xs text-gray-500 mb-0.5">Preview URL Anda:</p>
                     <p className="text-sm font-mono text-primary font-medium">
-                      {customDomainInput}.{typeof window !== 'undefined' ? window.location.hostname : 'nikahyuk.com'}
+                      {customDomainInput}.{appDomain}
                     </p>
                   </div>
                 )}
@@ -744,7 +800,7 @@ export default function EditInvitationPage() {
                 <div className="flex-1">
                   <p className="font-semibold text-gray-700 text-sm">Link Eksklusif (Subdomain)</p>
                   <p className="text-xs text-gray-500 mt-0.5">
-                    Dapatkan link seperti <span className="font-mono">nama-anda.nikahyuk.com</span> — hanya di paket Exclusive. Tanpa beli domain tambahan.
+                    Dapatkan link seperti <span className="font-mono">nama-anda.{appDomain}</span> — hanya di paket Exclusive. Tanpa beli domain tambahan.
                   </p>
                   <a href="/app/beli" className="inline-block mt-2.5 text-xs font-semibold text-primary hover:underline">
                     Upgrade ke Exclusive →
