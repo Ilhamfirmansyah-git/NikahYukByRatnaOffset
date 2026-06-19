@@ -6,37 +6,22 @@ export async function middleware(req: NextRequest) {
 
   if (!appDomain) return NextResponse.next();
 
-  // Only activate for subdomains of the app domain (e.g. ilham-ica.nikahyuk.com)
+  // Only activate for subdomains of the app domain (e.g. ilhamica.ratnaoffset.com)
   if (!host.endsWith(`.${appDomain}`)) return NextResponse.next();
 
   const prefix = host.slice(0, -(appDomain.length + 1));
   if (!prefix) return NextResponse.next();
 
-  const appUrl = process.env.NEXTAUTH_URL ?? '';
-  if (!appUrl) return NextResponse.next();
-
-  try {
-    const lookupUrl = `${appUrl}/api/_internal/resolve-domain?prefix=${encodeURIComponent(prefix)}`;
-    const res = await fetch(lookupUrl, {
-      headers: { 'x-internal-secret': process.env.NEXTAUTH_SECRET ?? '' },
-      next: { revalidate: 300 },
-    });
-
-    if (res.ok) {
-      const { slug } = (await res.json()) as { slug: string | null };
-      if (slug) {
-        const url = req.nextUrl.clone();
-        const tamu = req.nextUrl.searchParams.get('tamu');
-        url.pathname = `/u/${slug}`;
-        if (tamu) url.searchParams.set('tamu', tamu);
-        return NextResponse.rewrite(url);
-      }
-    }
-  } catch {
-    // domain lookup failed — serve normally
+  // Avoid rewriting already-internal paths
+  const { pathname } = req.nextUrl;
+  if (pathname.startsWith('/_sub/') || pathname.startsWith('/u/')) {
+    return NextResponse.next();
   }
 
-  return NextResponse.next();
+  // Rewrite to /_sub/[prefix] — the Server Component there handles DB lookup
+  const url = req.nextUrl.clone();
+  url.pathname = `/_sub/${prefix}${pathname === '/' ? '' : pathname}`;
+  return NextResponse.rewrite(url);
 }
 
 export const config = {
