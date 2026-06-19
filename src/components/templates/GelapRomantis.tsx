@@ -352,7 +352,7 @@ export default function GelapRomantis({
                     وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً
                   </p>
                   <p style={{ fontSize: 12, color: MUTED, fontStyle: 'italic', lineHeight: 1.7 }}>
-                    "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu isteri-isteri dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya, dan dijadikan-Nya di antaramu rasa kasih dan sayang."
+                    &ldquo;Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu isteri-isteri dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya, dan dijadikan-Nya di antaramu rasa kasih dan sayang.&rdquo;
                   </p>
                   <p style={{ fontSize: 11, color: GOLD, marginTop: 10, letterSpacing: '0.2em' }}>QS. Ar-Rum: 21</p>
                 </div>
