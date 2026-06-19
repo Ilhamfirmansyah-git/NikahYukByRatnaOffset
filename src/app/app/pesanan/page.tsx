@@ -3,6 +3,7 @@ import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
+import RetryPaymentButton from './RetryPaymentButton';
 
 const formatRupiah = (amount: number) =>
   new Intl.NumberFormat('id-ID', {
@@ -110,6 +111,9 @@ export default async function PesananPage() {
                       <p className="text-xs text-green-600 font-medium">
                         Hemat {formatRupiah(order.discountAmount)}
                       </p>
+                    )}
+                    {order.status === 'PENDING' && (
+                      <RetryPaymentButton orderId={order.id} />
                     )}
                     {order.status === 'PAID' && order.invitation && (
                       <Link
