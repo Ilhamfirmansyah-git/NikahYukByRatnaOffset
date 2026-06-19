@@ -39,6 +39,14 @@ async function main() {
       thumbnail: '/templates/gelap-romantis.jpg',
       description: 'Template dark elegan dengan aksen emas, font sakral, dan navigasi bawah bergaya',
     },
+    {
+      name: 'Romantis Pink',
+      slug: 'romantis-pink',
+      componentKey: 'romantis-pink',
+      category: 'romantis',
+      thumbnail: '/templates/romantis-pink.jpg',
+      description: 'Template pernikahan bertema pink putih dengan animasi bunga dan ornamen floral yang elegan',
+    },
   ];
 
   for (const template of templates) {
