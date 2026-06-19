@@ -521,6 +521,32 @@ export default function EditInvitationPage() {
               </div>
             </div>
           </SectionCard>
+
+          <SectionCard title="QR Code Undangan">
+            <p className="text-sm text-gray-600 mb-4">
+              Download QR code undangan untuk dicetak atau dibagikan. Tamu bisa scan untuk membuka undangan langsung.
+            </p>
+            <div className="flex items-center gap-4">
+              <img
+                src={`/api/invitations/${id}/qrcode`}
+                alt="QR Code"
+                className="w-32 h-32 border border-cream-200 rounded-lg"
+              />
+              <div className="space-y-2">
+                <a
+                  href={`/api/invitations/${id}/qrcode`}
+                  download="qrcode-undangan.png"
+                  className="flex items-center gap-2 bg-primary text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  Download QR Code
+                </a>
+                <p className="text-xs text-gray-400">Format PNG, 400×400px</p>
+              </div>
+            </div>
+          </SectionCard>
         </div>
       )}
 
