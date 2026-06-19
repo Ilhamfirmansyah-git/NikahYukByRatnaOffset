@@ -65,12 +65,14 @@ export const authOptions: NextAuthOptions = {
       }
       return true;
     },
-    async jwt({ token, user }) {
-      if (user) {
+    async jwt({ token, user, account }) {
+      // On credentials login, user object has DB id
+      if (user && account?.provider === 'credentials') {
         token.id = user.id;
         token.role = (user as { id: string; role?: string }).role;
       }
-      if (token.email && !token.role) {
+      // Always resolve id and role from DB using email (covers Google OAuth + refresh)
+      if (token.email && (!token.id || !token.role)) {
         const dbUser = await prisma.user.findUnique({
           where: { email: token.email },
         });
