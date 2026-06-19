@@ -5,8 +5,9 @@ import toast from 'react-hot-toast';
 import { supabaseBrowser } from '@/lib/supabase-client';
 import type { InvitationData, Acara, LoveStoryItem, RekeningItem, EWalletItem } from '@/types/invitation';
 import { defaultInvitationData } from '@/types/invitation';
+import MusicPicker from '@/app/app/undangan/[id]/edit/MusicPicker';
 
-type Tab = 'mempelai' | 'acara' | 'galeri' | 'konten' | 'amplop';
+type Tab = 'mempelai' | 'acara' | 'galeri' | 'konten' | 'amplop' | 'musik';
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'mempelai', label: 'Mempelai' },
@@ -14,6 +15,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: 'galeri', label: 'Galeri & Video' },
   { id: 'konten', label: 'Kisah & Quote' },
   { id: 'amplop', label: 'Amplop Digital' },
+  { id: 'musik', label: 'Musik' },
 ];
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
@@ -577,6 +579,17 @@ export default function AdminPreviewPage() {
                 </div>
               </>
             )}
+          </div>
+        )}
+
+        {/* ── MUSIK ── */}
+        {tab === 'musik' && (
+          <div className="space-y-4">
+            <p className="text-sm text-gray-500">Pilih lagu yang akan diputar di semua halaman preview template.</p>
+            <MusicPicker
+              value={data.musik}
+              onChange={v => setData(d => ({ ...d, musik: v }))}
+            />
           </div>
         )}
       </div>
