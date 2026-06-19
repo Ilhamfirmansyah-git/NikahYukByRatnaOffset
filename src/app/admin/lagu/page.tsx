@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
+import { supabaseBrowser } from '@/lib/supabase-client';
 
 interface Song {
   id: string;
@@ -57,16 +58,53 @@ export default function AdminLaguPage() {
       toast.error('Judul, artis, dan file wajib diisi');
       return;
     }
+
+    const maxSize = 50 * 1024 * 1024;
+    if (file.size > maxSize) {
+      toast.error('Ukuran file maksimal 50MB');
+      return;
+    }
+
+    const allowedExts = /\.(mp3|ogg|wav|aac|m4a)$/i;
+    if (!allowedExts.test(file.name)) {
+      toast.error('Format file tidak didukung. Gunakan MP3, OGG, WAV, atau M4A.');
+      return;
+    }
+
     setUploading(true);
     try {
-      const fd = new FormData();
-      fd.append('title', title.trim());
-      fd.append('artist', artist.trim());
-      fd.append('category', category);
-      fd.append('file', file);
-      const res = await fetch('/api/admin/songs', { method: 'POST', body: fd });
+      const ext = file.name.split('.').pop() ?? 'mp3';
+      const filename = `${Date.now()}-${title.trim().toLowerCase().replace(/\s+/g, '-')}.${ext}`;
+
+      // Step 1: Get signed upload URL from server
+      const presignRes = await fetch('/api/admin/songs/presign', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename, contentType: file.type || 'audio/mpeg' }),
+      });
+      const presignData = await presignRes.json();
+      if (!presignRes.ok) throw new Error(presignData.error ?? 'Gagal membuat signed URL');
+
+      const { signedUrl, token, path } = presignData;
+
+      // Step 2: Upload directly to Supabase (bypasses Vercel body limit)
+      const { error: uploadError } = await supabaseBrowser.storage
+        .from('music')
+        .uploadToSignedUrl(path, token, file, { contentType: file.type || 'audio/mpeg' });
+      if (uploadError) throw new Error('Gagal mengunggah: ' + uploadError.message);
+
+      // Step 3: Get public URL and register in DB
+      const { data: urlData } = supabaseBrowser.storage.from('music').getPublicUrl(path);
+      const publicUrl = urlData.publicUrl;
+
+      const res = await fetch('/api/admin/songs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: title.trim(), artist: artist.trim(), category, url: publicUrl, filename: path }),
+      });
       const result = await res.json();
-      if (!res.ok) throw new Error(result.error ?? 'Gagal upload');
+      if (!res.ok) throw new Error(result.error ?? 'Gagal menyimpan data lagu');
+
       toast.success('Lagu berhasil ditambahkan!');
       setSongs(prev => [result, ...prev]);
       setTitle('');
