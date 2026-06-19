@@ -167,7 +167,10 @@ export default function GelapRomantis({
         <MusicPlayer
           url={data.musik.url}
           autoplay={data.musik.autoplay}
-          buttonClassName={`fixed bottom-20 right-4 z-50 w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110 bg-[#1a1208] border border-[#c9a84c] text-[#c9a84c]`}
+          color="#c9a84c"
+          bgColor="rgba(26,18,8,0.92)"
+          borderColor="rgba(201,168,76,0.4)"
+          positionClassName="fixed bottom-20 right-4 z-50"
         />
       )}
 

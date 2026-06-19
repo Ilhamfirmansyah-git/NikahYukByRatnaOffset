@@ -63,13 +63,14 @@ export default function EleganGold({ data, guestName, slug, onRsvpSubmit, onGues
 
   return (
     <div className="relative min-h-screen" style={{ background: '#0D0A06', color: CREAM, fontFamily: 'serif' }}>
-      {/* Music Player */}
       {data.musik.url && (
         <MusicPlayer
           url={data.musik.url}
           autoplay={data.musik.autoplay}
-          buttonClassName="fixed bottom-20 left-6 z-50 w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110"
-          // using inline style on the element below won't work, handled via wrapper
+          color="#C9A84C"
+          bgColor="rgba(13,10,6,0.88)"
+          borderColor="rgba(201,168,76,0.45)"
+          positionClassName="fixed bottom-6 right-4 z-50"
         />
       )}
 

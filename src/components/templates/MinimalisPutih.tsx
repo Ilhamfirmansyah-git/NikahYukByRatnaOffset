@@ -52,7 +52,14 @@ export default function MinimalisPutih({ data, guestName, slug, onRsvpSubmit, on
   return (
     <div className="relative min-h-screen bg-white text-gray-800" style={{ fontFamily: 'Inter, sans-serif' }}>
       {data.musik.url && (
-        <MusicPlayer url={data.musik.url} autoplay={data.musik.autoplay} />
+        <MusicPlayer
+          url={data.musik.url}
+          autoplay={data.musik.autoplay}
+          color="#8B5E3C"
+          bgColor="rgba(255,255,255,0.92)"
+          borderColor="rgba(139,94,60,0.25)"
+          positionClassName="fixed bottom-6 right-4 z-50"
+        />
       )}
 
       <ShareButton

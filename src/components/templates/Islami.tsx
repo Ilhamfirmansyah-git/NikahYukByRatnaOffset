@@ -78,7 +78,10 @@ export default function Islami({ data, guestName, slug, onRsvpSubmit, onGuestboo
         <MusicPlayer
           url={data.musik.url}
           autoplay={data.musik.autoplay}
-          buttonClassName={`fixed bottom-20 left-6 z-50 w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110 text-white`}
+          color="#c9a84c"
+          bgColor="rgba(26,71,49,0.92)"
+          borderColor="rgba(201,168,76,0.35)"
+          positionClassName="fixed bottom-6 right-4 z-50"
         />
       )}
 
