@@ -14,10 +14,11 @@ interface GuestbookFormProps {
   onSubmit: (data: { name: string; message: string }) => Promise<void>;
   primaryColor?: string;
   className?: string;
+  guestName?: string;
 }
 
-export default function GuestbookForm({ guestbook, onSubmit, primaryColor = '#8B5E3C', className = '' }: GuestbookFormProps) {
-  const [name, setName] = useState('');
+export default function GuestbookForm({ guestbook, onSubmit, primaryColor = '#8B5E3C', className = '', guestName }: GuestbookFormProps) {
+  const [name, setName] = useState(guestName ?? '');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);

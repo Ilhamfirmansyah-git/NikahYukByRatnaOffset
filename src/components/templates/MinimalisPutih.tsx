@@ -296,6 +296,7 @@ export default function MinimalisPutih({ data, guestName, slug, onRsvpSubmit, on
                 guestbook={guestbook}
                 onSubmit={onGuestbookSubmit}
                 primaryColor={PRIMARY}
+                guestName={guestName}
               />
             </Section>
           )}

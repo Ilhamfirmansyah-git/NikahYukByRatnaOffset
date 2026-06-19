@@ -355,6 +355,7 @@ export default function Islami({ data, guestName, slug, onRsvpSubmit, onGuestboo
                 guestbook={guestbook}
                 onSubmit={onGuestbookSubmit}
                 primaryColor={GREEN}
+                guestName={guestName}
               />
             </Section>
           )}

@@ -313,6 +313,7 @@ export default function EleganGold({ data, guestName, slug, onRsvpSubmit, onGues
                 guestbook={guestbook}
                 onSubmit={onGuestbookSubmit}
                 primaryColor={GOLD}
+                guestName={guestName}
                 className="text-[#F5E6D3]"
               />
             </Section>

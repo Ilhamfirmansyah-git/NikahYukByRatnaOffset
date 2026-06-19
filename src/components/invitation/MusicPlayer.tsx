@@ -106,13 +106,13 @@ export default function MusicPlayer({
             aria-label={isPlaying ? 'Jeda musik' : 'Putar musik'}
             style={{
               position: 'relative',
-              width: 52, height: 52,
+              width: 40, height: 40,
               borderRadius: '50%',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               background: bgColor,
               border: `1.5px solid ${borderColor}`,
               backdropFilter: 'blur(12px)',
-              boxShadow: `0 4px 20px rgba(0,0,0,0.35), 0 0 0 ${isPlaying ? '2px' : '0px'} ${color}40`,
+              boxShadow: `0 4px 16px rgba(0,0,0,0.3), 0 0 0 ${isPlaying ? '2px' : '0px'} ${color}40`,
               cursor: 'pointer',
               transition: 'transform 0.2s, box-shadow 0.3s',
               outline: 'none',
@@ -127,14 +127,6 @@ export default function MusicPlayer({
           </button>
         </div>
 
-        {/* Label */}
-        <span style={{
-          fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase',
-          color, opacity: 0.65, fontWeight: 600,
-          textShadow: '0 1px 4px rgba(0,0,0,0.6)',
-        }}>
-          {isPlaying ? 'Jeda' : 'Musik'}
-        </span>
       </div>
 
       <style>{`

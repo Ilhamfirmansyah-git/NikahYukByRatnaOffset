@@ -500,7 +500,7 @@ export default function GelapRomantis({
               <FadeIn><STitle sub="Doa dan ucapan terbaik kalian sangat berarti bagi kami">Ucapan &amp; Doa</STitle></FadeIn>
               {data.guestbookAktif && (
                 <FadeIn delay={150}>
-                  <GuestbookForm guestbook={guestbook} onSubmit={onGuestbookSubmit} primaryColor={GOLD} />
+                  <GuestbookForm guestbook={guestbook} onSubmit={onGuestbookSubmit} primaryColor={GOLD} guestName={guestName} />
                 </FadeIn>
               )}
             </div>
