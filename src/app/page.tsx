@@ -14,6 +14,25 @@ interface Template {
   category: string;
 }
 
+interface PackageFeatures {
+  maxPhotos?: number;
+  musik?: boolean;
+  livestream?: boolean;
+  guestManagement?: boolean;
+  customDomain?: boolean;
+  prioritasSupport?: boolean;
+  digitalAngpao?: boolean;
+}
+
+interface Package {
+  id: string;
+  name: string;
+  price: number;
+  durationDays: number;
+  features: PackageFeatures;
+  isActive: boolean;
+}
+
 // ──── DATA ────────────────────────────────────────────────────────────────────
 
 const features = [
@@ -103,52 +122,21 @@ const categoryLabel: Record<string, string> = {
   romantis: 'Romantis',
 };
 
-const pricingTiers = [
-  {
-    name: "Basic",
-    price: "Rp 99.000",
-    duration: "90 hari aktif",
-    description: "Cocok untuk pasangan yang menginginkan undangan simpel",
-    features: [
-      "Semua template",
-      "RSVP online & buku tamu",
-      "Musik latar belakang",
-      "Maks. 5 foto galeri",
-      "Countdown timer",
-    ],
-    highlight: false,
-    cta: "Mulai Basic",
-  },
-  {
-    name: "Premium",
-    price: "Rp 199.000",
-    duration: "180 hari aktif",
-    description: "Paling populer — fitur lengkap untuk pernikahan berkesan",
-    features: [
-      "Semua fitur Basic",
-      "Maks. 20 foto galeri",
-      "Manajemen tamu",
-      "Live streaming",
-      "Peta lokasi interaktif",
-    ],
-    highlight: true,
-    cta: "Mulai Premium",
-  },
-  {
-    name: "Exclusive",
-    price: "Rp 349.000",
-    duration: "365 hari aktif",
-    description: "Pengalaman premium penuh untuk hari istimewa Anda",
-    features: [
-      "Semua fitur Premium",
-      "Maks. 50 foto galeri",
-      "Custom domain",
-      "Prioritas support",
-      "Digital angpao",
-    ],
-    highlight: false,
-    cta: "Mulai Exclusive",
-  },
+function formatRupiah(n: number) {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(n);
+}
+
+const DYNAMIC_FEATURES: { key: keyof PackageFeatures; label: string }[] = [
+  { key: "musik", label: "Musik latar belakang" },
+  { key: "guestManagement", label: "Manajemen tamu" },
+  { key: "livestream", label: "Live streaming" },
+  { key: "customDomain", label: "Custom domain" },
+  { key: "prioritasSupport", label: "Prioritas support" },
+  { key: "digitalAngpao", label: "Digital angpao" },
 ];
 
 const testimonials = [
@@ -231,11 +219,16 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 
 export default function HomePage() {
   const [templates, setTemplates] = useState<Template[]>([]);
+  const [packages, setPackages] = useState<Package[]>([]);
 
   useEffect(() => {
     fetch('/api/templates')
       .then(r => r.json())
       .then((data: Template[]) => setTemplates(Array.isArray(data) ? data.slice(0, 3) : []))
+      .catch(() => {});
+    fetch('/api/packages')
+      .then(r => r.json())
+      .then((data: Package[]) => { if (Array.isArray(data)) setPackages(data); })
       .catch(() => {});
   }, []);
 
@@ -460,55 +453,109 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {pricingTiers.map((tier) => (
-              <div
-                key={tier.name}
-                className={`relative rounded-2xl p-6 border-2 transition-all ${
-                  tier.highlight
-                    ? "border-primary bg-primary text-white shadow-xl scale-105"
-                    : "border-cream-200 bg-white hover:border-primary/40"
-                }`}
-              >
-                {tier.highlight && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-amber-400 text-amber-900 text-xs font-bold px-4 py-1 rounded-full shadow">
-                    TERPOPULER
+            {packages.length === 0
+              ? [1, 2, 3].map((i) => (
+                  <div key={i} className="rounded-2xl border-2 border-cream-200 bg-white p-6 animate-pulse">
+                    <div className="h-6 bg-cream-200 rounded w-1/2 mb-3" />
+                    <div className="h-9 bg-cream-200 rounded w-2/3 mb-1" />
+                    <div className="h-4 bg-cream-100 rounded w-1/2 mb-6" />
+                    <div className="h-10 bg-cream-200 rounded mb-5" />
+                    <div className="space-y-2">
+                      {[1, 2, 3, 4].map((j) => (
+                        <div key={j} className="h-4 bg-cream-100 rounded w-4/5" />
+                      ))}
+                    </div>
                   </div>
-                )}
-                <h3 className={`font-display text-xl font-bold mb-1 ${tier.highlight ? "text-white" : "text-gray-900"}`}>
-                  {tier.name}
-                </h3>
-                <p className={`text-sm mb-4 ${tier.highlight ? "text-primary-100" : "text-gray-500"}`}>
-                  {tier.description}
-                </p>
-                <div className="mb-4">
-                  <span className={`text-3xl font-bold ${tier.highlight ? "text-white" : "text-primary"}`}>
-                    {tier.price}
-                  </span>
-                  <span className={`text-sm ml-1 ${tier.highlight ? "text-primary-200" : "text-gray-500"}`}>
-                    / {tier.duration}
-                  </span>
-                </div>
-                <ul className="space-y-2 mb-6">
-                  {tier.features.map((f) => (
-                    <li key={f} className={`flex items-center gap-2 text-sm ${tier.highlight ? "text-primary-50" : "text-gray-600"}`}>
-                      <svg className={`w-4 h-4 flex-shrink-0 ${tier.highlight ? "text-amber-300" : "text-primary"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Link href="/daftar">
-                  <Button
-                    variant={tier.highlight ? "secondary" : "primary"}
-                    size="md"
-                    fullWidth
-                  >
-                    {tier.cta}
-                  </Button>
-                </Link>
-              </div>
-            ))}
+                ))
+              : packages.map((pkg, idx) => {
+                  const isHighlight = idx === Math.floor(packages.length / 2);
+                  const pkgFeatures: string[] = [
+                    "RSVP online & buku tamu",
+                    "Countdown timer",
+                    "Semua template",
+                    ...(pkg.features.maxPhotos !== undefined
+                      ? [`Maks. ${pkg.features.maxPhotos} foto galeri`]
+                      : []),
+                    ...DYNAMIC_FEATURES.filter((f) => pkg.features[f.key]).map(
+                      (f) => f.label
+                    ),
+                  ];
+                  return (
+                    <div
+                      key={pkg.id}
+                      className={`relative rounded-2xl p-6 border-2 transition-all ${
+                        isHighlight
+                          ? "border-primary bg-primary text-white shadow-xl scale-105"
+                          : "border-cream-200 bg-white hover:border-primary/40"
+                      }`}
+                    >
+                      {isHighlight && (
+                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-amber-400 text-amber-900 text-xs font-bold px-4 py-1 rounded-full shadow">
+                          TERPOPULER
+                        </div>
+                      )}
+                      <h3
+                        className={`font-display text-xl font-bold mb-1 ${
+                          isHighlight ? "text-white" : "text-gray-900"
+                        }`}
+                      >
+                        {pkg.name}
+                      </h3>
+                      <div className="mb-4">
+                        <span
+                          className={`text-3xl font-bold ${
+                            isHighlight ? "text-white" : "text-primary"
+                          }`}
+                        >
+                          {formatRupiah(pkg.price)}
+                        </span>
+                        <span
+                          className={`text-sm ml-1 ${
+                            isHighlight ? "text-primary-200" : "text-gray-500"
+                          }`}
+                        >
+                          / {pkg.durationDays} hari aktif
+                        </span>
+                      </div>
+                      <ul className="space-y-2 mb-6">
+                        {pkgFeatures.map((f) => (
+                          <li
+                            key={f}
+                            className={`flex items-center gap-2 text-sm ${
+                              isHighlight ? "text-primary-50" : "text-gray-600"
+                            }`}
+                          >
+                            <svg
+                              className={`w-4 h-4 flex-shrink-0 ${
+                                isHighlight ? "text-amber-300" : "text-primary"
+                              }`}
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                            {f}
+                          </li>
+                        ))}
+                      </ul>
+                      <Link href={`/daftar?plan=${pkg.id}`}>
+                        <Button
+                          variant={isHighlight ? "secondary" : "primary"}
+                          size="md"
+                          fullWidth
+                        >
+                          Pilih {pkg.name}
+                        </Button>
+                      </Link>
+                    </div>
+                  );
+                })}
           </div>
 
           <div className="text-center mt-8">
