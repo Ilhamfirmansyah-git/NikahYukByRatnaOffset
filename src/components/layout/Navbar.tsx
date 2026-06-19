@@ -52,7 +52,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             {session ? (
               <>
-                <Link href="/dashboard">
+                <Link href="/app">
                   <Button variant="ghost" size="sm">
                     Dashboard
                   </Button>
@@ -116,7 +116,7 @@ export default function Navbar() {
           <div className="pt-2 border-t border-cream-200 flex flex-col gap-2">
             {session ? (
               <>
-                <Link href="/dashboard" onClick={() => setMobileOpen(false)}>
+                <Link href="/app" onClick={() => setMobileOpen(false)}>
                   <Button variant="secondary" size="sm" fullWidth>
                     Dashboard
                   </Button>
