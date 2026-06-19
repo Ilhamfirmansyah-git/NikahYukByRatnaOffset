@@ -63,7 +63,7 @@ const steps = [
   {
     number: "01",
     title: "Daftar Akun",
-    description: "Buat akun gratis dalam hitungan detik. Tidak perlu kartu kredit.",
+    description: "Buat akun dalam hitungan detik. Mulai perjalanan undangan digital Anda.",
   },
   {
     number: "02",
@@ -186,7 +186,7 @@ const faqs = [
   },
   {
     q: "Berapa lama undangan saya aktif?",
-    a: "Masa aktif tergantung paket yang dipilih: Basic (30 hari), Premium (60 hari), dan Exclusive (90 hari) dihitung sejak tanggal pembayaran.",
+    a: "Masa aktif tergantung paket yang dipilih: Basic (90 hari), Premium (180 hari), dan Exclusive (365 hari) dihitung sejak tanggal pembayaran.",
   },
   {
     q: "Bisakah saya mengedit konten undangan setelah dipublish?",
@@ -268,7 +268,7 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/daftar">
                 <Button variant="primary" size="lg" className="w-full sm:w-auto">
-                  Mulai Gratis Sekarang
+                  Buat Undangan Sekarang
                   <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
@@ -282,7 +282,7 @@ export default function HomePage() {
             </div>
 
             <p className="text-sm text-gray-500 mt-4">
-              Gratis 7 hari • Tidak perlu kartu kredit • Mulai dalam 5 menit
+              Bayar sekali · Tanpa biaya bulanan · Mulai dalam 5 menit
             </p>
           </div>
 
@@ -601,7 +601,7 @@ export default function HomePage() {
                 size="lg"
                 className="bg-white text-primary hover:bg-cream-100 font-semibold w-full sm:w-auto"
               >
-                Daftar Gratis Sekarang
+                Buat Undangan Sekarang
               </Button>
             </Link>
             <Link href="/template">

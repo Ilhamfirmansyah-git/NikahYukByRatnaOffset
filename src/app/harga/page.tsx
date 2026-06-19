@@ -106,7 +106,7 @@ const faqs = [
   },
   {
     q: "Apakah ada garansi uang kembali?",
-    a: "Ya, kami memberikan garansi uang kembali 7 hari jika Anda tidak puas dengan layanan kami. Syarat dan ketentuan berlaku.",
+    a: "Jika ada kendala teknis yang tidak bisa kami selesaikan, kami akan memberikan solusi terbaik atau pengembalian dana. Hubungi tim support kami untuk informasi lebih lanjut.",
   },
 ];
 
@@ -334,7 +334,7 @@ export default function HargaPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
             {[
               { icon: "🔒", title: "Pembayaran Aman", desc: "Diproses oleh Midtrans" },
-              { icon: "↩️", title: "Garansi 7 Hari", desc: "Uang kembali tanpa syarat" },
+              { icon: "🛡️", title: "Terpercaya", desc: "Ribuan pasangan puas" },
               { icon: "🎯", title: "Tanpa Biaya Tambahan", desc: "Bayar sekali, pakai selamanya" },
               { icon: "💬", title: "Support 24/7", desc: "Tim kami siap membantu" },
             ].map((item) => (
@@ -366,11 +366,11 @@ export default function HargaPage() {
               Siap Membuat Undangan Impian?
             </h2>
             <p className="text-primary-100 mb-6">
-              Daftar gratis dan coba semua fitur selama 7 hari.
+              Pilih paket sesuai kebutuhan dan buat undangan impian Anda sekarang.
             </p>
             <Link href="/daftar">
               <Button size="lg" className="bg-white text-primary hover:bg-cream-100 font-semibold">
-                Mulai Gratis Sekarang
+                Buat Undangan Sekarang
               </Button>
             </Link>
           </div>

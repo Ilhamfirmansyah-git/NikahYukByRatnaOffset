@@ -124,7 +124,7 @@ export default function DaftarPage() {
             Mulai perjalanan menuju hari istimewa Anda
           </h2>
           <p className="text-primary-100 text-lg leading-relaxed max-w-xs mx-auto">
-            Gratis 7 hari untuk mencoba semua fitur. Tidak perlu kartu kredit.
+            Buat undangan impian Anda dengan mudah dan cepat. Bayar sekali, tanpa biaya bulanan.
           </p>
 
           <div className="mt-10 space-y-3">
@@ -164,7 +164,7 @@ export default function DaftarPage() {
 
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="font-display text-3xl font-bold text-gray-900 mb-2">Buat Akun Gratis</h1>
+            <h1 className="font-display text-3xl font-bold text-gray-900 mb-2">Buat Akun Anda</h1>
             <p className="text-gray-500 text-sm">
               Sudah punya akun?{" "}
               <Link href="/login" className="text-primary font-medium hover:underline">

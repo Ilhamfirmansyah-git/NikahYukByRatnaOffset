@@ -74,7 +74,7 @@ export default function Navbar() {
                 </Link>
                 <Link href="/daftar">
                   <Button variant="primary" size="sm">
-                    Daftar Gratis
+                    Daftar Sekarang
                   </Button>
                 </Link>
               </>
@@ -142,7 +142,7 @@ export default function Navbar() {
                 </Link>
                 <Link href="/daftar" onClick={() => setMobileOpen(false)}>
                   <Button variant="primary" size="sm" fullWidth>
-                    Daftar Gratis
+                    Daftar Sekarang
                   </Button>
                 </Link>
               </>

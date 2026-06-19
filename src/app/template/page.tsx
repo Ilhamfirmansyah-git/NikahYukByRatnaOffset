@@ -218,7 +218,7 @@ export default function TemplatePage() {
                 href="/daftar"
                 className="inline-flex items-center justify-center px-6 py-3 border border-white text-white font-semibold rounded-lg hover:bg-white/10 transition-colors"
               >
-                Daftar Gratis
+                Daftar Sekarang
               </Link>
             </div>
           </div>
