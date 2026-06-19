@@ -19,31 +19,46 @@ export default function ImageUpload({ value, onChange, className, label }: Image
   async function handleFile(file: File) {
     if (!file) return;
 
-    const MAX_MB = 10;
-    if (file.size > MAX_MB * 1024 * 1024) {
-      toast.error(`Ukuran file maksimal ${MAX_MB}MB`);
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('Ukuran file maksimal 10MB');
       return;
     }
 
     setError(null);
     setUploading(true);
+
     try {
+      // Step 1: get signature from server (tiny request, no file)
+      const sigRes = await fetch('/api/upload');
+      if (!sigRes.ok) {
+        const d = await sigRes.json();
+        throw new Error(d.error ?? 'Gagal mendapatkan izin upload');
+      }
+      const { timestamp, signature, apiKey, cloudName, folder } = await sigRes.json();
+
+      // Step 2: upload file directly from browser to Cloudinary (bypasses Vercel limit)
       const formData = new FormData();
       formData.append('file', file);
-      const res = await fetch('/api/upload', { method: 'POST', body: formData });
-      const data = await res.json();
+      formData.append('api_key', apiKey);
+      formData.append('timestamp', String(timestamp));
+      formData.append('signature', signature);
+      formData.append('folder', folder);
 
-      if (!res.ok || !data.url) {
-        const msg = data.error ?? 'Upload gagal, coba lagi';
-        setError(msg);
-        toast.error(msg);
-        return;
+      const uploadRes = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        { method: 'POST', body: formData }
+      );
+
+      const result = await uploadRes.json();
+
+      if (!uploadRes.ok) {
+        throw new Error(result?.error?.message ?? 'Upload ke Cloudinary gagal');
       }
 
-      onChange(data.url);
+      onChange(result.secure_url);
       setError(null);
-    } catch {
-      const msg = 'Koneksi gagal saat mengupload';
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Upload gagal, coba lagi';
       setError(msg);
       toast.error(msg);
     } finally {
@@ -54,7 +69,6 @@ export default function ImageUpload({ value, onChange, className, label }: Image
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (file) handleFile(file);
-    // Reset input so same file can be re-selected
     e.target.value = '';
   }
 
@@ -67,10 +81,7 @@ export default function ImageUpload({ value, onChange, className, label }: Image
   return (
     <div className={cn('w-full', className)}>
       {label && <label className="block text-sm font-medium text-gray-700 mb-1.5">{label}</label>}
-      <div
-        onDrop={handleDrop}
-        onDragOver={e => e.preventDefault()}
-      >
+      <div onDrop={handleDrop} onDragOver={e => e.preventDefault()}>
         <input
           ref={inputRef}
           type="file"
@@ -84,9 +95,7 @@ export default function ImageUpload({ value, onChange, className, label }: Image
               src={value}
               alt="Uploaded"
               className="w-full h-40 object-cover rounded-lg border border-cream-200"
-              onError={e => {
-                (e.target as HTMLImageElement).src = '/placeholder-image.jpg';
-              }}
+              onError={e => { (e.target as HTMLImageElement).src = '/placeholder-image.jpg'; }}
             />
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
               <button
