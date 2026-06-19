@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
+import { InvitationData } from '@/types/invitation';
 
 interface Guest {
   id: string;
@@ -19,6 +20,33 @@ const GROUP_OPTIONS = [
   { value: 'rekan kerja', label: 'Rekan Kerja' },
 ];
 
+function buildDefaultTemplate(priaNama: string, wanitaNama: string): string {
+  return `Kepada Yth.
+Bapak/Ibu/Saudara/i {nama}
+
+Assalamu'alaikum Wr. Wb.
+
+Bismillahirahmanirrahim.
+Tanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i, teman sekaligus sahabat, untuk menghadiri acara pernikahan kami:
+
+${priaNama}
+           &
+${wanitaNama}
+
+Berikut klik link untuk info lengkap dari acara kami :
+
+{link}
+
+Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan untuk hadir dan memberikan doa restu.
+
+Wassalamu'alaikum Wr. Wb.
+
+Terima Kasih..
+
+Hormat kami,
+${priaNama} & ${wanitaNama}`;
+}
+
 export default function TamuPage() {
   const params = useParams();
   const id = params.id as string;
@@ -29,6 +57,8 @@ export default function TamuPage() {
   const [group, setGroup] = useState('keluarga');
   const [adding, setAdding] = useState(false);
   const [invitationSlug, setInvitationSlug] = useState('');
+  const [waTemplate, setWaTemplate] = useState('');
+  const [defaultTemplate, setDefaultTemplate] = useState('');
 
   const loadGuests = useCallback(async () => {
     try {
@@ -40,6 +70,13 @@ export default function TamuPage() {
       const invData = await invRes.json();
       setGuests(Array.isArray(guestsData) ? guestsData : []);
       setInvitationSlug(invData.slug ?? '');
+
+      const data = invData.data as InvitationData;
+      const priaNama = data?.mempelai?.pria?.namaLengkap ?? 'Mempelai Pria';
+      const wanitaNama = data?.mempelai?.wanita?.namaLengkap ?? 'Mempelai Wanita';
+      const template = buildDefaultTemplate(priaNama, wanitaNama);
+      setDefaultTemplate(template);
+      setWaTemplate(template);
     } catch {
       toast.error('Gagal memuat data tamu');
     } finally {
@@ -97,7 +134,9 @@ export default function TamuPage() {
 
   function sendWhatsApp(guestName: string) {
     const personalLink = getPersonalLink(guestName);
-    const message = `Kepada Yth. ${guestName},\n\nKami mengundang Bapak/Ibu/Saudara/i untuk hadir di pernikahan kami.\n\nSilakan buka undangan digital kami di:\n${personalLink}\n\nTerima kasih 🙏`;
+    const message = waTemplate
+      .replace(/\{nama\}/g, guestName)
+      .replace(/\{link\}/g, personalLink);
     const waUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
     window.open(waUrl, '_blank', 'noopener,noreferrer');
   }
@@ -152,6 +191,34 @@ export default function TamuPage() {
             Tambah
           </Button>
         </div>
+      </div>
+
+      {/* WhatsApp message template */}
+      <div className="bg-white rounded-xl border border-cream-200 p-6 mb-6">
+        <div className="flex items-start justify-between mb-3">
+          <div>
+            <h2 className="font-semibold text-gray-900">Template Pesan WhatsApp</h2>
+            <p className="text-xs text-gray-400 mt-0.5">
+              Gunakan <code className="bg-gray-100 px-1 py-0.5 rounded text-green-700 font-mono">{'{nama}'}</code> untuk nama tamu dan{' '}
+              <code className="bg-gray-100 px-1 py-0.5 rounded text-green-700 font-mono">{'{link}'}</code> untuk link undangan personal.
+            </p>
+          </div>
+          {waTemplate !== defaultTemplate && (
+            <button
+              onClick={() => setWaTemplate(defaultTemplate)}
+              className="text-xs text-primary hover:underline flex-shrink-0 ml-4"
+            >
+              Reset ke Default
+            </button>
+          )}
+        </div>
+        <textarea
+          value={waTemplate}
+          onChange={e => setWaTemplate(e.target.value)}
+          rows={14}
+          className="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-800 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary resize-y leading-relaxed"
+          placeholder="Tulis template pesan WhatsApp di sini..."
+        />
       </div>
 
       {/* Guest list */}
