@@ -148,3 +148,14 @@ enum DiscountType {
   PERCENT
   FIXED
 }
+
+model Song {
+  id        String   @id @default(cuid())
+  title     String
+  artist    String
+  category  String
+  url       String
+  filename  String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
