@@ -6,6 +6,7 @@ import Link from 'next/link';
 
 interface Props {
   params: { slug: string };
+  searchParams: { packageId?: string };
 }
 
 export async function generateMetadata({ params }: Props) {
@@ -15,7 +16,8 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
-export default async function PreviewPage({ params }: Props) {
+export default async function PreviewPage({ params, searchParams }: Props) {
+  const packageId = searchParams.packageId ?? '';
   const template = await prisma.template.findUnique({
     where: { slug: params.slug },
   });
@@ -36,13 +38,13 @@ export default async function PreviewPage({ params }: Props) {
         </div>
         <div className="flex items-center gap-3">
           <Link
-            href="/app/beli"
+            href={`/app/beli?templateId=${template.id}${packageId ? `&packageId=${packageId}` : ''}`}
             className="bg-primary text-white text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-primary-600 transition-colors whitespace-nowrap"
           >
             Pilih Template Ini
           </Link>
           <Link
-            href="/app/beli"
+            href={packageId ? `/app/beli?packageId=${packageId}` : '/app/beli'}
             className="text-gray-400 hover:text-white text-xs transition-colors"
           >
             ← Kembali

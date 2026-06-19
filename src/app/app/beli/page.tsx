@@ -89,8 +89,26 @@ export default function BeliPage() {
   const [couponError, setCouponError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('/api/templates').then(r => r.json()).then(setTemplates);
-    fetch('/api/packages').then(r => r.json()).then(setPackages);
+    const params = new URLSearchParams(window.location.search);
+    const urlTemplateId = params.get('templateId');
+    const urlPackageId = params.get('packageId');
+
+    Promise.all([
+      fetch('/api/templates').then(r => r.json()),
+      fetch('/api/packages').then(r => r.json()),
+    ]).then(([tmplData, pkgData]: [Template[], Package[]]) => {
+      setTemplates(Array.isArray(tmplData) ? tmplData : []);
+      setPackages(Array.isArray(pkgData) ? pkgData : []);
+
+      const pkg = urlPackageId ? pkgData.find(p => p.id === urlPackageId) ?? null : null;
+      const tmpl = urlTemplateId ? tmplData.find(t => t.id === urlTemplateId) ?? null : null;
+
+      if (pkg) setSelectedPackage(pkg);
+      if (tmpl) setSelectedTemplate(tmpl);
+
+      if (pkg && tmpl) setStep(3);
+      else if (pkg) setStep(2);
+    });
   }, []);
 
   const availableTemplates = selectedPackage?.templateIds?.length
@@ -393,7 +411,7 @@ export default function BeliPage() {
                     </div>
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <a
-                        href={`/preview/${tmpl.slug}`}
+                        href={`/preview/${tmpl.slug}${selectedPackage ? `?packageId=${selectedPackage.id}` : ''}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={e => e.stopPropagation()}
@@ -422,7 +440,7 @@ export default function BeliPage() {
                         {categoryLabel[tmpl.category] ?? tmpl.category}
                       </span>
                       <a
-                        href={`/preview/${tmpl.slug}`}
+                        href={`/preview/${tmpl.slug}${selectedPackage ? `?packageId=${selectedPackage.id}` : ''}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={e => e.stopPropagation()}
