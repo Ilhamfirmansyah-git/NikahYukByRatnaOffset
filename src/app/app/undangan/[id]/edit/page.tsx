@@ -7,6 +7,7 @@ import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import ImageUpload from '@/components/ui/ImageUpload';
 import type { InvitationData, Acara, LoveStoryItem, RekeningItem, EWalletItem } from '@/types/invitation';
+import MusicPicker from './MusicPicker';
 
 const TABS = [
   { id: 'mempelai', label: 'Mempelai' },
@@ -324,11 +325,7 @@ export default function EditInvitationPage() {
           </SectionCard>
 
           <SectionCard title="Musik Latar">
-            <div className="space-y-4">
-              <Input label="URL Musik (MP3)" value={data.musik.url ?? ''} onChange={e => updateData('musik', { ...data.musik, url: e.target.value })} placeholder="https://example.com/musik.mp3" />
-              <Input label="Judul Lagu" value={data.musik.judul ?? ''} onChange={e => updateData('musik', { ...data.musik, judul: e.target.value })} placeholder="Namanya Dia – Yovie & Nuno" />
-              <Toggle checked={data.musik.autoplay} onChange={v => updateData('musik', { ...data.musik, autoplay: v })} label="Putar otomatis saat undangan dibuka" />
-            </div>
+            <MusicPicker value={data.musik} onChange={v => updateData('musik', v)} />
           </SectionCard>
         </div>
       )}
