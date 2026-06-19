@@ -80,29 +80,30 @@ export default function BeliPage() {
   const [packages, setPackages] = useState<Package[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
-  const [loading, setLoading] = useState(false);
   const [paying, setPaying] = useState(false);
-  const [clientKey, setClientKey] = useState('');
 
   useEffect(() => {
     fetch('/api/templates').then(r => r.json()).then(setTemplates);
     fetch('/api/packages').then(r => r.json()).then(setPackages);
   }, []);
 
-  useEffect(() => {
-    // Load Midtrans Snap script
-    const script = document.createElement('script');
-    script.src = process.env.NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION === 'true'
-      ? 'https://app.midtrans.com/snap/snap.js'
-      : 'https://app.sandbox.midtrans.com/snap/snap.js';
-    script.setAttribute('data-client-key', clientKey || process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || '');
-    document.body.appendChild(script);
-    return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
-    };
-  }, [clientKey]);
+  function loadSnapScript(clientKey: string, isProduction: boolean): Promise<void> {
+    return new Promise((resolve, reject) => {
+      // Remove any existing snap script
+      document.querySelectorAll('script[data-snap]').forEach(s => s.remove());
+      delete (window as { snap?: unknown }).snap;
+
+      const script = document.createElement('script');
+      script.src = isProduction
+        ? 'https://app.midtrans.com/snap/snap.js'
+        : 'https://app.sandbox.midtrans.com/snap/snap.js';
+      script.setAttribute('data-client-key', clientKey);
+      script.setAttribute('data-snap', '1');
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error('Gagal memuat script Midtrans'));
+      document.body.appendChild(script);
+    });
+  }
 
   async function handleBayar() {
     if (!selectedTemplate || !selectedPackage) return;
@@ -119,13 +120,14 @@ export default function BeliPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Gagal membuat pesanan');
 
-      if (data.clientKey) setClientKey(data.clientKey);
-
       if (!data.snapToken || data.snapToken === 'dummy-token') {
         toast.error('Midtrans belum dikonfigurasi. Silakan hubungi admin.');
         setPaying(false);
         return;
       }
+
+      const isProduction = process.env.NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION === 'true';
+      await loadSnapScript(data.clientKey, isProduction);
 
       window.snap.pay(data.snapToken, {
         onSuccess: () => {
