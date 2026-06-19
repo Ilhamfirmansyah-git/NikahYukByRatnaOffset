@@ -28,21 +28,23 @@ export default function ImageUpload({ value, onChange, className, label }: Image
     setUploading(true);
 
     try {
-      // Step 1: get signature from server (tiny request, no file)
-      const sigRes = await fetch('/api/upload');
-      if (!sigRes.ok) {
-        const d = await sigRes.json();
-        throw new Error(d.error ?? 'Gagal mendapatkan izin upload');
+      // Get cloudName + uploadPreset from server
+      const configRes = await fetch('/api/upload');
+      if (!configRes.ok) {
+        const d = await configRes.json();
+        throw new Error(d.error ?? 'Gagal mendapatkan konfigurasi upload');
       }
-      const { timestamp, signature, apiKey, cloudName, folder } = await sigRes.json();
+      const { cloudName, uploadPreset } = await configRes.json();
 
-      // Step 2: upload file directly from browser to Cloudinary (bypasses Vercel limit)
+      if (!uploadPreset) {
+        throw new Error('Upload preset belum dikonfigurasi. Tambahkan CLOUDINARY_UPLOAD_PRESET di Vercel.');
+      }
+
+      // Upload file directly from browser to Cloudinary (unsigned)
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('api_key', apiKey);
-      formData.append('timestamp', String(timestamp));
-      formData.append('signature', signature);
-      formData.append('folder', folder);
+      formData.append('upload_preset', uploadPreset);
+      formData.append('folder', 'nikahyuk');
 
       const uploadRes = await fetch(
         `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
@@ -136,7 +138,7 @@ export default function ImageUpload({ value, onChange, className, label }: Image
                 <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="text-sm text-red-600 font-medium">{error}</span>
+                <span className="text-sm text-red-600 font-medium px-4 text-center">{error}</span>
                 <span className="text-xs text-red-400">Klik untuk coba lagi</span>
               </>
             ) : (
