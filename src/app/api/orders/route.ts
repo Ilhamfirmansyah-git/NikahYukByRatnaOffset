@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { templateId, packageId } = body;
+    const { templateId, packageId, couponCode } = body;
 
     if (!templateId || !packageId) {
       return NextResponse.json({ error: 'templateId dan packageId wajib diisi' }, { status: 400 });
@@ -29,13 +29,34 @@ export async function POST(req: NextRequest) {
     const user = await prisma.user.findUnique({ where: { id: session.user.id } });
     if (!user) return NextResponse.json({ error: 'User tidak ditemukan' }, { status: 404 });
 
+    // Validate and apply coupon
+    let discountAmount = 0;
+    let appliedCouponCode: string | null = null;
+
+    if (couponCode) {
+      const coupon = await prisma.coupon.findUnique({ where: { code: couponCode.trim().toUpperCase() } });
+      if (coupon && coupon.isActive && !(coupon.expiresAt && coupon.expiresAt < new Date()) && !(coupon.maxUses !== null && coupon.usedCount >= coupon.maxUses)) {
+        if (coupon.discountType === 'PERCENT') {
+          discountAmount = Math.round(pkg.price * coupon.discountValue / 100);
+        } else {
+          discountAmount = Math.min(coupon.discountValue, pkg.price);
+        }
+        appliedCouponCode = coupon.code;
+        await prisma.coupon.update({ where: { id: coupon.id }, data: { usedCount: { increment: 1 } } });
+      }
+    }
+
+    const finalAmount = Math.max(0, pkg.price - discountAmount);
+
     // Create order
     const order = await prisma.order.create({
       data: {
         userId: user.id,
         packageId: pkg.id,
         templateId: template.id,
-        amount: pkg.price,
+        amount: finalAmount,
+        discountAmount,
+        couponCode: appliedCouponCode,
         status: 'PENDING',
         midtransOrderId: null,
       },
@@ -56,7 +77,7 @@ export async function POST(req: NextRequest) {
     const parameter = {
       transaction_details: {
         order_id: order.id,
-        gross_amount: pkg.price,
+        gross_amount: finalAmount,
       },
       customer_details: {
         email: user.email,
@@ -65,7 +86,7 @@ export async function POST(req: NextRequest) {
       item_details: [
         {
           id: pkg.id,
-          price: pkg.price,
+          price: finalAmount,
           quantity: 1,
           name: `Paket ${pkg.name} - ${template.name}`,
         },

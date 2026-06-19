@@ -71,6 +71,8 @@ export default function EditInvitationPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);
+  const [extending, setExtending] = useState(false);
+  const [extendDays, setExtendDays] = useState(30);
 
   useEffect(() => {
     fetch(`/api/invitations/${id}`)
@@ -120,6 +122,25 @@ export default function EditInvitationPage() {
       toast.error(e instanceof Error ? e.message : 'Gagal mengubah status');
     } finally {
       setPublishing(false);
+    }
+  }
+
+  async function handleExtend() {
+    setExtending(true);
+    try {
+      const res = await fetch(`/api/invitations/${id}/extend`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ days: extendDays }),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error ?? 'Gagal memperpanjang');
+      setInvitation(prev => prev ? { ...prev, expiresAt: result.expiresAt } : prev);
+      toast.success(`Undangan diperpanjang ${extendDays} hari!`);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Gagal memperpanjang');
+    } finally {
+      setExtending(false);
     }
   }
 
@@ -434,6 +455,35 @@ export default function EditInvitationPage() {
               {data.protokolKesehatan.aktif && (
                 <TextArea label="Catatan Protokol" value={data.protokolKesehatan.catatan ?? ''} onChange={v => updateData('protokolKesehatan', { ...data.protokolKesehatan, catatan: v })} placeholder="Harap memakai masker, menjaga jarak, dan membawa hand sanitizer..." />
               )}
+            </div>
+          </SectionCard>
+
+          <SectionCard title="Masa Berlaku">
+            <div className="space-y-4">
+              <div>
+                <p className="text-sm text-gray-600 mb-1">
+                  {invitation?.expiresAt
+                    ? <>Aktif hingga: <strong className="text-gray-900">{new Date(invitation.expiresAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</strong></>
+                    : <span className="text-gray-400">Belum ada tanggal kadaluarsa</span>}
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <label className="text-sm text-gray-700 whitespace-nowrap">Perpanjang</label>
+                  <select
+                    value={extendDays}
+                    onChange={e => setExtendDays(Number(e.target.value))}
+                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                  >
+                    {[7, 14, 30, 60, 90, 180, 365].map(d => (
+                      <option key={d} value={d}>{d} hari</option>
+                    ))}
+                  </select>
+                </div>
+                <Button size="sm" onClick={handleExtend} loading={extending}>
+                  Perpanjang
+                </Button>
+              </div>
             </div>
           </SectionCard>
 

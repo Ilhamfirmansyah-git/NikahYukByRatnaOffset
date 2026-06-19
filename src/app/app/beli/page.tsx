@@ -81,6 +81,10 @@ export default function BeliPage() {
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const [paying, setPaying] = useState(false);
+  const [couponInput, setCouponInput] = useState('');
+  const [couponValidating, setCouponValidating] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountType: string; discountValue: number } | null>(null);
+  const [couponError, setCouponError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('/api/templates').then(r => r.json()).then(setTemplates);
@@ -105,6 +109,35 @@ export default function BeliPage() {
     });
   }
 
+  async function handleValidateCoupon() {
+    if (!couponInput.trim()) return;
+    setCouponValidating(true);
+    setCouponError(null);
+    try {
+      const res = await fetch(`/api/coupons/validate?code=${encodeURIComponent(couponInput.trim())}`);
+      const data = await res.json();
+      if (!res.ok) {
+        setCouponError(data.error ?? 'Kode kupon tidak valid');
+        setAppliedCoupon(null);
+      } else {
+        setAppliedCoupon(data);
+        toast.success('Kupon berhasil diterapkan!');
+      }
+    } catch {
+      setCouponError('Gagal memvalidasi kupon');
+    } finally {
+      setCouponValidating(false);
+    }
+  }
+
+  function calcDiscount(price: number) {
+    if (!appliedCoupon) return 0;
+    if (appliedCoupon.discountType === 'PERCENT') {
+      return Math.round(price * appliedCoupon.discountValue / 100);
+    }
+    return Math.min(appliedCoupon.discountValue, price);
+  }
+
   async function handleBayar() {
     if (!selectedTemplate || !selectedPackage) return;
     setPaying(true);
@@ -115,6 +148,7 @@ export default function BeliPage() {
         body: JSON.stringify({
           templateId: selectedTemplate.id,
           packageId: selectedPackage.id,
+          couponCode: appliedCoupon?.code ?? null,
         }),
       });
       const data = await res.json();
@@ -380,9 +414,53 @@ export default function BeliPage() {
                 </button>
               </div>
 
-              <div className="flex items-center justify-between pt-2">
+              {/* Coupon */}
+              <div className="pt-2">
+                <p className="text-sm font-medium text-gray-700 mb-2">Kode Kupon</p>
+                {appliedCoupon ? (
+                  <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg px-4 py-2.5">
+                    <div>
+                      <span className="text-sm font-semibold text-green-700">{appliedCoupon.code}</span>
+                      <span className="text-xs text-green-600 ml-2">
+                        -{appliedCoupon.discountType === 'PERCENT' ? `${appliedCoupon.discountValue}%` : formatRupiah(appliedCoupon.discountValue)}
+                      </span>
+                    </div>
+                    <button onClick={() => { setAppliedCoupon(null); setCouponInput(''); }} className="text-xs text-red-500 hover:text-red-700">Hapus</button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={couponInput}
+                      onChange={e => { setCouponInput(e.target.value.toUpperCase()); setCouponError(null); }}
+                      onKeyDown={e => e.key === 'Enter' && handleValidateCoupon()}
+                      placeholder="Masukkan kode kupon"
+                      className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                    />
+                    <button
+                      onClick={handleValidateCoupon}
+                      disabled={couponValidating || !couponInput.trim()}
+                      className="px-4 py-2 text-sm font-medium bg-primary text-white rounded-lg hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {couponValidating ? '...' : 'Terapkan'}
+                    </button>
+                  </div>
+                )}
+                {couponError && <p className="text-xs text-red-600 mt-1">{couponError}</p>}
+              </div>
+
+              {appliedCoupon && (
+                <div className="flex items-center justify-between text-sm text-gray-600">
+                  <span>Diskon</span>
+                  <span className="text-green-600 font-medium">-{formatRupiah(calcDiscount(selectedPackage.price))}</span>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between pt-2 border-t border-cream-100">
                 <span className="font-semibold text-gray-900">Total</span>
-                <span className="text-xl font-bold text-primary">{formatRupiah(selectedPackage.price)}</span>
+                <span className="text-xl font-bold text-primary">
+                  {formatRupiah(Math.max(0, selectedPackage.price - calcDiscount(selectedPackage.price)))}
+                </span>
               </div>
             </div>
           </div>
@@ -400,7 +478,7 @@ export default function BeliPage() {
               loading={paying}
               className="flex-2"
             >
-              Bayar Sekarang {formatRupiah(selectedPackage.price)}
+              Bayar Sekarang {formatRupiah(Math.max(0, selectedPackage.price - calcDiscount(selectedPackage.price)))}
             </Button>
           </div>
         </div>

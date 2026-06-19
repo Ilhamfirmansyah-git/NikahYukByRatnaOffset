@@ -63,6 +63,9 @@ export default async function InvitationPage({ params, searchParams }: PageProps
     notFound();
   }
 
+  // Record visit (non-blocking)
+  void prisma.visit.create({ data: { invitationId: invitation.id } });
+
   // Serialize dates to strings for client component
   const serialized = {
     ...invitation,

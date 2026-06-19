@@ -54,6 +54,8 @@ model Order {
   packageId       String
   templateId      String
   amount          Int
+  discountAmount  Int         @default(0)
+  couponCode      String?
   status          OrderStatus @default(PENDING)
   midtransOrderId String?     @unique
   paymentMethod   String?
@@ -85,7 +87,15 @@ model Invitation {
   rsvps       Rsvp[]
   guestbook   Guestbook[]
   guests      Guest[]
+  visits      Visit[]
   createdAt   DateTime    @default(now())
+}
+
+model Visit {
+  id           String     @id @default(cuid())
+  invitationId String
+  invitation   Invitation @relation(fields: [invitationId], references: [id])
+  createdAt    DateTime   @default(now())
 }
 
 model Guest {
@@ -120,4 +130,21 @@ model Guestbook {
   name         String
   message      String
   createdAt    DateTime   @default(now())
+}
+
+model Coupon {
+  id            String       @id @default(cuid())
+  code          String       @unique
+  discountType  DiscountType
+  discountValue Int
+  maxUses       Int?
+  usedCount     Int          @default(0)
+  expiresAt     DateTime?
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+}
+
+enum DiscountType {
+  PERCENT
+  FIXED
 }
