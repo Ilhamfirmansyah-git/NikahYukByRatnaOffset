@@ -4,17 +4,21 @@ import Link from 'next/link';
 import ExtendButton from './ExtendButton';
 
 export default async function AdminInvitationsPage() {
-  const invitations = await prisma.invitation.findMany({
-    orderBy: { createdAt: 'desc' },
-    include: {
-      user: true,
-      template: { select: { name: true } },
-      order: { select: { package: { select: { name: true, durationDays: true } } } },
-      _count: { select: { rsvps: true, guestbook: true } },
-    },
-    take: 100,
-  });
+  const [invitations, packages] = await Promise.all([
+    prisma.invitation.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        user: true,
+        template: { select: { name: true } },
+        order: { select: { packageId: true } },
+        _count: { select: { rsvps: true, guestbook: true } },
+      },
+      take: 100,
+    }),
+    prisma.package.findMany({ select: { id: true, name: true, durationDays: true } }),
+  ]);
 
+  const pkgMap = new Map(packages.map(p => [p.id, p]));
   const now = new Date();
 
   return (
@@ -43,6 +47,7 @@ export default async function AdminInvitationsPage() {
               const wanita = data.mempelai?.wanita?.namaPanggilan;
               const title = pria && wanita ? `${pria} & ${wanita}` : `/${inv.slug}`;
               const isExpired = inv.expiresAt && inv.expiresAt < now;
+              const pkg = inv.order?.packageId ? pkgMap.get(inv.order.packageId) : null;
 
               return (
                 <tr key={inv.id} className="hover:bg-gray-50 transition-colors">
@@ -58,9 +63,9 @@ export default async function AdminInvitationsPage() {
                   </td>
                   <td className="px-5 py-3">
                     <div className="text-gray-700">{inv.template.name}</div>
-                    {inv.order?.package && (
+                    {pkg && (
                       <div className="text-xs text-gray-400">
-                        {inv.order.package.name} · {inv.order.package.durationDays} hari
+                        {pkg.name} · {pkg.durationDays} hari
                       </div>
                     )}
                   </td>
