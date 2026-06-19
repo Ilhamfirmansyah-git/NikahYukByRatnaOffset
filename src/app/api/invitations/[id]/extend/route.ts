@@ -8,23 +8,18 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const session = await getServerSession(authOptions);
-    const userId = (session?.user as { id?: string })?.id;
-    if (!userId) return NextResponse.json({ error: 'Tidak terautentikasi' }, { status: 401 });
+    const user = session?.user as { id?: string; role?: string } | undefined;
+    if (!user?.id) return NextResponse.json({ error: 'Tidak terautentikasi' }, { status: 401 });
+    if (user.role !== 'ADMIN') return NextResponse.json({ error: 'Akses ditolak' }, { status: 403 });
 
     const { days } = await req.json();
-    if (!days || typeof days !== 'number' || days <= 0 || days > 365) {
-      return NextResponse.json({ error: 'Jumlah hari tidak valid (1-365)' }, { status: 400 });
+    if (!days || typeof days !== 'number' || days <= 0 || days > 3650) {
+      return NextResponse.json({ error: 'Jumlah hari tidak valid' }, { status: 400 });
     }
 
-    const invitation = await prisma.invitation.findFirst({
-      where: { id: params.id, userId },
-    });
+    const invitation = await prisma.invitation.findUnique({ where: { id: params.id } });
+    if (!invitation) return NextResponse.json({ error: 'Undangan tidak ditemukan' }, { status: 404 });
 
-    if (!invitation) {
-      return NextResponse.json({ error: 'Undangan tidak ditemukan' }, { status: 404 });
-    }
-
-    // Extend from current expiresAt or from today if already expired/null
     const base = invitation.expiresAt && invitation.expiresAt > new Date()
       ? invitation.expiresAt
       : new Date();

@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { InvitationData } from '@/types/invitation';
 import Link from 'next/link';
+import ExtendButton from './ExtendButton';
 
 export default async function AdminInvitationsPage() {
   const invitations = await prisma.invitation.findMany({
@@ -8,6 +9,7 @@ export default async function AdminInvitationsPage() {
     include: {
       user: true,
       template: { select: { name: true } },
+      order: { select: { package: { select: { name: true, durationDays: true } } } },
       _count: { select: { rsvps: true, guestbook: true } },
     },
     take: 100,
@@ -22,16 +24,16 @@ export default async function AdminInvitationsPage() {
         <span className="text-sm text-gray-500">{invitations.length} total</span>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-gray-50">
             <tr>
               <th className="text-left px-5 py-3 text-gray-500 font-medium">Undangan</th>
               <th className="text-left px-5 py-3 text-gray-500 font-medium">Pemilik</th>
-              <th className="text-left px-5 py-3 text-gray-500 font-medium">Template</th>
+              <th className="text-left px-5 py-3 text-gray-500 font-medium">Template / Paket</th>
               <th className="text-left px-5 py-3 text-gray-500 font-medium">Status</th>
               <th className="text-left px-5 py-3 text-gray-500 font-medium">RSVP</th>
-              <th className="text-left px-5 py-3 text-gray-500 font-medium">Kadaluarsa</th>
+              <th className="text-left px-5 py-3 text-gray-500 font-medium">Masa Berlaku</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -54,7 +56,14 @@ export default async function AdminInvitationsPage() {
                     <div className="text-gray-700">{inv.user.name ?? '-'}</div>
                     <div className="text-xs text-gray-400">{inv.user.email}</div>
                   </td>
-                  <td className="px-5 py-3 text-gray-500">{inv.template.name}</td>
+                  <td className="px-5 py-3">
+                    <div className="text-gray-700">{inv.template.name}</div>
+                    {inv.order?.package && (
+                      <div className="text-xs text-gray-400">
+                        {inv.order.package.name} · {inv.order.package.durationDays} hari
+                      </div>
+                    )}
+                  </td>
                   <td className="px-5 py-3">
                     {isExpired ? (
                       <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700">Kadaluarsa</span>
@@ -65,10 +74,11 @@ export default async function AdminInvitationsPage() {
                     )}
                   </td>
                   <td className="px-5 py-3 text-gray-700">{inv._count.rsvps}</td>
-                  <td className="px-5 py-3 text-gray-500 text-xs">
-                    {inv.expiresAt
-                      ? new Date(inv.expiresAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
-                      : '-'}
+                  <td className="px-5 py-3">
+                    <ExtendButton
+                      invitationId={inv.id}
+                      currentExpiresAt={inv.expiresAt?.toISOString() ?? null}
+                    />
                   </td>
                 </tr>
               );

@@ -85,8 +85,6 @@ export default function EditInvitationPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);
-  const [extending, setExtending] = useState(false);
-  const [extendDays, setExtendDays] = useState(30);
   const [customDomainInput, setCustomDomainInput] = useState('');
   const [savingDomain, setSavingDomain] = useState(false);
   const [regeneratingSlug, setRegeneratingSlug] = useState(false);
@@ -143,25 +141,6 @@ export default function EditInvitationPage() {
       toast.error(e instanceof Error ? e.message : 'Gagal mengubah status');
     } finally {
       setPublishing(false);
-    }
-  }
-
-  async function handleExtend() {
-    setExtending(true);
-    try {
-      const res = await fetch(`/api/invitations/${id}/extend`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ days: extendDays }),
-      });
-      const result = await res.json();
-      if (!res.ok) throw new Error(result.error ?? 'Gagal memperpanjang');
-      setInvitation(prev => prev ? { ...prev, expiresAt: result.expiresAt } : prev);
-      toast.success(`Undangan diperpanjang ${extendDays} hari!`);
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : 'Gagal memperpanjang');
-    } finally {
-      setExtending(false);
     }
   }
 
@@ -617,36 +596,83 @@ export default function EditInvitationPage() {
             </div>
           </SectionCard>
 
-          <SectionCard title="Masa Berlaku" description="Perpanjang undangan agar tetap dapat diakses tamu">
-            <div className="space-y-4">
-              <div className="p-4 bg-cream-50 rounded-xl border border-cream-100">
-                <p className="text-xs text-gray-500 mb-1">Aktif hingga</p>
-                {invitation?.expiresAt ? (
-                  <p className="text-base font-semibold text-gray-900">
-                    {new Date(invitation.expiresAt).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-                  </p>
-                ) : (
-                  <p className="text-gray-400">Belum ada tanggal kadaluarsa</p>
-                )}
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 flex-1">
-                  <label className="text-sm text-gray-700 whitespace-nowrap">Perpanjang</label>
-                  <select
-                    value={extendDays}
-                    onChange={e => setExtendDays(Number(e.target.value))}
-                    className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary bg-white"
-                  >
-                    {[7, 14, 30, 60, 90, 180, 365].map(d => (
-                      <option key={d} value={d}>{d} hari</option>
-                    ))}
-                  </select>
+          <SectionCard title="Masa Berlaku" description="Durasi aktif undangan sesuai paket yang dibeli">
+            {(() => {
+              if (!invitation?.expiresAt) {
+                return (
+                  <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 text-center">
+                    <p className="text-sm text-gray-500">Masa berlaku belum ditetapkan</p>
+                  </div>
+                );
+              }
+              const expiresAt = new Date(invitation.expiresAt);
+              const now = new Date();
+              const daysLeft = Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+              const isExpired = daysLeft <= 0;
+              const isWarning = !isExpired && daysLeft <= 14;
+              const isOk = !isExpired && !isWarning;
+
+              return (
+                <div className="space-y-3">
+                  <div className={`p-4 rounded-xl border ${
+                    isExpired ? 'bg-red-50 border-red-200' :
+                    isWarning ? 'bg-amber-50 border-amber-200' :
+                    'bg-green-50 border-green-200'
+                  }`}>
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className={`text-xs font-medium mb-0.5 ${
+                          isExpired ? 'text-red-500' : isWarning ? 'text-amber-600' : 'text-green-600'
+                        }`}>
+                          {isExpired ? 'Kadaluarsa' : isWarning ? 'Segera kadaluarsa' : 'Aktif hingga'}
+                        </p>
+                        <p className={`text-base font-semibold ${
+                          isExpired ? 'text-red-700' : isWarning ? 'text-amber-800' : 'text-green-800'
+                        }`}>
+                          {expiresAt.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        </p>
+                      </div>
+                      <div className={`flex-shrink-0 text-center px-3 py-1.5 rounded-lg ${
+                        isExpired ? 'bg-red-100' : isWarning ? 'bg-amber-100' : 'bg-green-100'
+                      }`}>
+                        <p className={`text-xl font-bold leading-none ${
+                          isExpired ? 'text-red-600' : isWarning ? 'text-amber-700' : 'text-green-700'
+                        }`}>
+                          {isExpired ? Math.abs(daysLeft) : daysLeft}
+                        </p>
+                        <p className={`text-xs mt-0.5 ${
+                          isExpired ? 'text-red-500' : isWarning ? 'text-amber-600' : 'text-green-600'
+                        }`}>
+                          {isExpired ? 'hari lalu' : 'hari lagi'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {(isExpired || isWarning) && (
+                    <div className="flex items-start gap-3 p-3 bg-cream-50 border border-cream-200 rounded-xl">
+                      <svg className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <div>
+                        <p className="text-xs text-gray-700 font-medium">
+                          {isExpired ? 'Undangan sudah tidak aktif' : 'Undangan hampir kadaluarsa'}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-0.5">
+                          Hubungi admin untuk memperpanjang masa berlaku undangan Anda.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {isOk && (
+                    <p className="text-xs text-gray-400 text-center">
+                      Masa berlaku ditentukan oleh paket yang Anda beli. Hubungi admin untuk perpanjangan.
+                    </p>
+                  )}
                 </div>
-                <Button size="sm" onClick={handleExtend} loading={extending}>
-                  Perpanjang
-                </Button>
-              </div>
-            </div>
+              );
+            })()}
           </SectionCard>
 
           <SectionCard title="Link Undangan">
