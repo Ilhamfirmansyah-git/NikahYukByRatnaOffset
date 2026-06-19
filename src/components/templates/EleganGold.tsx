@@ -66,7 +66,7 @@ export default function EleganGold({ data, guestName, slug, onRsvpSubmit, onGues
       {data.musik.url && (
         <MusicPlayer
           url={data.musik.url}
-          autoplay={data.musik.autoplay}
+          autoplay={data.musik.autoplay && opened}
           color="#C9A84C"
           bgColor="rgba(13,10,6,0.88)"
           borderColor="rgba(201,168,76,0.45)"

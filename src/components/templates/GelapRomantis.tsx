@@ -166,7 +166,7 @@ export default function GelapRomantis({
       {data.musik.url && (
         <MusicPlayer
           url={data.musik.url}
-          autoplay={data.musik.autoplay}
+          autoplay={data.musik.autoplay && opened}
           color="#c9a84c"
           bgColor="rgba(26,18,8,0.92)"
           borderColor="rgba(201,168,76,0.4)"

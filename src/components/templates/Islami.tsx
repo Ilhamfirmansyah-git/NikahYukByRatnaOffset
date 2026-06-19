@@ -77,7 +77,7 @@ export default function Islami({ data, guestName, slug, onRsvpSubmit, onGuestboo
       {data.musik.url && (
         <MusicPlayer
           url={data.musik.url}
-          autoplay={data.musik.autoplay}
+          autoplay={data.musik.autoplay && opened}
           color="#c9a84c"
           bgColor="rgba(26,71,49,0.92)"
           borderColor="rgba(201,168,76,0.35)"

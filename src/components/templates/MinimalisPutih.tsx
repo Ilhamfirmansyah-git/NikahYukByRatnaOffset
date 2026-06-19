@@ -54,7 +54,7 @@ export default function MinimalisPutih({ data, guestName, slug, onRsvpSubmit, on
       {data.musik.url && (
         <MusicPlayer
           url={data.musik.url}
-          autoplay={data.musik.autoplay}
+          autoplay={data.musik.autoplay && opened}
           color="#8B5E3C"
           bgColor="rgba(255,255,255,0.92)"
           borderColor="rgba(139,94,60,0.25)"
