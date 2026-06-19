@@ -5,7 +5,8 @@ import { prisma } from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
-const DOMAIN_REGEX = /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
+// Subdomain prefix: lowercase alphanumeric + hyphens, 3-40 chars, no leading/trailing hyphen
+const PREFIX_REGEX = /^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]$/;
 
 async function checkExclusiveAccess(invitationId: string, userId: string) {
   const invitation = await prisma.invitation.findUnique({
@@ -13,14 +14,13 @@ async function checkExclusiveAccess(invitationId: string, userId: string) {
     include: { order: true },
   });
   if (!invitation || invitation.userId !== userId) return { ok: false, reason: 'forbidden' as const };
-
   if (!invitation.order?.packageId) return { ok: false, reason: 'upgrade' as const };
 
   const pkg = await prisma.package.findUnique({ where: { id: invitation.order.packageId } });
   const features = pkg?.features as Record<string, unknown> | null;
   if (!features || features.customDomain !== true) return { ok: false, reason: 'upgrade' as const };
 
-  return { ok: true, invitation };
+  return { ok: true };
 }
 
 export async function GET(
@@ -58,16 +58,16 @@ export async function PUT(
     if (!access.ok) {
       if (access.reason === 'upgrade') {
         return NextResponse.json(
-          { error: 'Fitur custom domain hanya tersedia di paket Exclusive', upgrade: true },
+          { error: 'Fitur subdomain hanya tersedia di paket Exclusive', upgrade: true },
           { status: 403 }
         );
       }
       return NextResponse.json({ error: 'Akses ditolak' }, { status: 403 });
     }
 
-    const { domain } = await req.json() as { domain: string | null };
+    const { prefix } = await req.json() as { prefix: string | null };
 
-    if (domain === null || domain === '') {
+    if (!prefix || prefix.trim() === '') {
       await prisma.invitation.update({
         where: { id: params.id },
         data: { customDomain: null },
@@ -75,10 +75,12 @@ export async function PUT(
       return NextResponse.json({ customDomain: null });
     }
 
-    const cleaned = domain.trim().toLowerCase().replace(/^(https?:\/\/)?(www\.)?/, '');
+    const cleaned = prefix.trim().toLowerCase();
 
-    if (!DOMAIN_REGEX.test(cleaned)) {
-      return NextResponse.json({ error: 'Format domain tidak valid. Contoh: undangan.namakamu.com' }, { status: 400 });
+    if (!PREFIX_REGEX.test(cleaned)) {
+      return NextResponse.json({
+        error: 'Nama subdomain tidak valid. Gunakan huruf kecil, angka, dan tanda hubung (-). Minimal 3 karakter.',
+      }, { status: 400 });
     }
 
     const existing = await prisma.invitation.findUnique({
@@ -86,7 +88,7 @@ export async function PUT(
       select: { id: true },
     });
     if (existing && existing.id !== params.id) {
-      return NextResponse.json({ error: 'Domain ini sudah digunakan oleh undangan lain' }, { status: 409 });
+      return NextResponse.json({ error: 'Nama subdomain ini sudah digunakan. Coba nama lain.' }, { status: 409 });
     }
 
     const updated = await prisma.invitation.update({
@@ -98,6 +100,6 @@ export async function PUT(
     return NextResponse.json({ customDomain: updated.customDomain });
   } catch (error) {
     console.error('PUT custom-domain error:', error);
-    return NextResponse.json({ error: 'Gagal menyimpan domain' }, { status: 500 });
+    return NextResponse.json({ error: 'Gagal menyimpan subdomain' }, { status: 500 });
   }
 }

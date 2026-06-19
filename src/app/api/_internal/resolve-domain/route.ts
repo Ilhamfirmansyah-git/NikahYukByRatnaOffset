@@ -9,13 +9,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  const domain = req.nextUrl.searchParams.get('domain');
-  if (!domain) {
-    return NextResponse.json({ slug: null });
-  }
+  const prefix = req.nextUrl.searchParams.get('prefix');
+  if (!prefix) return NextResponse.json({ slug: null });
 
   const invitation = await prisma.invitation.findUnique({
-    where: { customDomain: domain },
+    where: { customDomain: prefix },
     select: { slug: true, isPublished: true, expiresAt: true },
   });
 

@@ -175,14 +175,14 @@ export default function EditInvitationPage() {
       const res = await fetch(`/api/invitations/${id}/custom-domain`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ domain: customDomainInput.trim() || null }),
+        body: JSON.stringify({ prefix: customDomainInput.trim() || null }),
       });
       const result = await res.json();
-      if (!res.ok) throw new Error(result.error ?? 'Gagal menyimpan domain');
+      if (!res.ok) throw new Error(result.error ?? 'Gagal menyimpan subdomain');
       setInvitation(prev => prev ? { ...prev, customDomain: result.customDomain } : prev);
-      toast.success(result.customDomain ? 'Custom domain berhasil disimpan!' : 'Custom domain dihapus');
+      toast.success(result.customDomain ? 'Subdomain berhasil disimpan!' : 'Subdomain dihapus');
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : 'Gagal menyimpan domain');
+      toast.error(e instanceof Error ? e.message : 'Gagal menyimpan subdomain');
     } finally {
       setSavingDomain(false);
     }
@@ -675,63 +675,60 @@ export default function EditInvitationPage() {
             </div>
           </SectionCard>
 
-          {/* Custom Domain — only for Exclusive users */}
+          {/* Subdomain — only for Exclusive users */}
           {packageFeatures?.customDomain === true ? (
-            <SectionCard title="Custom Domain" description="Tampilkan undangan di domain milik Anda sendiri">
+            <SectionCard title="Link Eksklusif (Subdomain)" description="Dapatkan link undangan dengan nama Anda sendiri tanpa beli domain">
               <div className="space-y-4">
                 {invitation?.customDomain && (
                   <div className="flex items-center gap-2 px-4 py-2.5 bg-green-50 border border-green-200 rounded-xl">
                     <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    <span className="text-sm text-green-800 font-medium">{invitation.customDomain}</span>
+                    <span className="text-sm text-green-800 font-mono font-medium">
+                      {invitation.customDomain}.{typeof window !== 'undefined' ? window.location.hostname : 'nikahyuk.com'}
+                    </span>
                     <span className="ml-auto text-xs text-green-600 bg-green-100 px-2 py-0.5 rounded-full">Aktif</span>
                   </div>
                 )}
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Domain Anda</label>
-                  <div className="flex gap-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Nama subdomain Anda</label>
+                  <div className="flex items-center gap-0">
                     <input
                       type="text"
                       value={customDomainInput}
-                      onChange={e => setCustomDomainInput(e.target.value)}
-                      placeholder="undangan.namakamu.com"
-                      className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary bg-gray-50 focus:bg-white font-mono"
+                      onChange={e => setCustomDomainInput(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                      placeholder="ilham-ica"
+                      maxLength={40}
+                      className="flex-1 px-4 py-2.5 border border-r-0 border-gray-200 rounded-l-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary bg-gray-50 focus:bg-white font-mono"
                     />
-                    <Button size="sm" onClick={handleSaveDomain} loading={savingDomain}>
+                    <div className="px-3 py-2.5 bg-gray-100 border border-gray-200 text-sm text-gray-500 font-mono whitespace-nowrap">
+                      .{typeof window !== 'undefined' ? window.location.hostname : 'nikahyuk.com'}
+                    </div>
+                    <Button size="sm" onClick={handleSaveDomain} loading={savingDomain} className="rounded-l-none ml-2">
                       Simpan
                     </Button>
                   </div>
-                  <p className="text-xs text-gray-400 mt-1.5">Tanpa http:// atau www. Contoh: <span className="font-mono">undangan.ilham-ica.com</span></p>
+                  <p className="text-xs text-gray-400 mt-1.5">
+                    Huruf kecil, angka, dan tanda hubung (-). Min. 3 karakter. Contoh: <span className="font-mono">ilham-ica</span>
+                  </p>
                 </div>
 
-                <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl space-y-3">
-                  <p className="text-sm font-semibold text-amber-900">Langkah konfigurasi DNS:</p>
-                  <ol className="space-y-2 text-sm text-amber-800 list-decimal list-inside">
-                    <li>Login ke panel domain Anda (Niagahoster, Namecheap, Cloudflare, dll.)</li>
-                    <li>Tambahkan record <span className="font-mono bg-amber-100 px-1 rounded">CNAME</span> yang mengarah ke domain aplikasi ini</li>
-                    <li>Tunggu propagasi DNS (biasanya 5 menit – 1 jam)</li>
-                    <li>Hubungi kami agar domain Anda ditambahkan ke server</li>
-                  </ol>
-                  <div className="mt-2 p-3 bg-white border border-amber-200 rounded-lg font-mono text-xs">
-                    <div className="grid grid-cols-3 gap-2 text-amber-900">
-                      <span className="font-semibold">Type</span>
-                      <span className="font-semibold">Name</span>
-                      <span className="font-semibold">Value</span>
-                      <span>CNAME</span>
-                      <span>undangan</span>
-                      <span className="truncate">{typeof window !== 'undefined' ? window.location.hostname : 'nikahyuk.vercel.app'}</span>
-                    </div>
+                {customDomainInput && (
+                  <div className="px-4 py-3 bg-cream-50 border border-cream-200 rounded-xl">
+                    <p className="text-xs text-gray-500 mb-0.5">Preview URL Anda:</p>
+                    <p className="text-sm font-mono text-primary font-medium">
+                      {customDomainInput}.{typeof window !== 'undefined' ? window.location.hostname : 'nikahyuk.com'}
+                    </p>
                   </div>
-                </div>
+                )}
 
                 {invitation?.customDomain && (
                   <button
-                    onClick={() => { setCustomDomainInput(''); }}
-                    className="text-xs text-red-500 hover:underline"
+                    onClick={() => { setCustomDomainInput(''); void handleSaveDomain(); }}
+                    className="text-xs text-red-400 hover:text-red-600 hover:underline"
                   >
-                    Hapus custom domain
+                    Hapus subdomain
                   </button>
                 )}
               </div>
@@ -741,12 +738,14 @@ export default function EditInvitationPage() {
               <div className="flex items-start gap-3">
                 <div className="w-9 h-9 bg-gray-200 rounded-xl flex items-center justify-center flex-shrink-0">
                   <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                   </svg>
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold text-gray-700 text-sm">Custom Domain</p>
-                  <p className="text-xs text-gray-500 mt-0.5">Fitur ini hanya tersedia di paket Exclusive. Upgrade untuk menampilkan undangan di domain milik Anda sendiri.</p>
+                  <p className="font-semibold text-gray-700 text-sm">Link Eksklusif (Subdomain)</p>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    Dapatkan link seperti <span className="font-mono">nama-anda.nikahyuk.com</span> — hanya di paket Exclusive. Tanpa beli domain tambahan.
+                  </p>
                   <a href="/app/beli" className="inline-block mt-2.5 text-xs font-semibold text-primary hover:underline">
                     Upgrade ke Exclusive →
                   </a>
