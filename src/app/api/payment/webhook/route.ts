@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createHash } from 'crypto';
-import { defaultInvitationData } from '@/types/invitation';
+import { emptyInvitationData } from '@/types/invitation';
 import { sendOrderConfirmation } from '@/lib/email';
 
 function generateSlug(): string {
@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
             templateId: order.templateId,
             orderId: order.id,
             slug,
-            data: defaultInvitationData() as object,
+            data: emptyInvitationData() as object,
             expiresAt,
             isPublished: false,
           },

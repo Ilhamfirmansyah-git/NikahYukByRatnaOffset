@@ -97,6 +97,72 @@ export interface InvitationData {
   tema: Tema;
 }
 
+export function emptyInvitationData(): InvitationData {
+  const year = new Date().getFullYear() + 1;
+  return {
+    mempelai: {
+      pria: {
+        namaLengkap: '',
+        namaPanggilan: '',
+        anakKe: '',
+        ayah: '',
+        ibu: '',
+        instagram: '',
+        foto: '',
+      },
+      wanita: {
+        namaLengkap: '',
+        namaPanggilan: '',
+        anakKe: '',
+        ayah: '',
+        ibu: '',
+        instagram: '',
+        foto: '',
+      },
+      urutanTampil: 'pria-dulu',
+    },
+    acara: [
+      {
+        nama: 'Akad Nikah',
+        tanggal: `${year}-01-01`,
+        waktuMulai: '08:00',
+        waktuSelesai: '10:00',
+        lokasi: '',
+        alamat: '',
+        mapsUrl: '',
+      },
+      {
+        nama: 'Resepsi Pernikahan',
+        tanggal: `${year}-01-01`,
+        waktuMulai: '11:00',
+        waktuSelesai: '16:00',
+        lokasi: '',
+        alamat: '',
+        mapsUrl: '',
+      },
+    ],
+    countdown: { tanggal: `${year}-01-01` },
+    galeri: [],
+    loveStory: [],
+    quote: { teks: '', sumber: '' },
+    musik: { autoplay: false },
+    amplopDigital: {
+      aktif: false,
+      rekening: [],
+      eWallet: [],
+    },
+    livestream: { aktif: false, platform: 'YouTube', url: '' },
+    rsvpAktif: true,
+    guestbookAktif: true,
+    protokolKesehatan: { aktif: false, catatan: '' },
+    tema: {
+      warnaPrimer: '#8B5E3C',
+      warnaSekunder: '#F5E6D3',
+      font: 'Playfair Display',
+    },
+  };
+}
+
 export function defaultInvitationData(): InvitationData {
   const year = new Date().getFullYear() + 1;
   return {
