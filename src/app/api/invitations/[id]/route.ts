@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { InvitationData } from '@/types/invitation';
 
+export const dynamic = 'force-dynamic';
+
 function deepMerge(target: Record<string, unknown>, source: Record<string, unknown>): Record<string, unknown> {
   const output = { ...target };
   for (const key of Object.keys(source)) {

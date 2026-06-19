@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { defaultInvitationData } from '@/types/invitation';
 
+export const dynamic = 'force-dynamic';
+
 // Hanya tersedia di mode development / sandbox
 export async function POST() {
   if (process.env.MIDTRANS_IS_PRODUCTION === 'true') {
