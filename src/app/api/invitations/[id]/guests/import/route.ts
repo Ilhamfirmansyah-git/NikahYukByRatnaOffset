@@ -21,9 +21,19 @@ export async function POST(
       return NextResponse.json({ error: 'Tidak terautentikasi' }, { status: 401 });
     }
 
-    const invitation = await prisma.invitation.findUnique({ where: { id: params.id } });
+    const invitation = await prisma.invitation.findUnique({
+      where: { id: params.id },
+      include: { order: true },
+    });
     if (!invitation || invitation.userId !== session.user.id) {
       return NextResponse.json({ error: 'Akses ditolak' }, { status: 403 });
+    }
+    if (invitation.order?.packageId) {
+      const pkg = await prisma.package.findUnique({ where: { id: invitation.order.packageId } });
+      const features = pkg?.features as Record<string, unknown> | null;
+      if (features && features.guestManagement === false) {
+        return NextResponse.json({ error: 'Fitur manajemen tamu tidak tersedia di paket Anda', upgrade: true }, { status: 403 });
+      }
     }
 
     const { guests } = await req.json() as { guests: Array<{ name: string; group?: string }> };

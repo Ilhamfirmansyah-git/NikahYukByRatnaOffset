@@ -11,18 +11,33 @@ function generateGuestSlug(name: string): string {
   return `${base}-${rand}`;
 }
 
+async function checkAccess(invitationId: string, userId: string) {
+  const invitation = await prisma.invitation.findUnique({
+    where: { id: invitationId },
+    include: { order: true },
+  });
+  if (!invitation || invitation.userId !== userId) return { ok: false, reason: 'forbidden' as const };
+
+  if (invitation.order?.packageId) {
+    const pkg = await prisma.package.findUnique({ where: { id: invitation.order.packageId } });
+    const features = pkg?.features as Record<string, unknown> | null;
+    if (features && features.guestManagement === false) return { ok: false, reason: 'upgrade' as const };
+  }
+
+  return { ok: true };
+}
+
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Tidak terautentikasi' }, { status: 401 });
-    }
+    if (!session?.user?.id) return NextResponse.json({ error: 'Tidak terautentikasi' }, { status: 401 });
 
-    const invitation = await prisma.invitation.findUnique({ where: { id: params.id } });
-    if (!invitation || invitation.userId !== session.user.id) {
+    const access = await checkAccess(params.id, session.user.id);
+    if (!access.ok) {
+      if (access.reason === 'upgrade') return NextResponse.json({ error: 'Fitur manajemen tamu tidak tersedia di paket Anda', upgrade: true }, { status: 403 });
       return NextResponse.json({ error: 'Akses ditolak' }, { status: 403 });
     }
 
@@ -40,12 +55,11 @@ export async function POST(
 ) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Tidak terautentikasi' }, { status: 401 });
-    }
+    if (!session?.user?.id) return NextResponse.json({ error: 'Tidak terautentikasi' }, { status: 401 });
 
-    const invitation = await prisma.invitation.findUnique({ where: { id: params.id } });
-    if (!invitation || invitation.userId !== session.user.id) {
+    const access = await checkAccess(params.id, session.user.id);
+    if (!access.ok) {
+      if (access.reason === 'upgrade') return NextResponse.json({ error: 'Fitur manajemen tamu tidak tersedia di paket Anda', upgrade: true }, { status: 403 });
       return NextResponse.json({ error: 'Akses ditolak' }, { status: 403 });
     }
 
@@ -74,18 +88,16 @@ export async function DELETE(
 ) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Tidak terautentikasi' }, { status: 401 });
-    }
+    if (!session?.user?.id) return NextResponse.json({ error: 'Tidak terautentikasi' }, { status: 401 });
 
-    const invitation = await prisma.invitation.findUnique({ where: { id: params.id } });
-    if (!invitation || invitation.userId !== session.user.id) {
+    const access = await checkAccess(params.id, session.user.id);
+    if (!access.ok) {
+      if (access.reason === 'upgrade') return NextResponse.json({ error: 'Fitur manajemen tamu tidak tersedia di paket Anda', upgrade: true }, { status: 403 });
       return NextResponse.json({ error: 'Akses ditolak' }, { status: 403 });
     }
 
     const { guestId } = await req.json();
     await prisma.guest.delete({ where: { id: guestId } });
-
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error('DELETE /api/invitations/[id]/guests error:', error);

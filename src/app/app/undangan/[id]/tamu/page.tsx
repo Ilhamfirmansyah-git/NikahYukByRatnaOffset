@@ -86,6 +86,7 @@ export default function TamuPage() {
 
   const [guests, setGuests] = useState<Guest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [guestManagementAllowed, setGuestManagementAllowed] = useState(true);
   const [name, setName] = useState('');
   const [group, setGroup] = useState('keluarga');
   const [adding, setAdding] = useState(false);
@@ -103,8 +104,17 @@ export default function TamuPage() {
         fetch(`/api/invitations/${id}/guests`),
         fetch(`/api/invitations/${id}`),
       ]);
-      const guestsData = await guestsRes.json();
       const invData = await invRes.json();
+
+      // Check package features
+      const features = invData?.packageFeatures as Record<string, unknown> | null;
+      if (features && features.guestManagement === false) {
+        setGuestManagementAllowed(false);
+        setLoading(false);
+        return;
+      }
+
+      const guestsData = await guestsRes.json();
       setGuests(Array.isArray(guestsData) ? guestsData : []);
       setInvitationSlug(invData.slug ?? '');
 
@@ -247,6 +257,38 @@ export default function TamuPage() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (!guestManagementAllowed) {
+    return (
+      <div>
+        <div className="mb-8">
+          <h1 className="text-2xl font-display font-semibold text-gray-900">Manajemen Tamu</h1>
+          <p className="text-gray-500 mt-1">Tambah dan kelola daftar tamu undangan Anda.</p>
+        </div>
+        <div className="flex flex-col items-center justify-center py-20 text-center bg-white rounded-2xl border-2 border-dashed border-cream-300">
+          <div className="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mb-4">
+            <svg className="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">Fitur Tidak Tersedia</h2>
+          <p className="text-gray-500 text-sm max-w-sm mb-6">
+            Manajemen tamu hanya tersedia untuk paket <strong>Premium</strong> dan <strong>Exclusive</strong>.
+            Upgrade paket Anda untuk mengakses fitur ini.
+          </p>
+          <a
+            href="/app/beli"
+            className="inline-flex items-center gap-2 bg-primary text-white px-6 py-2.5 rounded-lg font-medium text-sm hover:bg-primary-600 transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+            Upgrade Paket
+          </a>
+        </div>
       </div>
     );
   }

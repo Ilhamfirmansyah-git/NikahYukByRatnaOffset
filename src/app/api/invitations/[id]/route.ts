@@ -38,10 +38,18 @@ export async function GET(
       return NextResponse.json({ error: 'Tidak terautentikasi' }, { status: 401 });
     }
 
-    const invitation = await prisma.invitation.findUnique({
+    const invitationRaw = await prisma.invitation.findUnique({
       where: { id: params.id },
-      include: { template: true },
+      include: { template: true, order: true },
     });
+
+    let packageFeatures: Record<string, unknown> | null = null;
+    if (invitationRaw?.order?.packageId) {
+      const pkg = await prisma.package.findUnique({ where: { id: invitationRaw.order.packageId } });
+      packageFeatures = pkg?.features as Record<string, unknown> | null;
+    }
+
+    const invitation = invitationRaw ? { ...invitationRaw, packageFeatures } : null;
 
     if (!invitation) {
       return NextResponse.json({ error: 'Undangan tidak ditemukan' }, { status: 404 });
