@@ -5,6 +5,8 @@ import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import RetryPaymentButton from './RetryPaymentButton';
 
+export const dynamic = 'force-dynamic';
+
 const formatRupiah = (amount: number) =>
   new Intl.NumberFormat('id-ID', {
     style: 'currency',
