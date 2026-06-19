@@ -6,6 +6,12 @@ export async function GET() {
     const templates = await prisma.template.findMany({
       where: { isActive: true },
       orderBy: { createdAt: 'asc' },
+      include: {
+        packages: {
+          where: { isActive: true },
+          select: { id: true, name: true },
+        },
+      },
     });
     return NextResponse.json(templates);
   } catch (error) {
