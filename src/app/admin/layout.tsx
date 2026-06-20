@@ -12,6 +12,7 @@ const NAV = [
   { href: '/admin/paket', label: 'Paket' },
   { href: '/admin/kupon', label: 'Kupon' },
   { href: '/admin/lagu', label: 'Lagu' },
+  { href: '/admin/blog', label: 'Blog' },
   { href: '/admin/preview', label: 'Preview' },
   { href: '/admin/pengaturan', label: 'Pengaturan' },
 ];

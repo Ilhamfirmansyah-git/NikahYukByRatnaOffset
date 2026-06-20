@@ -12,6 +12,7 @@ export default function Navbar() {
   const navLinks = [
     { href: "/template", label: "Template" },
     { href: "/harga", label: "Harga" },
+    { href: "/blog", label: "Blog" },
     { href: "#fitur", label: "Fitur" },
     { href: "#faq", label: "FAQ" },
   ];
