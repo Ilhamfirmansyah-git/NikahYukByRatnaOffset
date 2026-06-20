@@ -163,7 +163,7 @@ const testimonials = [
   },
 ];
 
-const faqs = [
+const staticFaqs = [
   {
     q: "Apakah saya perlu keahlian teknis untuk membuat undangan?",
     a: "Tidak sama sekali! Nikah Yuk dirancang agar mudah digunakan oleh siapa saja. Anda hanya perlu mengisi formulir, upload foto, dan undangan siap disebarkan.",
@@ -171,10 +171,6 @@ const faqs = [
   {
     q: "Apakah tamu perlu menginstall aplikasi untuk membuka undangan?",
     a: "Tidak perlu. Undangan kami berbasis web, sehingga tamu cukup membuka link di browser HP atau komputer mereka tanpa perlu install apapun.",
-  },
-  {
-    q: "Berapa lama undangan saya aktif?",
-    a: "Masa aktif tergantung paket yang dipilih: Basic (90 hari), Premium (180 hari), dan Exclusive (365 hari) dihitung sejak tanggal pembayaran.",
   },
   {
     q: "Bisakah saya mengedit konten undangan setelah dipublish?",
@@ -220,6 +216,19 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 export default function HomePage() {
   const [templates, setTemplates] = useState<Template[]>([]);
   const [packages, setPackages] = useState<Package[]>([]);
+
+  const faqs = [
+    staticFaqs[0],
+    staticFaqs[1],
+    {
+      q: "Berapa lama undangan saya aktif?",
+      a: packages.length > 0
+        ? `Masa aktif tergantung paket yang dipilih: ${packages.map(p => `${p.name} (${p.durationDays} hari)`).join(', ')} — dihitung sejak tanggal pembayaran.`
+        : "Masa aktif tergantung paket yang dipilih, dihitung sejak tanggal pembayaran.",
+    },
+    staticFaqs[2],
+    staticFaqs[3],
+  ];
 
   useEffect(() => {
     fetch('/api/templates')
