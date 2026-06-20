@@ -55,6 +55,14 @@ async function main() {
       thumbnail: '/templates/javanese-heritage.jpg',
       description: 'Template mewah bernuansa batik Jawa dengan ornamen kawung, border emas, frame dekoratif, dan animasi kelopak bunga',
     },
+    {
+      name: 'Flora Fauna',
+      slug: 'flora-fauna',
+      componentKey: 'flora-fauna',
+      category: 'elegan',
+      thumbnail: '/templates/flora-fauna.svg',
+      description: 'Kemewahan taman surga dengan merak watercolor dan karangan bunga peony yang memukau, lengkap dengan animasi bunga jatuh dan merak bergerak.',
+    },
   ];
 
   for (const template of templates) {
