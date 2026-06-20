@@ -1,6 +1,7 @@
 'use client';
 
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface Props {
   content: string;
@@ -10,6 +11,7 @@ export default function MarkdownRenderer({ content }: Props) {
   return (
     <div>
       <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
         components={{
           h1: ({ children }) => <h1 className="text-3xl font-bold text-gray-900 mt-10 mb-4 leading-snug">{children}</h1>,
           h2: ({ children }) => <h2 className="text-2xl font-bold text-gray-900 mt-10 mb-4 leading-snug">{children}</h2>,
@@ -36,6 +38,24 @@ export default function MarkdownRenderer({ content }: Props) {
           ),
           pre: ({ children }) => (
             <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto mb-5 text-sm">{children}</pre>
+          ),
+          table: ({ children }) => (
+            <div className="overflow-x-auto my-6">
+              <table className="w-full text-sm border-collapse border border-cream-200 rounded-xl overflow-hidden">
+                {children}
+              </table>
+            </div>
+          ),
+          thead: ({ children }) => <thead className="bg-cream-100">{children}</thead>,
+          tbody: ({ children }) => <tbody className="divide-y divide-cream-200">{children}</tbody>,
+          tr: ({ children }) => <tr className="hover:bg-cream-50 transition-colors">{children}</tr>,
+          th: ({ children }) => (
+            <th className="px-4 py-3 text-left font-semibold text-gray-800 border-b border-cream-200 whitespace-nowrap">
+              {children}
+            </th>
+          ),
+          td: ({ children }) => (
+            <td className="px-4 py-3 text-gray-700 border-b border-cream-100">{children}</td>
           ),
           hr: () => <hr className="border-cream-200 my-8" />,
           img: ({ src, alt }) => (
