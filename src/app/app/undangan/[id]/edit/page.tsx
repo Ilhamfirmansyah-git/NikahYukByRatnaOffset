@@ -550,49 +550,51 @@ export default function EditInvitationPage() {
       {/* Tab 6: Pengaturan */}
       {activeTab === 'pengaturan' && (
         <div>
-          <SectionCard title="Fitur Interaktif" description="Aktifkan fitur yang ingin ditampilkan di undangan">
-            <div className="space-y-5">
-              <Toggle
-                checked={data.rsvpAktif}
-                onChange={v => updateData('rsvpAktif', v)}
-                label="RSVP — Konfirmasi Kehadiran"
-                description="Tamu dapat mengkonfirmasi apakah mereka akan hadir"
-              />
-              <Toggle
-                checked={data.guestbookAktif}
-                onChange={v => updateData('guestbookAktif', v)}
-                label="Buku Tamu — Ucapan & Doa"
-                description="Tamu dapat menuliskan ucapan dan doa untuk pasangan"
-              />
-            </div>
-          </SectionCard>
-
-          <SectionCard title="Livestream" description="Siarkan acara secara online untuk tamu yang tidak bisa hadir">
-            <div className="space-y-4">
-              <Toggle
-                checked={data.livestream.aktif}
-                onChange={v => updateData('livestream', { ...data.livestream, aktif: v })}
-                label="Aktifkan fitur livestream"
-              />
-              {data.livestream.aktif && (
-                <>
-                  <Input label="Platform" value={data.livestream.platform ?? ''} onChange={e => updateData('livestream', { ...data.livestream, platform: e.target.value })} placeholder="YouTube / Zoom / dll" />
-                  <Input label="URL Livestream" value={data.livestream.url ?? ''} onChange={e => updateData('livestream', { ...data.livestream, url: e.target.value })} placeholder="https://youtube.com/live/..." />
-                </>
-              )}
-            </div>
-          </SectionCard>
-
-          <SectionCard title="Protokol Kesehatan" description="Tambahkan panduan kesehatan untuk para tamu">
-            <div className="space-y-4">
-              <Toggle
-                checked={data.protokolKesehatan.aktif}
-                onChange={v => updateData('protokolKesehatan', { ...data.protokolKesehatan, aktif: v })}
-                label="Tampilkan protokol kesehatan"
-              />
-              {data.protokolKesehatan.aktif && (
-                <TextArea label="Catatan Protokol" value={data.protokolKesehatan.catatan ?? ''} onChange={v => updateData('protokolKesehatan', { ...data.protokolKesehatan, catatan: v })} placeholder="Harap memakai masker, menjaga jarak, dan membawa hand sanitizer..." />
-              )}
+          <SectionCard title="Fitur Undangan" description="Aktifkan atau nonaktifkan fitur yang ditampilkan kepada tamu">
+            <div className="divide-y divide-cream-100">
+              <div className="pb-4">
+                <Toggle
+                  checked={data.rsvpAktif}
+                  onChange={v => updateData('rsvpAktif', v)}
+                  label="RSVP — Konfirmasi Kehadiran"
+                  description="Tamu dapat mengkonfirmasi apakah mereka akan hadir"
+                />
+              </div>
+              <div className="py-4">
+                <Toggle
+                  checked={data.guestbookAktif}
+                  onChange={v => updateData('guestbookAktif', v)}
+                  label="Buku Tamu — Ucapan & Doa"
+                  description="Tamu dapat menuliskan ucapan dan doa untuk pasangan"
+                />
+              </div>
+              <div className="py-4">
+                <Toggle
+                  checked={data.livestream.aktif}
+                  onChange={v => updateData('livestream', { ...data.livestream, aktif: v })}
+                  label="Livestream — Siarkan Acara Online"
+                  description="Tamu yang tidak hadir dapat menyaksikan acara secara langsung"
+                />
+                {data.livestream.aktif && (
+                  <div className="mt-4 space-y-3 pl-14">
+                    <Input label="Platform" value={data.livestream.platform ?? ''} onChange={e => updateData('livestream', { ...data.livestream, platform: e.target.value })} placeholder="YouTube / Zoom / dll" />
+                    <Input label="URL Livestream" value={data.livestream.url ?? ''} onChange={e => updateData('livestream', { ...data.livestream, url: e.target.value })} placeholder="https://youtube.com/live/..." />
+                  </div>
+                )}
+              </div>
+              <div className="pt-4">
+                <Toggle
+                  checked={data.protokolKesehatan.aktif}
+                  onChange={v => updateData('protokolKesehatan', { ...data.protokolKesehatan, aktif: v })}
+                  label="Protokol Kesehatan"
+                  description="Tampilkan panduan kesehatan untuk para tamu"
+                />
+                {data.protokolKesehatan.aktif && (
+                  <div className="mt-4 pl-14">
+                    <TextArea value={data.protokolKesehatan.catatan ?? ''} onChange={v => updateData('protokolKesehatan', { ...data.protokolKesehatan, catatan: v })} placeholder="Harap memakai masker, menjaga jarak, dan membawa hand sanitizer..." />
+                  </div>
+                )}
+              </div>
             </div>
           </SectionCard>
 
@@ -697,7 +699,7 @@ export default function EditInvitationPage() {
                   <div className="flex-1">
                     <p className="text-xs text-gray-600 font-medium">Buat link dari nama pengantin</p>
                     <p className="text-xs text-gray-400 mt-0.5">
-                      Contoh: <span className="font-mono">ilham-ica</span> → <span className="font-mono">/u/ilham-ica</span>
+                      Contoh: <span className="font-mono">budi-siti</span> → <span className="font-mono">/u/budi-siti</span>
                     </p>
                   </div>
                   <Button size="sm" variant="outline" onClick={handleGenerateSlugFromNames} loading={regeneratingSlug}>
@@ -780,7 +782,7 @@ export default function EditInvitationPage() {
                       type="text"
                       value={customDomainInput}
                       onChange={e => setCustomDomainInput(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                      placeholder="ilham-ica"
+                      placeholder="budi-siti"
                       maxLength={40}
                       className="flex-1 px-4 py-2.5 border border-r-0 border-gray-200 rounded-l-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary bg-gray-50 focus:bg-white font-mono"
                     />
@@ -792,7 +794,7 @@ export default function EditInvitationPage() {
                     </Button>
                   </div>
                   <p className="text-xs text-gray-400 mt-1.5">
-                    Huruf kecil, angka, dan tanda hubung (-). Min. 3 karakter. Contoh: <span className="font-mono">ilham-ica</span>
+                    Huruf kecil, angka, dan tanda hubung (-). Min. 3 karakter. Contoh: <span className="font-mono">budi-siti</span>
                   </p>
                 </div>
 

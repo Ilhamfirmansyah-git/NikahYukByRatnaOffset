@@ -81,9 +81,9 @@ export default function ImageUpload({ value, onChange, className, label }: Image
   }
 
   return (
-    <div className={cn('w-full', className)}>
+    <div className={cn('w-full min-h-[120px] flex flex-col', className)}>
       {label && <label className="block text-sm font-medium text-gray-700 mb-1.5">{label}</label>}
-      <div onDrop={handleDrop} onDragOver={e => e.preventDefault()}>
+      <div className="flex-1" onDrop={handleDrop} onDragOver={e => e.preventDefault()}>
         <input
           ref={inputRef}
           type="file"
@@ -92,14 +92,14 @@ export default function ImageUpload({ value, onChange, className, label }: Image
           className="hidden"
         />
         {value ? (
-          <div className="relative group">
+          <div className="relative group h-full min-h-[120px]">
             <img
               src={value}
               alt="Uploaded"
-              className="w-full h-40 object-cover rounded-lg border border-cream-200"
+              className="w-full h-full min-h-[120px] object-cover rounded-xl border border-cream-200"
               onError={e => { (e.target as HTMLImageElement).src = '/placeholder-image.jpg'; }}
             />
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center gap-2">
               <button
                 type="button"
                 onClick={() => inputRef.current?.click()}
@@ -122,7 +122,7 @@ export default function ImageUpload({ value, onChange, className, label }: Image
             onClick={() => inputRef.current?.click()}
             disabled={uploading}
             className={cn(
-              'w-full h-40 border-2 border-dashed rounded-lg flex flex-col items-center justify-center gap-2 transition-colors disabled:opacity-60 disabled:cursor-not-allowed',
+              'w-full h-full min-h-[120px] border-2 border-dashed rounded-xl flex flex-col items-center justify-center gap-1.5 transition-colors disabled:opacity-60 disabled:cursor-not-allowed',
               error
                 ? 'border-red-300 bg-red-50 hover:border-red-400'
                 : 'border-cream-300 hover:border-primary hover:bg-cream-50'
@@ -130,24 +130,24 @@ export default function ImageUpload({ value, onChange, className, label }: Image
           >
             {uploading ? (
               <>
-                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                <span className="text-sm text-gray-500">Mengupload...</span>
+                <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                <span className="text-xs text-gray-500">Mengupload...</span>
               </>
             ) : error ? (
               <>
-                <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-7 h-7 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="text-sm text-red-600 font-medium px-4 text-center">{error}</span>
-                <span className="text-xs text-red-400">Klik untuk coba lagi</span>
+                <span className="text-xs text-red-600 font-medium px-2 text-center leading-tight">{error}</span>
+                <span className="text-xs text-red-400">Coba lagi</span>
               </>
             ) : (
               <>
-                <svg className="w-8 h-8 text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-7 h-7 text-primary/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <span className="text-sm text-gray-500">Klik atau seret foto ke sini</span>
-                <span className="text-xs text-gray-400">PNG, JPG, WebP (maks. 10MB)</span>
+                <span className="text-xs text-gray-500 text-center px-2 leading-tight">Klik atau seret foto ke sini</span>
+                <span className="text-xs text-gray-400">PNG, JPG, WebP · maks. 10MB</span>
               </>
             )}
           </button>
