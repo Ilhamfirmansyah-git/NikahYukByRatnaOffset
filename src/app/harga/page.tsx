@@ -23,23 +23,20 @@ interface Package {
   durationDays: number;
   features: PackageFeatures;
   isActive: boolean;
+  templateIds: string[];
 }
 
-const BASE_FEATURES = [
+const ALWAYS_INCLUDED = [
   "RSVP online",
   "Buku tamu digital",
-  "Link undangan unik",
   "Countdown timer",
-  "Semua template premium",
+  "Link undangan unik",
 ];
 
 const DYNAMIC_FEATURES: { key: keyof PackageFeatures; label: string }[] = [
-  { key: "musik", label: "Musik latar belakang" },
+  { key: "musik", label: "Musik latar" },
   { key: "guestManagement", label: "Manajemen tamu" },
-  { key: "livestream", label: "Live streaming" },
-  { key: "customDomain", label: "Custom domain" },
-  { key: "prioritasSupport", label: "Prioritas support" },
-  { key: "digitalAngpao", label: "Digital angpao" },
+  { key: "customDomain", label: "Link subdomain eksklusif" },
 ];
 
 const faqs = [
@@ -190,30 +187,32 @@ export default function HargaPage() {
                         </div>
                       )}
 
-                      <div className="mb-6">
-                        <h2
-                          className={`font-display text-2xl font-bold mb-1 ${
-                            isHighlight ? "text-white" : "text-gray-900"
-                          }`}
-                        >
-                          {pkg.name}
-                        </h2>
+                      {/* Template count badge */}
+                      <div className="mb-4">
+                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
+                          isHighlight
+                            ? "bg-white/20 text-white border border-white/30"
+                            : pkg.templateIds.length === 0
+                            ? "bg-green-50 text-green-700 border border-green-200"
+                            : "bg-amber-50 text-amber-700 border border-amber-200"
+                        }`}>
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                          </svg>
+                          {pkg.templateIds.length === 0 ? "Semua template tersedia" : `${pkg.templateIds.length} template tersedia`}
+                        </span>
                       </div>
 
+                      <h2 className={`font-display text-2xl font-bold mb-1 ${isHighlight ? "text-white" : "text-gray-900"}`}>
+                        {pkg.name}
+                      </h2>
+
                       <div className="mb-6">
-                        <span
-                          className={`text-4xl font-bold ${
-                            isHighlight ? "text-white" : "text-primary"
-                          }`}
-                        >
+                        <span className={`text-4xl font-bold ${isHighlight ? "text-white" : "text-primary"}`}>
                           {formatRupiah(pkg.price)}
                         </span>
                         <br />
-                        <span
-                          className={`text-sm ${
-                            isHighlight ? "text-primary-200" : "text-gray-500"
-                          }`}
-                        >
+                        <span className={`text-sm ${isHighlight ? "text-primary-200" : "text-gray-500"}`}>
                           aktif {pkg.durationDays} hari · bayar sekali
                         </span>
                       </div>
@@ -229,88 +228,50 @@ export default function HargaPage() {
                         </Button>
                       </Link>
 
-                      <ul className="space-y-2.5">
-                        {/* Base features */}
-                        {BASE_FEATURES.map((feat) => (
+                      {/* Selalu termasuk */}
+                      <p className={`text-[10px] uppercase tracking-widest font-medium mb-2 ${isHighlight ? "text-primary-200" : "text-gray-400"}`}>
+                        Selalu termasuk
+                      </p>
+                      <ul className="space-y-2 mb-4">
+                        {ALWAYS_INCLUDED.map((feat) => (
                           <li key={feat} className="flex items-center gap-2.5">
-                            <svg
-                              className={`w-4 h-4 flex-shrink-0 ${
-                                isHighlight ? "text-amber-300" : "text-primary"
-                              }`}
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M5 13l4 4L19 7"
-                              />
+                            <svg className={`w-4 h-4 flex-shrink-0 ${isHighlight ? "text-amber-300" : "text-primary"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
-                            <span
-                              className={`text-sm ${
-                                isHighlight ? "text-primary-50" : "text-gray-700"
-                              }`}
-                            >
-                              {feat}
-                            </span>
+                            <span className={`text-sm ${isHighlight ? "text-primary-100" : "text-gray-500"}`}>{feat}</span>
                           </li>
                         ))}
+                      </ul>
 
-                        {/* maxPhotos */}
-                        {pkg.features.maxPhotos !== undefined && (
-                          <li className="flex items-center gap-2.5">
-                            <svg
-                              className={`w-4 h-4 flex-shrink-0 ${
-                                isHighlight ? "text-amber-300" : "text-primary"
-                              }`}
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M5 13l4 4L19 7"
-                              />
-                            </svg>
-                            <span
-                              className={`text-sm ${
-                                isHighlight ? "text-primary-50" : "text-gray-700"
-                              }`}
-                            >
-                              Maks. {pkg.features.maxPhotos} foto galeri
-                            </span>
-                          </li>
-                        )}
-
-                        {/* Dynamic features — only show enabled ones */}
-                        {DYNAMIC_FEATURES.filter(
-                          (f) => pkg.features[f.key]
-                        ).map((f) => (
+                      {/* Fitur paket */}
+                      <p className={`text-[10px] uppercase tracking-widest font-medium mb-2 ${isHighlight ? "text-primary-200" : "text-gray-400"}`}>
+                        Fitur paket
+                      </p>
+                      <ul className="space-y-2">
+                        <li className="flex items-center gap-2.5">
+                          <svg className={`w-4 h-4 flex-shrink-0 ${isHighlight ? "text-amber-300" : "text-primary"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span className={`text-sm font-medium ${isHighlight ? "text-white" : "text-gray-700"}`}>
+                            Maks. {pkg.features.maxPhotos} foto galeri
+                          </span>
+                        </li>
+                        {DYNAMIC_FEATURES.map((f) => (
                           <li key={f.key} className="flex items-center gap-2.5">
-                            <svg
-                              className={`w-4 h-4 flex-shrink-0 ${
-                                isHighlight ? "text-amber-300" : "text-primary"
-                              }`}
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M5 13l4 4L19 7"
-                              />
-                            </svg>
-                            <span
-                              className={`text-sm ${
-                                isHighlight ? "text-primary-50" : "text-gray-700"
-                              }`}
-                            >
+                            {pkg.features[f.key] ? (
+                              <svg className={`w-4 h-4 flex-shrink-0 ${isHighlight ? "text-amber-300" : "text-primary"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                            ) : (
+                              <svg className={`w-4 h-4 flex-shrink-0 ${isHighlight ? "text-primary-400" : "text-red-300"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            )}
+                            <span className={`text-sm font-medium ${
+                              pkg.features[f.key]
+                                ? isHighlight ? "text-white" : "text-gray-700"
+                                : isHighlight ? "text-primary-300 line-through" : "text-gray-400 line-through"
+                            }`}>
                               {f.label}
                             </span>
                           </li>
@@ -363,8 +324,8 @@ export default function HargaPage() {
                       ))}
                     </tr>
 
-                    {/* Base features */}
-                    {BASE_FEATURES.map((feat, i) => (
+                    {/* Selalu termasuk */}
+                    {ALWAYS_INCLUDED.map((feat, i) => (
                       <tr
                         key={feat}
                         className={`border-b border-cream-100 ${
@@ -379,6 +340,16 @@ export default function HargaPage() {
                         ))}
                       </tr>
                     ))}
+
+                    {/* Template count */}
+                    <tr className="border-b border-cream-100 bg-white">
+                      <td className="px-6 py-3.5 text-sm text-gray-700 font-medium">Jumlah template</td>
+                      {packages.map((pkg) => (
+                        <td key={pkg.id} className="px-4 py-3.5 text-center">
+                          <CheckVal value={pkg.templateIds.length === 0 ? "Semua" : `${pkg.templateIds.length} pilihan`} />
+                        </td>
+                      ))}
+                    </tr>
 
                     {/* maxPhotos */}
                     <tr className="border-b border-cream-100 bg-white">
