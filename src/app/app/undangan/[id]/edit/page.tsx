@@ -193,7 +193,8 @@ export default function EditInvitationPage() {
       const result = await res.json();
       if (!res.ok) throw new Error(result.error ?? 'Gagal menyimpan subdomain');
       setInvitation(prev => prev ? { ...prev, customDomain: result.customDomain } : prev);
-      toast.success(result.customDomain ? 'Subdomain berhasil disimpan!' : 'Subdomain dihapus');
+      setCustomDomainInput(result.customDomain ?? '');
+      toast.success(result.customDomain ? `Subdomain aktif: ${result.customDomain}.${appDomain}` : 'Subdomain dihapus');
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Gagal menyimpan subdomain');
     } finally {
@@ -680,12 +681,21 @@ export default function EditInvitationPage() {
           <SectionCard title="Link Undangan">
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">URL Undangan</label>
+                <div className="flex items-center gap-2 mb-2">
+                  <label className="text-sm font-medium text-gray-700">URL Undangan</label>
+                  {invitation?.customDomain && (
+                    <span className="text-xs font-medium text-green-700 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full">
+                      Subdomain aktif
+                    </span>
+                  )}
+                </div>
                 <div className="flex items-center gap-2">
-                  <div className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-600 font-mono truncate">
-                    {invitation?.customDomain
-                      ? `https://${invitation.customDomain}.${appDomain}`
-                      : `${typeof window !== 'undefined' ? window.location.origin : `https://${appDomain}`}/u/${invitation?.slug}`}
+                  <div className={`flex-1 px-4 py-2.5 border rounded-xl text-sm font-mono truncate ${
+                    invitation?.customDomain
+                      ? 'bg-green-50 border-green-200 text-green-800'
+                      : 'bg-gray-50 border-gray-200 text-gray-600'
+                  }`}>
+                    {getInvitationUrl()}
                   </div>
                   <Button size="sm" variant="outline" onClick={copyLink}>
                     Salin
@@ -718,7 +728,7 @@ export default function EditInvitationPage() {
                 </Button>
                 {invitation?.isPublished && (
                   <a
-                    href={invitation.customDomain ? `https://${invitation.customDomain}.${appDomain}` : `/u/${invitation.slug}`}
+                    href={getInvitationUrl()}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-1.5 text-sm text-primary hover:underline font-medium"
@@ -798,11 +808,11 @@ export default function EditInvitationPage() {
                   </p>
                 </div>
 
-                {customDomainInput && (
+                {customDomainInput && customDomainInput !== (invitation?.customDomain ?? '') && (
                   <div className="px-4 py-3 bg-cream-50 border border-cream-200 rounded-xl">
-                    <p className="text-xs text-gray-500 mb-0.5">Preview URL Anda:</p>
+                    <p className="text-xs text-gray-500 mb-0.5">Preview URL setelah disimpan:</p>
                     <p className="text-sm font-mono text-primary font-medium">
-                      {customDomainInput}.{appDomain}
+                      https://{customDomainInput}.{appDomain}
                     </p>
                   </div>
                 )}
