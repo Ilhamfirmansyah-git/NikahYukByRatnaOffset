@@ -187,22 +187,6 @@ export default function HargaPage() {
                         </div>
                       )}
 
-                      {/* Template count badge */}
-                      <div className="mb-4">
-                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
-                          isHighlight
-                            ? "bg-white/20 text-white border border-white/30"
-                            : pkg.templateIds.length === 0
-                            ? "bg-green-50 text-green-700 border border-green-200"
-                            : "bg-amber-50 text-amber-700 border border-amber-200"
-                        }`}>
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-                          </svg>
-                          {pkg.templateIds.length === 0 ? "Semua template tersedia" : `${pkg.templateIds.length} template tersedia`}
-                        </span>
-                      </div>
-
                       <h2 className={`font-display text-2xl font-bold mb-1 ${isHighlight ? "text-white" : "text-gray-900"}`}>
                         {pkg.name}
                       </h2>
@@ -248,6 +232,27 @@ export default function HargaPage() {
                         Fitur paket
                       </p>
                       <ul className="space-y-2">
+                        {/* Template row */}
+                        <li className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2.5">
+                            <svg className={`w-4 h-4 flex-shrink-0 ${isHighlight ? "text-amber-300" : "text-primary"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span className={`text-sm font-medium ${isHighlight ? "text-white" : "text-gray-700"}`}>
+                              {pkg.templateIds.length === 0
+                                ? "Semua template"
+                                : `${pkg.templateIds.length} template pilihan`}
+                            </span>
+                          </div>
+                          <Link
+                            href="/template"
+                            className={`text-[11px] underline underline-offset-2 flex-shrink-0 ${isHighlight ? "text-primary-200 hover:text-white" : "text-primary/70 hover:text-primary"}`}
+                          >
+                            Lihat →
+                          </Link>
+                        </li>
+
+                        {/* Max photos */}
                         <li className="flex items-center gap-2.5">
                           <svg className={`w-4 h-4 flex-shrink-0 ${isHighlight ? "text-amber-300" : "text-primary"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -256,6 +261,7 @@ export default function HargaPage() {
                             Maks. {pkg.features.maxPhotos} foto galeri
                           </span>
                         </li>
+
                         {DYNAMIC_FEATURES.map((f) => (
                           <li key={f.key} className="flex items-center gap-2.5">
                             {pkg.features[f.key] ? (
