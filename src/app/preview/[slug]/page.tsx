@@ -12,7 +12,8 @@ interface Props {
 export async function generateMetadata({ params }: Props) {
   const template = await prisma.template.findUnique({ where: { slug: params.slug } });
   return {
-    title: template ? `Preview: ${template.name} — Nikah Yuk` : 'Preview Template',
+    title: template ? `Preview: ${template.name}` : 'Preview Template',
+    robots: { index: false, follow: false },
   };
 }
 
