@@ -1,0 +1,258 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAF6ED"/>
+      <stop offset="50%" style="stop-color:#F5EDD8"/>
+      <stop offset="100%" style="stop-color:#FAF6ED"/>
+    </linearGradient>
+    <linearGradient id="brown" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3d1f08"/>
+      <stop offset="50%" style="stop-color:#5C2E0E"/>
+      <stop offset="100%" style="stop-color:#3d1f08"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8B6914"/>
+      <stop offset="50%" style="stop-color:#C9A057"/>
+      <stop offset="100%" style="stop-color:#8B6914"/>
+    </linearGradient>
+    <linearGradient id="petalFall" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#d4956a" stop-opacity="0.6"/>
+      <stop offset="100%" style="stop-color:#c9784a" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="400" fill="url(#bg)"/>
+
+  <!-- Kawung batik outer border band -->
+  <!-- Top band -->
+  <rect x="0" y="0" width="600" height="28" fill="#5C2E0E" opacity="0.85"/>
+  <!-- Bottom band -->
+  <rect x="0" y="372" width="600" height="28" fill="#5C2E0E" opacity="0.85"/>
+  <!-- Left band -->
+  <rect x="0" y="28" width="28" height="344" fill="#5C2E0E" opacity="0.85"/>
+  <!-- Right band -->
+  <rect x="572" y="28" width="28" height="344" fill="#5C2E0E" opacity="0.85"/>
+
+  <!-- Kawung pattern in border bands -->
+  <!-- Top band kawung circles -->
+  <g fill="none" stroke="#C9A057" stroke-width="0.6" opacity="0.6">
+    <circle cx="40" cy="14" r="8"/>
+    <circle cx="40" cy="14" r="4"/>
+    <circle cx="64" cy="14" r="8"/>
+    <circle cx="64" cy="14" r="4"/>
+    <circle cx="88" cy="14" r="8"/>
+    <circle cx="88" cy="14" r="4"/>
+    <circle cx="112" cy="14" r="8"/>
+    <circle cx="112" cy="14" r="4"/>
+    <circle cx="136" cy="14" r="8"/>
+    <circle cx="136" cy="14" r="4"/>
+    <circle cx="160" cy="14" r="8"/>
+    <circle cx="160" cy="14" r="4"/>
+    <circle cx="184" cy="14" r="8"/>
+    <circle cx="184" cy="14" r="4"/>
+    <circle cx="208" cy="14" r="8"/>
+    <circle cx="208" cy="14" r="4"/>
+    <circle cx="232" cy="14" r="8"/>
+    <circle cx="232" cy="14" r="4"/>
+    <circle cx="256" cy="14" r="8"/>
+    <circle cx="256" cy="14" r="4"/>
+    <circle cx="280" cy="14" r="8"/>
+    <circle cx="280" cy="14" r="4"/>
+    <circle cx="304" cy="14" r="8"/>
+    <circle cx="304" cy="14" r="4"/>
+    <circle cx="328" cy="14" r="8"/>
+    <circle cx="328" cy="14" r="4"/>
+    <circle cx="352" cy="14" r="8"/>
+    <circle cx="352" cy="14" r="4"/>
+    <circle cx="376" cy="14" r="8"/>
+    <circle cx="376" cy="14" r="4"/>
+    <circle cx="400" cy="14" r="8"/>
+    <circle cx="400" cy="14" r="4"/>
+    <circle cx="424" cy="14" r="8"/>
+    <circle cx="424" cy="14" r="4"/>
+    <circle cx="448" cy="14" r="8"/>
+    <circle cx="448" cy="14" r="4"/>
+    <circle cx="472" cy="14" r="8"/>
+    <circle cx="472" cy="14" r="4"/>
+    <circle cx="496" cy="14" r="8"/>
+    <circle cx="496" cy="14" r="4"/>
+    <circle cx="520" cy="14" r="8"/>
+    <circle cx="520" cy="14" r="4"/>
+    <circle cx="544" cy="14" r="8"/>
+    <circle cx="544" cy="14" r="4"/>
+    <circle cx="568" cy="14" r="8"/>
+    <circle cx="568" cy="14" r="4"/>
+  </g>
+
+  <!-- Bottom band kawung (same) -->
+  <g fill="none" stroke="#C9A057" stroke-width="0.6" opacity="0.6">
+    <circle cx="40" cy="386" r="8"/>
+    <circle cx="40" cy="386" r="4"/>
+    <circle cx="64" cy="386" r="8"/>
+    <circle cx="64" cy="386" r="4"/>
+    <circle cx="88" cy="386" r="8"/>
+    <circle cx="88" cy="386" r="4"/>
+    <circle cx="112" cy="386" r="8"/>
+    <circle cx="112" cy="386" r="4"/>
+    <circle cx="136" cy="386" r="8"/>
+    <circle cx="136" cy="386" r="4"/>
+    <circle cx="160" cy="386" r="8"/>
+    <circle cx="160" cy="386" r="4"/>
+    <circle cx="184" cy="386" r="8"/>
+    <circle cx="184" cy="386" r="4"/>
+    <circle cx="208" cy="386" r="8"/>
+    <circle cx="208" cy="386" r="4"/>
+    <circle cx="232" cy="386" r="8"/>
+    <circle cx="232" cy="386" r="4"/>
+    <circle cx="256" cy="386" r="8"/>
+    <circle cx="256" cy="386" r="4"/>
+    <circle cx="280" cy="386" r="8"/>
+    <circle cx="280" cy="386" r="4"/>
+    <circle cx="304" cy="386" r="8"/>
+    <circle cx="304" cy="386" r="4"/>
+    <circle cx="328" cy="386" r="8"/>
+    <circle cx="328" cy="386" r="4"/>
+    <circle cx="352" cy="386" r="8"/>
+    <circle cx="352" cy="386" r="4"/>
+    <circle cx="376" cy="386" r="8"/>
+    <circle cx="376" cy="386" r="4"/>
+    <circle cx="400" cy="386" r="8"/>
+    <circle cx="400" cy="386" r="4"/>
+    <circle cx="424" cy="386" r="8"/>
+    <circle cx="424" cy="386" r="4"/>
+    <circle cx="448" cy="386" r="8"/>
+    <circle cx="448" cy="386" r="4"/>
+    <circle cx="472" cy="386" r="8"/>
+    <circle cx="472" cy="386" r="4"/>
+    <circle cx="496" cy="386" r="8"/>
+    <circle cx="496" cy="386" r="4"/>
+    <circle cx="520" cy="386" r="8"/>
+    <circle cx="520" cy="386" r="4"/>
+    <circle cx="544" cy="386" r="8"/>
+    <circle cx="544" cy="386" r="4"/>
+    <circle cx="568" cy="386" r="8"/>
+    <circle cx="568" cy="386" r="4"/>
+  </g>
+
+  <!-- Left band kawung circles -->
+  <g fill="none" stroke="#C9A057" stroke-width="0.6" opacity="0.6">
+    <circle cx="14" cy="52" r="8"/><circle cx="14" cy="52" r="4"/>
+    <circle cx="14" cy="76" r="8"/><circle cx="14" cy="76" r="4"/>
+    <circle cx="14" cy="100" r="8"/><circle cx="14" cy="100" r="4"/>
+    <circle cx="14" cy="124" r="8"/><circle cx="14" cy="124" r="4"/>
+    <circle cx="14" cy="148" r="8"/><circle cx="14" cy="148" r="4"/>
+    <circle cx="14" cy="172" r="8"/><circle cx="14" cy="172" r="4"/>
+    <circle cx="14" cy="196" r="8"/><circle cx="14" cy="196" r="4"/>
+    <circle cx="14" cy="220" r="8"/><circle cx="14" cy="220" r="4"/>
+    <circle cx="14" cy="244" r="8"/><circle cx="14" cy="244" r="4"/>
+    <circle cx="14" cy="268" r="8"/><circle cx="14" cy="268" r="4"/>
+    <circle cx="14" cy="292" r="8"/><circle cx="14" cy="292" r="4"/>
+    <circle cx="14" cy="316" r="8"/><circle cx="14" cy="316" r="4"/>
+    <circle cx="14" cy="340" r="8"/><circle cx="14" cy="340" r="4"/>
+    <circle cx="14" cy="364" r="8"/><circle cx="14" cy="364" r="4"/>
+  </g>
+
+  <!-- Right band kawung circles -->
+  <g fill="none" stroke="#C9A057" stroke-width="0.6" opacity="0.6">
+    <circle cx="586" cy="52" r="8"/><circle cx="586" cy="52" r="4"/>
+    <circle cx="586" cy="76" r="8"/><circle cx="586" cy="76" r="4"/>
+    <circle cx="586" cy="100" r="8"/><circle cx="586" cy="100" r="4"/>
+    <circle cx="586" cy="124" r="8"/><circle cx="586" cy="124" r="4"/>
+    <circle cx="586" cy="148" r="8"/><circle cx="586" cy="148" r="4"/>
+    <circle cx="586" cy="172" r="8"/><circle cx="586" cy="172" r="4"/>
+    <circle cx="586" cy="196" r="8"/><circle cx="586" cy="196" r="4"/>
+    <circle cx="586" cy="220" r="8"/><circle cx="586" cy="220" r="4"/>
+    <circle cx="586" cy="244" r="8"/><circle cx="586" cy="244" r="4"/>
+    <circle cx="586" cy="268" r="8"/><circle cx="586" cy="268" r="4"/>
+    <circle cx="586" cy="292" r="8"/><circle cx="586" cy="292" r="4"/>
+    <circle cx="586" cy="316" r="8"/><circle cx="586" cy="316" r="4"/>
+    <circle cx="586" cy="340" r="8"/><circle cx="586" cy="340" r="4"/>
+    <circle cx="586" cy="364" r="8"/><circle cx="586" cy="364" r="4"/>
+  </g>
+
+  <!-- Inner decorative border -->
+  <rect x="36" y="36" width="528" height="328" fill="none" stroke="#C9A057" stroke-width="1" opacity="0.4"/>
+  <rect x="40" y="40" width="520" height="320" fill="none" stroke="#5C2E0E" stroke-width="0.5" opacity="0.2"/>
+
+  <!-- Falling petals (scattered) -->
+  <g opacity="0.5">
+    <ellipse cx="90" cy="100" rx="7" ry="4" fill="#d4956a" transform="rotate(-25 90 100)"/>
+    <ellipse cx="130" cy="75" rx="6" ry="3.5" fill="#c9784a" transform="rotate(15 130 75)"/>
+    <ellipse cx="75" cy="260" rx="8" ry="4.5" fill="#d4956a" transform="rotate(-40 75 260)"/>
+    <ellipse cx="110" cy="310" rx="6" ry="3" fill="#c9784a" transform="rotate(20 110 310)"/>
+    <ellipse cx="510" cy="90" rx="7" ry="4" fill="#d4956a" transform="rotate(25 510 90)"/>
+    <ellipse cx="470" cy="130" rx="6" ry="3.5" fill="#c9784a" transform="rotate(-15 470 130)"/>
+    <ellipse cx="525" cy="280" rx="8" ry="4.5" fill="#d4956a" transform="rotate(40 525 280)"/>
+    <ellipse cx="490" cy="320" rx="6" ry="3" fill="#c9784a" transform="rotate(-20 490 320)"/>
+    <!-- Smaller petals scattered -->
+    <ellipse cx="155" cy="180" rx="5" ry="3" fill="#d4956a" opacity="0.6" transform="rotate(30 155 180)"/>
+    <ellipse cx="445" cy="200" rx="5" ry="3" fill="#c9784a" opacity="0.6" transform="rotate(-30 445 200)"/>
+    <ellipse cx="168" cy="330" rx="5" ry="3" fill="#d4956a" opacity="0.5" transform="rotate(-10 168 330)"/>
+    <ellipse cx="432" cy="340" rx="5" ry="3" fill="#c9784a" opacity="0.5" transform="rotate(10 432 340)"/>
+  </g>
+
+  <!-- Top label -->
+  <text x="300" y="60" text-anchor="middle" font-family="Georgia,serif" font-size="8" fill="#5C2E0E" letter-spacing="7" opacity="0.7">UNDANGAN PERNIKAHAN</text>
+
+  <!-- Top ornamental divider -->
+  <g transform="translate(300,72)" opacity="0.7">
+    <line x1="-110" y1="0" x2="-20" y2="0" stroke="url(#gold)" stroke-width="0.8" opacity="0.6"/>
+    <line x1="20" y1="0" x2="110" y2="0" stroke="url(#gold)" stroke-width="0.8" opacity="0.6"/>
+    <!-- Diamond motif center -->
+    <polygon points="0,-6 6,0 0,6 -6,0" fill="#C9A057" opacity="0.7"/>
+    <polygon points="0,-6 6,0 0,6 -6,0" fill="none" stroke="#5C2E0E" stroke-width="0.5" opacity="0.4"/>
+    <circle cx="-12" cy="0" r="1.5" fill="#C9A057" opacity="0.5"/>
+    <circle cx="12" cy="0" r="1.5" fill="#C9A057" opacity="0.5"/>
+  </g>
+
+  <!-- Couple names -->
+  <text x="300" y="155" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="38" fill="#5C2E0E" font-style="italic" font-weight="400">Siti</text>
+
+  <!-- Ampersand divider -->
+  <g transform="translate(300,178)">
+    <line x1="-100" y1="0" x2="-16" y2="0" stroke="url(#gold)" stroke-width="0.8" opacity="0.5"/>
+    <line x1="16" y1="0" x2="100" y2="0" stroke="url(#gold)" stroke-width="0.8" opacity="0.5"/>
+    <!-- Kawung small -->
+    <circle cx="0" cy="0" r="6" fill="none" stroke="#C9A057" stroke-width="0.8" opacity="0.7"/>
+    <circle cx="0" cy="-6" r="3" fill="none" stroke="#C9A057" stroke-width="0.6" opacity="0.5"/>
+    <circle cx="0" cy="6" r="3" fill="none" stroke="#C9A057" stroke-width="0.6" opacity="0.5"/>
+    <circle cx="-6" cy="0" r="3" fill="none" stroke="#C9A057" stroke-width="0.6" opacity="0.5"/>
+    <circle cx="6" cy="0" r="3" fill="none" stroke="#C9A057" stroke-width="0.6" opacity="0.5"/>
+    <circle cx="0" cy="0" r="2" fill="#C9A057" opacity="0.6"/>
+  </g>
+
+  <text x="300" y="228" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="38" fill="#5C2E0E" font-style="italic" font-weight="400">Ahmad</text>
+
+  <!-- Date section divider -->
+  <g transform="translate(300,252)">
+    <line x1="-120" y1="0" x2="-22" y2="0" stroke="url(#gold)" stroke-width="0.7" opacity="0.45"/>
+    <line x1="22" y1="0" x2="120" y2="0" stroke="url(#gold)" stroke-width="0.7" opacity="0.45"/>
+    <!-- Parang motif simplified -->
+    <polygon points="0,-7 7,0 0,7 -7,0" fill="#C9A057" opacity="0.5"/>
+    <polygon points="0,-7 7,0 0,7 -7,0" fill="none" stroke="#5C2E0E" stroke-width="0.5"/>
+    <circle cx="-14" cy="0" r="1.5" fill="#C9A057" opacity="0.4"/>
+    <circle cx="14" cy="0" r="1.5" fill="#C9A057" opacity="0.4"/>
+  </g>
+
+  <!-- Date -->
+  <text x="300" y="278" text-anchor="middle" font-family="Georgia,serif" font-size="11" fill="#5C2E0E" letter-spacing="2" opacity="0.8">Sabtu, 14 Februari 2026</text>
+
+  <!-- Location line -->
+  <line x1="215" y1="292" x2="385" y2="292" stroke="#C9A057" stroke-width="0.5" opacity="0.4"/>
+
+  <!-- Location -->
+  <text x="300" y="311" text-anchor="middle" font-family="Georgia,serif" font-size="9.5" fill="#5C2E0E" letter-spacing="1" opacity="0.6">Grand Ballroom, Jakarta</text>
+
+  <!-- Bottom ornamental divider -->
+  <g transform="translate(300,330)" opacity="0.6">
+    <line x1="-110" y1="0" x2="-20" y2="0" stroke="url(#gold)" stroke-width="0.8" opacity="0.5"/>
+    <line x1="20" y1="0" x2="110" y2="0" stroke="url(#gold)" stroke-width="0.8" opacity="0.5"/>
+    <polygon points="0,-6 6,0 0,6 -6,0" fill="#C9A057" opacity="0.6"/>
+    <circle cx="-12" cy="0" r="1.5" fill="#C9A057" opacity="0.4"/>
+    <circle cx="12" cy="0" r="1.5" fill="#C9A057" opacity="0.4"/>
+  </g>
+
+  <!-- Watermark -->
+  <text x="300" y="360" text-anchor="middle" font-family="Georgia,serif" font-size="7.5" fill="#5C2E0E" opacity="0.3" letter-spacing="5">NIKAHYUK · BY RATNA OFFSET</text>
+</svg>

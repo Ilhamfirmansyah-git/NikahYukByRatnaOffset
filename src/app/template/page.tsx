@@ -49,6 +49,43 @@ function getAccent(category: string) {
   return categoryAccent[category] ?? 'bg-primary';
 }
 
+function TemplateThumbnail({ template }: { template: Template }) {
+  const [imgError, setImgError] = useState(false);
+
+  if (!imgError) {
+    return (
+      <div className="relative h-52 overflow-hidden bg-gray-100">
+        <img
+          src={`/templates/${template.slug}.svg`}
+          alt={template.name}
+          className="w-full h-full object-cover"
+          onError={() => setImgError(true)}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className={`relative h-52 bg-gradient-to-br ${getGradient(template.category)} flex items-center justify-center overflow-hidden`}>
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-4 right-4 w-20 h-20 rounded-full border-2 border-current" />
+        <div className="absolute bottom-4 left-4 w-12 h-12 rounded-full border-2 border-current" />
+      </div>
+      <div className="text-center z-10">
+        <div className={`w-14 h-14 ${getAccent(template.category)} rounded-full mx-auto mb-3 flex items-center justify-center shadow-md`}>
+          <span className="text-white font-display font-bold text-xl">
+            {template.name[0]}
+          </span>
+        </div>
+        <p className="font-display font-semibold text-gray-800 text-sm">
+          Siti &amp; Ahmad
+        </p>
+        <p className="text-xs text-gray-500">14 Februari 2026</p>
+      </div>
+    </div>
+  );
+}
+
 function PackageBadge({ packages }: { packages: PackageRef[] }) {
   if (packages.length === 0) {
     return (
@@ -171,23 +208,7 @@ export default function TemplatePage() {
                       className="card group hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
                     >
                       {/* Thumbnail */}
-                      <div className={`relative h-52 bg-gradient-to-br ${getGradient(template.category)} flex items-center justify-center overflow-hidden`}>
-                        <div className="absolute inset-0 opacity-10">
-                          <div className="absolute top-4 right-4 w-20 h-20 rounded-full border-2 border-current" />
-                          <div className="absolute bottom-4 left-4 w-12 h-12 rounded-full border-2 border-current" />
-                        </div>
-                        <div className="text-center z-10">
-                          <div className={`w-14 h-14 ${getAccent(template.category)} rounded-full mx-auto mb-3 flex items-center justify-center shadow-md`}>
-                            <span className="text-white font-display font-bold text-xl">
-                              {template.name[0]}
-                            </span>
-                          </div>
-                          <p className="font-display font-semibold text-gray-800 text-sm">
-                            Siti &amp; Ahmad
-                          </p>
-                          <p className="text-xs text-gray-500">14 Februari 2026</p>
-                        </div>
-                      </div>
+                      <TemplateThumbnail template={template} />
 
                       {/* Content */}
                       <div className="p-5">

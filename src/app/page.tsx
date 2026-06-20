@@ -123,6 +123,33 @@ const categoryLabel: Record<string, string> = {
   romantis: 'Romantis',
 };
 
+function HomeThumbnail({ tmpl }: { tmpl: Template }) {
+  const [imgError, setImgError] = useState(false);
+  if (!imgError) {
+    return (
+      <div className="h-48 overflow-hidden bg-gray-100">
+        <img
+          src={`/templates/${tmpl.slug}.svg`}
+          alt={tmpl.name}
+          className="w-full h-full object-cover"
+          onError={() => setImgError(true)}
+        />
+      </div>
+    );
+  }
+  return (
+    <div className={`h-48 bg-gradient-to-br ${categoryGradient[tmpl.category] ?? 'from-primary-50 to-primary-100'} flex items-center justify-center`}>
+      <div className="text-center">
+        <div className={`w-12 h-12 ${categoryAccent[tmpl.category] ?? 'bg-primary'} rounded-full mx-auto mb-2 flex items-center justify-center`}>
+          <span className="text-white font-display font-bold text-lg">{tmpl.name[0]}</span>
+        </div>
+        <p className="font-display font-semibold text-gray-800">{tmpl.name}</p>
+        <p className="text-sm text-gray-600">{tmpl.description}</p>
+      </div>
+    </div>
+  );
+}
+
 function formatRupiah(n: number) {
   return new Intl.NumberFormat("id-ID", {
     style: "currency",
@@ -413,15 +440,7 @@ export default function HomePage() {
                 ))
               : templates.map((tmpl) => (
                   <div key={tmpl.id} className="card group cursor-pointer hover:shadow-lg transition-shadow">
-                    <div className={`h-48 bg-gradient-to-br ${categoryGradient[tmpl.category] ?? 'from-primary-50 to-primary-100'} flex items-center justify-center`}>
-                      <div className="text-center">
-                        <div className={`w-12 h-12 ${categoryAccent[tmpl.category] ?? 'bg-primary'} rounded-full mx-auto mb-2 flex items-center justify-center`}>
-                          <span className="text-white font-display font-bold text-lg">{tmpl.name[0]}</span>
-                        </div>
-                        <p className="font-display font-semibold text-gray-800">{tmpl.name}</p>
-                        <p className="text-sm text-gray-600">{tmpl.description}</p>
-                      </div>
-                    </div>
+                    <HomeThumbnail tmpl={tmpl} />
                     <div className="p-4 flex items-center justify-between">
                       <span className="text-xs font-medium bg-primary/10 text-primary px-2.5 py-1 rounded-full">
                         {categoryLabel[tmpl.category] ?? tmpl.category}
