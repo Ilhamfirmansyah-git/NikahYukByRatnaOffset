@@ -126,7 +126,7 @@ export default function OGImage() {
           }}
         >
           <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#7C5C3E' }} />
-          <span style={{ fontSize: 18, color: '#7C5C3E', fontWeight: 500 }}>nikahyuk.id</span>
+          <span style={{ fontSize: 18, color: '#7C5C3E', fontWeight: 500 }}>ratnaoffset.com</span>
         </div>
 
         {/* Ratna Offset credit */}

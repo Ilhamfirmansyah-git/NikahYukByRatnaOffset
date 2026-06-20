@@ -40,7 +40,7 @@ const lora = Lora({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://nikahyuk.id"),
+  metadataBase: new URL("https://ratnaoffset.com"),
   title: {
     default: "Nikah Yuk by Ratna Offset – Undangan Pernikahan Online",
     template: "%s | Nikah Yuk by Ratna Offset",
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "id_ID",
-    url: "https://nikahyuk.id",
+    url: "https://ratnaoffset.com",
     siteName: "Nikah Yuk by Ratna Offset",
     title: "Nikah Yuk by Ratna Offset – Undangan Pernikahan Online",
     description:
@@ -99,7 +99,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://nikahyuk.id",
+    canonical: "https://ratnaoffset.com",
   },
 };
 
@@ -107,7 +107,7 @@ const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Nikah Yuk by Ratna Offset",
-  url: "https://nikahyuk.id",
+  url: "https://ratnaoffset.com",
   description:
     "Platform undangan pernikahan digital online terpercaya di Indonesia. Template elegan, harga terjangkau mulai Rp99.000.",
   sameAs: [],
@@ -117,12 +117,12 @@ const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "Nikah Yuk by Ratna Offset",
-  url: "https://nikahyuk.id",
+  url: "https://ratnaoffset.com",
   potentialAction: {
     "@type": "SearchAction",
     target: {
       "@type": "EntryPoint",
-      urlTemplate: "https://nikahyuk.id/template?q={search_term_string}",
+      urlTemplate: "https://ratnaoffset.com/template?q={search_term_string}",
     },
     "query-input": "required name=search_term_string",
   },

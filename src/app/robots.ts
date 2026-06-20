@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/admin/', '/app/', '/api/'],
       },
     ],
-    sitemap: 'https://nikahyuk.id/sitemap.xml',
+    sitemap: 'https://ratnaoffset.com/sitemap.xml',
   };
 }

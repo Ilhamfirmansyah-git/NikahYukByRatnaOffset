@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Harga Paket — Nikah Yuk by Ratna Offset',
     description: 'Pilih paket undangan pernikahan digital terbaik. Mulai Rp99.000 dengan musik, RSVP, dan countdown timer.',
-    url: 'https://nikahyuk.id/harga',
+    url: 'https://ratnaoffset.com/harga',
   },
   alternates: {
-    canonical: 'https://nikahyuk.id/harga',
+    canonical: 'https://ratnaoffset.com/harga',
   },
 };
 

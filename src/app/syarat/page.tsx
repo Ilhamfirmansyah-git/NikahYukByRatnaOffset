@@ -5,7 +5,7 @@ import Footer from '@/components/layout/Footer';
 export const metadata = {
   title: 'Syarat & Ketentuan',
   description: 'Syarat dan ketentuan penggunaan layanan Nikah Yuk by Ratna Offset. Baca dengan seksama sebelum menggunakan platform undangan pernikahan digital kami.',
-  alternates: { canonical: 'https://nikahyuk.id/syarat' },
+  alternates: { canonical: 'https://ratnaoffset.com/syarat' },
 };
 
 export default function SyaratPage() {

@@ -113,7 +113,7 @@ export async function POST(req: NextRequest) {
         });
 
         // Send order confirmation email
-        const baseUrl = process.env.NEXTAUTH_URL ?? 'https://nikahyuk.id';
+        const baseUrl = process.env.NEXTAUTH_URL ?? 'https://ratnaoffset.com';
         sendOrderConfirmation({
           to: order.user.email,
           name: order.user.name ?? order.user.email,

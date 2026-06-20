@@ -15,10 +15,10 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Template Undangan Pernikahan — Nikah Yuk by Ratna Offset',
     description: 'Temukan template undangan pernikahan digital yang elegan. Berbagai pilihan tema untuk hari istimewa Anda.',
-    url: 'https://nikahyuk.id/template',
+    url: 'https://ratnaoffset.com/template',
   },
   alternates: {
-    canonical: 'https://nikahyuk.id/template',
+    canonical: 'https://ratnaoffset.com/template',
   },
 };
 

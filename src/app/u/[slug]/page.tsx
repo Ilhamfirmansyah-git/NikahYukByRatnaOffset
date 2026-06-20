@@ -90,7 +90,7 @@ export default async function InvitationPage({ params, searchParams }: PageProps
   const pria = data.mempelai?.pria?.namaPanggilan || data.mempelai?.pria?.namaLengkap || 'Pria';
   const wanita = data.mempelai?.wanita?.namaPanggilan || data.mempelai?.wanita?.namaLengkap || 'Wanita';
   const acaraUtama = data.acara?.find(a => a.nama?.toLowerCase().includes('akad') || a.nama?.toLowerCase().includes('resepsi')) ?? data.acara?.[0];
-  const baseUrl = process.env.NEXTAUTH_URL ?? 'https://nikahyuk.id';
+  const baseUrl = process.env.NEXTAUTH_URL ?? 'https://ratnaoffset.com';
 
   const jsonLd = {
     '@context': 'https://schema.org',

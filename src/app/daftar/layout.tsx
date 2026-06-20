@@ -6,10 +6,10 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Daftar — Nikah Yuk by Ratna Offset',
     description: 'Buat undangan pernikahan digital Anda sekarang. Mudah, cepat, dan elegan.',
-    url: 'https://nikahyuk.id/daftar',
+    url: 'https://ratnaoffset.com/daftar',
   },
   alternates: {
-    canonical: 'https://nikahyuk.id/daftar',
+    canonical: 'https://ratnaoffset.com/daftar',
   },
 };
 

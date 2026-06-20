@@ -33,7 +33,7 @@ export async function GET(
       return NextResponse.json({ error: 'Akses ditolak' }, { status: 403 });
     }
 
-    const baseUrl = process.env.NEXTAUTH_URL ?? 'https://nikahyuk.id';
+    const baseUrl = process.env.NEXTAUTH_URL ?? 'https://ratnaoffset.com';
     const url = `${baseUrl}/u/${invitation.slug}`;
 
     const buffer = await QRCode.toBuffer(url, { width: 400, margin: 2 });

@@ -40,7 +40,7 @@ export async function POST(
 
     // Send email notification only when first-time publishing
     if (updated.isPublished && !invitation.isPublished) {
-      const baseUrl = process.env.NEXTAUTH_URL ?? 'https://nikahyuk.id';
+      const baseUrl = process.env.NEXTAUTH_URL ?? 'https://ratnaoffset.com';
       sendInvitationPublished({
         to: invitation.user.email,
         name: invitation.user.name ?? invitation.user.email,
