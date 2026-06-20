@@ -7,6 +7,7 @@ import MinimalisPutih from './MinimalisPutih';
 import Islami from './Islami';
 import GelapRomantis from './GelapRomantis';
 import RomantisPink from './RomantisPink';
+import JavaneseHeritage from './JavaneseHeritage';
 
 export const TEMPLATE_REGISTRY: Record<string, ComponentType<TemplateProps>> = {
   'elegan-gold': EleganGold,
@@ -14,4 +15,5 @@ export const TEMPLATE_REGISTRY: Record<string, ComponentType<TemplateProps>> = {
   'islami': Islami,
   'gelap-romantis': GelapRomantis,
   'romantis-pink': RomantisPink,
+  'javanese-heritage': JavaneseHeritage,
 };

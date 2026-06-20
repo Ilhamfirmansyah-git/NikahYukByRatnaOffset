@@ -47,6 +47,14 @@ async function main() {
       thumbnail: '/templates/romantis-pink.jpg',
       description: 'Template pernikahan bertema pink putih dengan animasi bunga dan ornamen floral yang elegan',
     },
+    {
+      name: 'Javanese Heritage',
+      slug: 'javanese-heritage',
+      componentKey: 'javanese-heritage',
+      category: 'tradisional',
+      thumbnail: '/templates/javanese-heritage.jpg',
+      description: 'Template mewah bernuansa batik Jawa dengan ornamen kawung, border emas, frame dekoratif, dan animasi kelopak bunga',
+    },
   ];
 
   for (const template of templates) {

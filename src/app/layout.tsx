@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter, Playfair_Display, Cormorant_Garamond, Great_Vibes, Lora } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -15,6 +15,28 @@ const playfairDisplay = Playfair_Display({
   display: "swap",
   weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
+});
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  variable: "--font-cormorant",
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
+const greatVibes = Great_Vibes({
+  subsets: ["latin"],
+  variable: "--font-great-vibes",
+  weight: ["400"],
+  display: "swap",
+});
+
+const lora = Lora({
+  subsets: ["latin"],
+  variable: "--font-lora",
+  weight: ["400", "500"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -58,7 +80,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className={`${inter.variable} ${playfairDisplay.variable}`}>
+    <html lang="id" className={`${inter.variable} ${playfairDisplay.variable} ${cormorant.variable} ${greatVibes.variable} ${lora.variable}`}>
       <body className="font-sans">
         <Providers>{children}</Providers>
       </body>
