@@ -296,6 +296,19 @@ export default function BeliPage() {
                     )}
                   </div>
 
+                  <div className="mb-4">
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
+                      tmplCount === 0
+                        ? 'bg-green-50 text-green-700 border border-green-200'
+                        : 'bg-amber-50 text-amber-700 border border-amber-200'
+                    }`}>
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                      </svg>
+                      {tmplCount === 0 ? 'Semua template tersedia' : `${tmplCount} template tersedia`}
+                    </span>
+                  </div>
+
                   <p className="text-3xl font-bold text-primary mb-0.5">
                     {formatRupiah(pkg.price)}
                   </p>
@@ -322,10 +335,6 @@ export default function BeliPage() {
                         <span className={pkg.features.musik ? 'text-gray-700 font-medium' : 'text-gray-400 line-through'}>Musik latar</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        {pkg.features.livestream ? <CheckIcon /> : <XIcon />}
-                        <span className={pkg.features.livestream ? 'text-gray-700 font-medium' : 'text-gray-400 line-through'}>Live streaming</span>
-                      </li>
-                      <li className="flex items-center gap-2">
                         {pkg.features.guestManagement ? <CheckIcon /> : <XIcon />}
                         <span className={pkg.features.guestManagement ? 'text-gray-700 font-medium' : 'text-gray-400 line-through'}>Manajemen tamu</span>
                       </li>
@@ -334,16 +343,6 @@ export default function BeliPage() {
                         <span className={pkg.features.customDomain ? 'text-gray-700 font-medium' : 'text-gray-400 line-through'}>Link subdomain eksklusif</span>
                       </li>
                     </ul>
-                  </div>
-
-                  <div className="pt-3 border-t border-cream-100">
-                    <p className="text-xs text-gray-500">
-                      {tmplCount === 0 ? (
-                        <span className="font-semibold text-gray-700">Semua template tersedia</span>
-                      ) : (
-                        <span className="font-semibold text-amber-600">Template terbatas ({tmplCount} pilihan)</span>
-                      )}
-                    </p>
                   </div>
                 </div>
               );
