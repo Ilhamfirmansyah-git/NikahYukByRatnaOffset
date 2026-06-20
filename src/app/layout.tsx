@@ -64,6 +64,9 @@ export const metadata: Metadata = {
   authors: [{ name: "Nikah Yuk by Ratna Offset" }],
   creator: "Nikah Yuk by Ratna Offset",
   publisher: "Ratna Offset",
+  verification: {
+    google: "ANDR83_5CrxixwBsJdjfIskjXEU9yVZ_4TleUUcxEDw",
+  },
   openGraph: {
     type: "website",
     locale: "id_ID",
