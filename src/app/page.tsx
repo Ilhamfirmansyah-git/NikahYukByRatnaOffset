@@ -31,6 +31,7 @@ interface Package {
   durationDays: number;
   features: PackageFeatures;
   isActive: boolean;
+  templateIds: string[];
 }
 
 // ──── DATA ────────────────────────────────────────────────────────────────────
@@ -478,10 +479,13 @@ export default function HomePage() {
                 ))
               : packages.map((pkg, idx) => {
                   const isHighlight = idx === Math.floor(packages.length / 2);
+                  const templateLabel = pkg.templateIds.length === 0
+                    ? "Semua template"
+                    : `${pkg.templateIds.length} template pilihan`;
                   const pkgFeatures: string[] = [
                     "RSVP online & buku tamu",
                     "Countdown timer",
-                    "Semua template",
+                    templateLabel,
                     ...(pkg.features.maxPhotos !== undefined
                       ? [`Maks. ${pkg.features.maxPhotos} foto galeri`]
                       : []),
