@@ -119,6 +119,7 @@ export default function TemplatePage() {
   const [templates, setTemplates] = useState<Template[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('Semua');
+  const [waUrl, setWaUrl] = useState('https://wa.me/6281234567890');
 
   useEffect(() => {
     fetch('/api/templates')
@@ -130,6 +131,10 @@ export default function TemplatePage() {
         setTemplates([]);
       })
       .finally(() => setLoading(false));
+    fetch('/api/settings?keys=waUrl')
+      .then(r => r.json())
+      .then((d: { waUrl?: string }) => { if (d.waUrl) setWaUrl(d.waUrl); })
+      .catch(() => {});
   }, []);
 
   const filtered =
@@ -264,7 +269,7 @@ export default function TemplatePage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
-                href="https://wa.me/6281234567890"
+                href={waUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center px-6 py-3 bg-white text-primary font-semibold rounded-lg hover:bg-cream-100 transition-colors"

@@ -244,6 +244,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 export default function HomePage() {
   const [templates, setTemplates] = useState<Template[]>([]);
   const [packages, setPackages] = useState<Package[]>([]);
+  const [waUrl, setWaUrl] = useState('https://wa.me/6281234567890');
 
   const faqs = [
     staticFaqs[0],
@@ -266,6 +267,10 @@ export default function HomePage() {
     fetch('/api/packages')
       .then(r => r.json())
       .then((data: Package[]) => { if (Array.isArray(data)) setPackages(data); })
+      .catch(() => {});
+    fetch('/api/settings?keys=waUrl')
+      .then(r => r.json())
+      .then((d: { waUrl?: string }) => { if (d.waUrl) setWaUrl(d.waUrl); })
       .catch(() => {});
   }, []);
 
@@ -656,7 +661,7 @@ export default function HomePage() {
 
           <div className="text-center mt-10">
             <p className="text-gray-600 mb-4">Tidak menemukan jawaban yang Anda cari?</p>
-            <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer">
+            <a href={waUrl} target="_blank" rel="noopener noreferrer">
               <Button variant="primary" size="lg">
                 Hubungi Kami via WhatsApp
               </Button>
