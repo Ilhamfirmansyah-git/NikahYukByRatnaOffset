@@ -1,4 +1,5 @@
 import type { CanvaTemplateTheme } from '../base/types';
+import { BlueFlowerBouquets } from '../BlueFlowerElegantDecorators';
 
 export const BlueFlowerElegantTheme: CanvaTemplateTheme = {
   slug: 'blue-flower-elegant',
@@ -24,5 +25,8 @@ export const BlueFlowerElegantTheme: CanvaTemplateTheme = {
     bgPosition: 'center center',
     titleColor: '#1a2a4a',
     subtitleColor: '#c9a84c',
+  },
+  decorators: {
+    CoverBottomDecor: BlueFlowerBouquets,
   },
 };
