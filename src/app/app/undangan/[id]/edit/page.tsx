@@ -8,6 +8,7 @@ import Input from '@/components/ui/Input';
 import ImageUpload from '@/components/ui/ImageUpload';
 import type { InvitationData, Acara, LoveStoryItem, RekeningItem, EWalletItem } from '@/types/invitation';
 import MusicPicker from './MusicPicker';
+import LocationSearch from '@/components/invitation/LocationSearch';
 
 const TABS = [
   { id: 'mempelai', label: 'Mempelai', shortLabel: 'Mempelai' },
@@ -405,7 +406,13 @@ export default function EditInvitationPage() {
                 <Input type="date" label="Tanggal" value={acara.tanggal} onChange={e => { const a = [...data.acara]; a[i] = { ...a[i], tanggal: e.target.value }; updateData('acara', a); }} />
                 <Input type="time" label="Waktu Mulai" value={acara.waktuMulai} onChange={e => { const a = [...data.acara]; a[i] = { ...a[i], waktuMulai: e.target.value }; updateData('acara', a); }} />
                 <Input type="time" label="Waktu Selesai" value={acara.waktuSelesai} onChange={e => { const a = [...data.acara]; a[i] = { ...a[i], waktuSelesai: e.target.value }; updateData('acara', a); }} />
-                <Input label="Nama Lokasi" value={acara.lokasi} onChange={e => { const a = [...data.acara]; a[i] = { ...a[i], lokasi: e.target.value }; updateData('acara', a); }} placeholder="Masjid Al-Hikmah" />
+                <LocationSearch
+                    label="Nama Lokasi"
+                    value={acara.lokasi}
+                    onChange={v => { const a = [...data.acara]; a[i] = { ...a[i], lokasi: v }; updateData('acara', a); }}
+                    onSelect={({ lokasi, alamat, mapsUrl }) => { const a = [...data.acara]; a[i] = { ...a[i], lokasi, alamat, mapsUrl }; updateData('acara', a); }}
+                    placeholder="Cari nama gedung atau masjid..."
+                  />
                 <Input label="URL Google Maps" value={acara.mapsUrl ?? ''} onChange={e => { const a = [...data.acara]; a[i] = { ...a[i], mapsUrl: e.target.value }; updateData('acara', a); }} placeholder="https://maps.google.com/..." />
               </div>
               <div className="mb-4">
