@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8f9ff"/>
+      <stop offset="100%" style="stop-color:#eef2ff"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#c9a84c"/>
+      <stop offset="100%" style="stop-color:#e8d5a3"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="600" height="400" fill="url(#bg)"/>
+  <!-- Gold border frame -->
+  <rect x="12" y="12" width="576" height="376" fill="none" stroke="#c9a84c" stroke-width="1.5" rx="4"/>
+  <rect x="18" y="18" width="564" height="364" fill="none" stroke="#c9a84c" stroke-width="0.5" rx="2"/>
+  <!-- Top floral decoration (simplified blue flowers) -->
+  <ellipse cx="80" cy="60" rx="45" ry="35" fill="#4a7ab5" opacity="0.15"/>
+  <ellipse cx="60" cy="45" rx="20" ry="18" fill="#1a2a4a" opacity="0.12"/>
+  <ellipse cx="100" cy="35" rx="18" ry="22" fill="#4a7ab5" opacity="0.18"/>
+  <ellipse cx="130" cy="55" rx="22" ry="18" fill="#1a2a4a" opacity="0.10"/>
+  <!-- Top right floral -->
+  <ellipse cx="520" cy="60" rx="45" ry="35" fill="#4a7ab5" opacity="0.15"/>
+  <ellipse cx="540" cy="45" rx="20" ry="18" fill="#1a2a4a" opacity="0.12"/>
+  <ellipse cx="500" cy="35" rx="18" ry="22" fill="#4a7ab5" opacity="0.18"/>
+  <ellipse cx="470" cy="55" rx="22" ry="18" fill="#1a2a4a" opacity="0.10"/>
+  <!-- Bottom left floral -->
+  <ellipse cx="80" cy="340" rx="45" ry="35" fill="#4a7ab5" opacity="0.15"/>
+  <ellipse cx="60" cy="355" rx="20" ry="18" fill="#1a2a4a" opacity="0.12"/>
+  <ellipse cx="110" cy="365" rx="22" ry="18" fill="#4a7ab5" opacity="0.18"/>
+  <!-- Bottom right floral -->
+  <ellipse cx="520" cy="340" rx="45" ry="35" fill="#4a7ab5" opacity="0.15"/>
+  <ellipse cx="540" cy="355" rx="20" ry="18" fill="#1a2a4a" opacity="0.12"/>
+  <ellipse cx="490" cy="365" rx="22" ry="18" fill="#4a7ab5" opacity="0.18"/>
+  <!-- Gold divider lines -->
+  <line x1="220" y1="175" x2="380" y2="175" stroke="#c9a84c" stroke-width="0.8" opacity="0.6"/>
+  <line x1="220" y1="235" x2="380" y2="235" stroke="#c9a84c" stroke-width="0.8" opacity="0.6"/>
+  <!-- Diamond accents -->
+  <polygon points="300,168 304,175 300,182 296,175" fill="#c9a84c" opacity="0.5"/>
+  <polygon points="300,228 304,235 300,242 296,235" fill="#c9a84c" opacity="0.5"/>
+  <!-- Main text -->
+  <text x="300" y="198" text-anchor="middle" font-family="Georgia, serif" font-size="13" fill="#1a2a4a" letter-spacing="3" font-weight="300">THE WEDDING OF</text>
+  <text x="300" y="222" text-anchor="middle" font-family="Georgia, serif" font-size="22" fill="#1a2a4a" font-style="italic" font-weight="600">Siti &amp; Ahmad</text>
+  <!-- Date -->
+  <text x="300" y="258" text-anchor="middle" font-family="Georgia, serif" font-size="10" fill="#4a7ab5" letter-spacing="2">12 . 12 . 2025</text>
+  <!-- Template name badge -->
+  <rect x="195" y="285" width="210" height="22" rx="11" fill="#1a2a4a" opacity="0.08"/>
+  <text x="300" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#1a2a4a" letter-spacing="1.5" opacity="0.7">BLUE FLOWER ELEGANT</text>
+</svg>

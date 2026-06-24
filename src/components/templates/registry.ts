@@ -9,6 +9,7 @@ import GelapRomantis from './GelapRomantis';
 import RomantisPink from './RomantisPink';
 import JavaneseHeritage from './JavaneseHeritage';
 import FloraFauna from './FloraFauna';
+import BlueFlowerElegant from './BlueFlowerElegant';
 
 export const TEMPLATE_REGISTRY: Record<string, ComponentType<TemplateProps>> = {
   'elegan-gold': EleganGold,
@@ -18,4 +19,5 @@ export const TEMPLATE_REGISTRY: Record<string, ComponentType<TemplateProps>> = {
   'romantis-pink': RomantisPink,
   'javanese-heritage': JavaneseHeritage,
   'flora-fauna': FloraFauna,
+  'blue-flower-elegant': BlueFlowerElegant,
 };

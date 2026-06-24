@@ -63,6 +63,14 @@ async function main() {
       thumbnail: '/templates/flora-fauna.svg',
       description: 'Kemewahan taman surga dengan merak watercolor dan karangan bunga peony yang memukau, lengkap dengan animasi bunga jatuh dan merak bergerak.',
     },
+    {
+      name: 'Blue Flower Elegant',
+      slug: 'blue-flower-elegant',
+      componentKey: 'blue-flower-elegant',
+      category: 'elegan',
+      thumbnail: '/templates/blue-flower-elegant.svg',
+      description: 'Elegansi bunga biru navy dan gold dengan bingkai watercolor yang mewah dan romantis.',
+    },
   ];
 
   for (const template of templates) {
