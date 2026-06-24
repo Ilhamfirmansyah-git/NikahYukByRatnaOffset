@@ -401,11 +401,7 @@ export default function BeliPage() {
                 >
                   <div className="h-32 sm:h-48 bg-gradient-to-br from-cream-200 to-cream-300 flex items-center justify-center relative group overflow-hidden">
                     {tmpl.thumbnail ? (
-                      <img
-                        src={tmpl.thumbnail}
-                        alt={tmpl.name}
-                        className="absolute inset-0 w-full h-full object-cover"
-                      />
+                      <div className="absolute inset-0" style={{ backgroundImage: `url(${tmpl.thumbnail})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
                     ) : (
                       <div className="text-center p-2 sm:p-4">
                         <div className="w-10 h-10 sm:w-16 sm:h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-2 sm:mb-3">
@@ -427,8 +423,8 @@ export default function BeliPage() {
                         </div>
                       </div>
                     )}
-                    {/* Preview hover overlay — desktop only */}
-                    <div className="absolute inset-0 bg-black/50 opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    {/* Preview hover overlay — desktop only, completely removed from DOM on mobile */}
+                    <div className="absolute inset-0 bg-black/50 hidden sm:flex sm:opacity-0 sm:group-hover:opacity-100 transition-opacity items-center justify-center">
                       <a
                         href={`/preview/${tmpl.slug}${selectedPackage ? `?packageId=${selectedPackage.id}` : ''}`}
                         target="_blank"
@@ -463,7 +459,7 @@ export default function BeliPage() {
                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>
-                        <span className="hidden sm:inline">Lihat </span>Preview
+                        Lihat Preview
                       </a>
                     </div>
                   </div>
