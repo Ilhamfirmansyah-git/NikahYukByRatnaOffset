@@ -29,6 +29,16 @@ export default async function PesananPage() {
   const userId = (session.user as { id?: string })?.id;
   if (!userId) redirect('/login');
 
+  // Auto-expire PENDING orders older than 24 hours (Midtrans payment window)
+  await prisma.order.updateMany({
+    where: {
+      userId,
+      status: 'PENDING',
+      createdAt: { lt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+    },
+    data: { status: 'EXPIRED' },
+  });
+
   const orders = await prisma.order.findMany({
     where: { userId },
     include: {
