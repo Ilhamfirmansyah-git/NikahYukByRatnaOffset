@@ -25,7 +25,7 @@ export default function AdminHeader() {
       <header className="bg-gray-900 text-white px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-4 min-w-0">
           <span className="font-semibold text-sm tracking-wide whitespace-nowrap">Admin — Nikah Yuk</span>
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-1">
             {NAV.map(item => (
               <Link
                 key={item.href}
@@ -38,12 +38,12 @@ export default function AdminHeader() {
           </nav>
         </div>
         <div className="flex items-center gap-3 flex-shrink-0">
-          <Link href="/app" className="hidden sm:block text-xs text-gray-400 hover:text-white transition-colors whitespace-nowrap">
+          <Link href="/app" className="hidden lg:block text-xs text-gray-400 hover:text-white transition-colors whitespace-nowrap">
             ← Kembali ke App
           </Link>
           <button
             onClick={() => setOpen(!open)}
-            className="md:hidden p-2 rounded hover:bg-white/10 transition-colors"
+            className="lg:hidden p-2 rounded hover:bg-white/10 transition-colors"
             aria-label="Menu"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,14 +56,14 @@ export default function AdminHeader() {
         </div>
       </header>
 
-      {/* Mobile slide-in sidebar */}
+      {/* Tablet/mobile slide-in sidebar */}
       {open && (
         <>
           <div
-            className="fixed inset-0 bg-black/40 z-40 md:hidden"
+            className="fixed inset-0 bg-black/40 z-40 lg:hidden"
             onClick={() => setOpen(false)}
           />
-          <div className="fixed top-0 left-0 h-full w-64 bg-gray-900 z-50 md:hidden flex flex-col shadow-2xl">
+          <div className="fixed top-0 left-0 h-full w-64 bg-gray-900 z-50 lg:hidden flex flex-col shadow-2xl">
             <div className="flex items-center justify-between px-4 py-4 border-b border-white/10">
               <span className="font-semibold text-sm text-white">Admin — Nikah Yuk</span>
               <button onClick={() => setOpen(false)} className="p-1 rounded hover:bg-white/10 text-gray-400">

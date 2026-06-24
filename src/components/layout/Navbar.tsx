@@ -37,7 +37,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden lg:flex items-center gap-6">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -50,7 +50,7 @@ export default function Navbar() {
           </div>
 
           {/* Desktop auth buttons */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-3">
             {session ? (
               <>
                 <Link href="/app">
@@ -84,7 +84,7 @@ export default function Navbar() {
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden p-2 rounded-md text-gray-600 hover:text-primary hover:bg-cream-100"
+            className="lg:hidden p-2 rounded-md text-gray-600 hover:text-primary hover:bg-cream-100"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
           >
@@ -103,7 +103,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-white border-t border-cream-200 px-4 py-4 space-y-3">
+        <div className="lg:hidden bg-white border-t border-cream-200 px-4 py-4 space-y-3">
           {navLinks.map((link) => (
             <Link
               key={link.href}

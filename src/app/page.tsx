@@ -284,7 +284,7 @@ export default function HomePage() {
               Dipercaya 10.000+ Pasangan Indonesia
             </div>
 
-            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
               Undangan Pernikahan{" "}
               <span className="text-primary italic">Online</span> yang{" "}
               <span className="text-primary">Simpel & Elegan</span>
@@ -481,7 +481,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
             {packages.length === 0
               ? [1, 2, 3].map((i) => (
                   <div key={i} className="rounded-2xl border-2 border-cream-200 bg-white p-6 animate-pulse">
@@ -610,7 +610,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
             {testimonials.map((t) => (
               <div key={t.name} className="bg-cream-50 rounded-2xl p-6 border border-cream-200">
                 <div className="flex mb-3">
