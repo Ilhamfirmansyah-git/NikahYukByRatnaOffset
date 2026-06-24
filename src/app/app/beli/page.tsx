@@ -399,16 +399,36 @@ export default function BeliPage() {
                       : 'border-cream-200 hover:border-primary/40'
                   }`}
                 >
-                  <div className="h-32 sm:h-48 bg-gradient-to-br from-cream-200 to-cream-300 flex items-center justify-center relative group">
-                    <div className="text-center p-2 sm:p-4">
-                      <div className="w-10 h-10 sm:w-16 sm:h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-2 sm:mb-3">
-                        <svg className="w-5 h-5 sm:w-8 sm:h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
+                  <div className="h-32 sm:h-48 bg-gradient-to-br from-cream-200 to-cream-300 flex items-center justify-center relative group overflow-hidden">
+                    {tmpl.thumbnail ? (
+                      <img
+                        src={tmpl.thumbnail}
+                        alt={tmpl.name}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="text-center p-2 sm:p-4">
+                        <div className="w-10 h-10 sm:w-16 sm:h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-2 sm:mb-3">
+                          <svg className="w-5 h-5 sm:w-8 sm:h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                        <span className="text-xs text-primary/60 font-medium hidden sm:block">{categoryLabel[tmpl.category] ?? tmpl.category}</span>
                       </div>
-                      <span className="text-xs text-primary/60 font-medium hidden sm:block">{categoryLabel[tmpl.category] ?? tmpl.category}</span>
-                    </div>
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    )}
+                    {/* Selected overlay (always visible on mobile when selected) */}
+                    {selectedTemplate?.id === tmpl.id && (
+                      <div className="absolute inset-0 bg-primary/70 flex items-center justify-center">
+                        <div className="text-white text-center">
+                          <svg className="w-8 h-8 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                          <span className="text-xs font-semibold mt-1 block">Dipilih</span>
+                        </div>
+                      </div>
+                    )}
+                    {/* Preview hover overlay — desktop only */}
+                    <div className="absolute inset-0 bg-black/50 opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <a
                         href={`/preview/${tmpl.slug}${selectedPackage ? `?packageId=${selectedPackage.id}` : ''}`}
                         target="_blank"
@@ -426,12 +446,7 @@ export default function BeliPage() {
                   </div>
                   <div className="p-3 sm:p-4">
                     <div className="flex items-start justify-between mb-1 gap-1">
-                      <h3 className="font-semibold text-gray-900 text-sm leading-tight">{tmpl.name}</h3>
-                      {selectedTemplate?.id === tmpl.id && (
-                        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
-                      )}
+                      <h3 className={`font-semibold text-sm leading-tight ${selectedTemplate?.id === tmpl.id ? 'text-primary' : 'text-gray-900'}`}>{tmpl.name}</h3>
                     </div>
                     <p className="text-xs text-gray-500 line-clamp-2 hidden sm:block">{tmpl.description}</p>
                     <div className="mt-2 sm:mt-3 flex items-center justify-between gap-1">
