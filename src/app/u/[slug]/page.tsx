@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
+
+export const dynamic = 'force-dynamic';
 import InvitationClient from './InvitationClient';
 import { InvitationData } from '@/types/invitation';
 import { RecaptchaProvider } from '@/components/RecaptchaProvider';
