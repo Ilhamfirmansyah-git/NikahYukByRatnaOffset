@@ -832,7 +832,7 @@ export default function EditInvitationPage() {
                       </div>
                     </div>
                     <Button size="sm" onClick={handleSaveDomain} loading={savingDomain} className="sm:rounded-l-none sm:ml-2 w-full sm:w-auto">
-                      Simpan
+                      Terapkan
                     </Button>
                   </div>
                   <p className="text-xs text-gray-400 mt-1.5">
@@ -882,28 +882,6 @@ export default function EditInvitationPage() {
         </div>
       )}
 
-      {/* Bottom save bar on mobile */}
-      <div className="fixed bottom-24 sm:bottom-20 md:bottom-6 right-4 md:right-6 z-10">
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="flex items-center gap-2 bg-primary text-white text-sm font-semibold px-5 py-3 rounded-full shadow-lg shadow-primary/30 hover:bg-primary-600 active:scale-95 transition-all disabled:opacity-60"
-        >
-          {saving ? (
-            <>
-              <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-              Menyimpan...
-            </>
-          ) : (
-            <>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              Simpan
-            </>
-          )}
-        </button>
-      </div>
     </div>
   );
 }
