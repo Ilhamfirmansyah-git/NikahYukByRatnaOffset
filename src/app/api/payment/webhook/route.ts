@@ -26,6 +26,16 @@ function verifySignature(
   return hash === signatureKey;
 }
 
+export async function GET() {
+  const serverKey = process.env.MIDTRANS_SERVER_KEY;
+  const isProduction = process.env.MIDTRANS_IS_PRODUCTION === 'true';
+  return NextResponse.json({
+    serverKeyConfigured: !!serverKey,
+    isProduction,
+    endpoint: 'POST /api/payment/webhook',
+  });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -39,19 +49,21 @@ export async function POST(req: NextRequest) {
     } = body;
 
     const serverKey = process.env.MIDTRANS_SERVER_KEY ?? '';
-    const isProduction = process.env.MIDTRANS_IS_PRODUCTION === 'true';
 
     if (!serverKey) {
-      if (isProduction) {
-        return NextResponse.json({ error: 'Server tidak terkonfigurasi' }, { status: 500 });
-      }
-      // Dev only: log warning, still reject without explicit test flag
-      console.warn('[WEBHOOK] MIDTRANS_SERVER_KEY tidak diset — tolak webhook di dev mode');
-      return NextResponse.json({ error: 'Server key belum dikonfigurasi' }, { status: 403 });
+      console.error('[WEBHOOK] MIDTRANS_SERVER_KEY tidak dikonfigurasi di environment variables');
+      return NextResponse.json({ error: 'Server key belum dikonfigurasi' }, { status: 500 });
     }
 
     const isValid = verifySignature(order_id, status_code, gross_amount, serverKey, signature_key);
     if (!isValid) {
+      console.error('[WEBHOOK] Signature tidak valid', {
+        order_id,
+        status_code,
+        gross_amount,
+        isProduction: process.env.MIDTRANS_IS_PRODUCTION === 'true',
+        keyPrefix: serverKey.slice(0, 8) + '...',
+      });
       return NextResponse.json({ error: 'Signature tidak valid' }, { status: 403 });
     }
 
