@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { verifyRecaptcha } from '@/lib/recaptcha';
 
 export async function POST(
   req: NextRequest,
@@ -18,7 +19,12 @@ export async function POST(
       return NextResponse.json({ error: 'Undangan belum dipublikasikan' }, { status: 400 });
     }
 
-    const { name, attendance, guestCount } = await req.json();
+    const { name, attendance, guestCount, recaptchaToken } = await req.json();
+
+    const captcha = await verifyRecaptcha(recaptchaToken ?? '');
+    if (!captcha.success) {
+      return NextResponse.json({ error: 'Verifikasi keamanan gagal. Coba lagi.' }, { status: 400 });
+    }
 
     if (!name || !attendance) {
       return NextResponse.json({ error: 'Nama dan kehadiran wajib diisi' }, { status: 400 });

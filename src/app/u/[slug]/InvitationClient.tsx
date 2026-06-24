@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { TEMPLATE_REGISTRY } from '@/components/templates/registry';
 import { InvitationData } from '@/types/invitation';
 
@@ -34,6 +35,7 @@ interface InvitationClientProps {
 export default function InvitationClient({ invitation, guestName }: InvitationClientProps) {
   const [rsvps, setRsvps] = useState<RsvpEntry[]>(invitation.rsvps);
   const [guestbook, setGuestbook] = useState<GuestbookEntry[]>(invitation.guestbook);
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const TemplateComponent = TEMPLATE_REGISTRY[invitation.template.componentKey];
 
@@ -42,10 +44,11 @@ export default function InvitationClient({ invitation, guestName }: InvitationCl
     attendance: 'HADIR' | 'TIDAK_HADIR' | 'RAGU';
     guestCount: number;
   }) => {
+    const recaptchaToken = await executeRecaptcha?.('rsvp_submit');
     const res = await fetch(`/api/u/${invitation.slug}/rsvp`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({ ...formData, recaptchaToken }),
     });
     if (!res.ok) {
       const data = await res.json();
@@ -60,13 +63,14 @@ export default function InvitationClient({ invitation, guestName }: InvitationCl
       createdAt: new Date().toISOString(),
     };
     setRsvps(prev => [newEntry, ...prev]);
-  }, [invitation.slug]);
+  }, [invitation.slug, executeRecaptcha]);
 
   const handleGuestbookSubmit = useCallback(async (formData: { name: string; message: string }) => {
+    const recaptchaToken = await executeRecaptcha?.('guestbook_submit');
     const res = await fetch(`/api/u/${invitation.slug}/guestbook`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({ ...formData, recaptchaToken }),
     });
     if (!res.ok) {
       const data = await res.json();
@@ -80,7 +84,7 @@ export default function InvitationClient({ invitation, guestName }: InvitationCl
       createdAt: new Date().toISOString(),
     };
     setGuestbook(prev => [newEntry, ...prev]);
-  }, [invitation.slug]);
+  }, [invitation.slug, executeRecaptcha]);
 
   if (!TemplateComponent) {
     return (

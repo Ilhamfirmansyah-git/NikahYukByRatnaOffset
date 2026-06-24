@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
 import InvitationClient from './InvitationClient';
 import { InvitationData } from '@/types/invitation';
+import { RecaptchaProvider } from '@/components/RecaptchaProvider';
 
 interface PageProps {
   params: { slug: string };
@@ -118,7 +119,9 @@ export default async function InvitationPage({ params, searchParams }: PageProps
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <InvitationClient invitation={serialized} guestName={guestName} />
+      <RecaptchaProvider>
+        <InvitationClient invitation={serialized} guestName={guestName} />
+      </RecaptchaProvider>
     </>
   );
 }
