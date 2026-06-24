@@ -184,6 +184,7 @@ export function CanvaBaseTemplate({
   const titleCol  = theme.cover.titleColor;
   const subCol    = theme.cover.subtitleColor;
   const dateCol   = theme.cover.dateColor ?? subCol;
+  const contBg    = theme.inner?.continuousBg ?? false;
 
   // Derived components (stable via useMemo — theme is constant per template)
   const Divider: ComponentType = useMemo(
@@ -221,7 +222,16 @@ export function CanvaBaseTemplate({
   const scrollTo = (id: string) => sectionRefs.current[id]?.scrollIntoView({ behavior: 'smooth' });
 
   return (
-    <div style={{ background: c.bgLight, color: c.text, minHeight: '100vh', fontFamily: f.subheading }}>
+    <div style={{ background: contBg ? 'transparent' : c.bgLight, color: c.text, minHeight: '100vh', fontFamily: f.subheading, position: 'relative' }}>
+
+      {/* Continuous fixed background (Art-Forest mode) */}
+      {contBg && opened && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none',
+          backgroundImage: `url('${coverBg}')`,
+          backgroundSize: 'cover', backgroundPosition: coverPos,
+        }} />
+      )}
 
       {/* Base keyframes */}
       <style>{`
@@ -364,7 +374,7 @@ export function CanvaBaseTemplate({
 
       {/* ════════════════════════ MAIN CONTENT ════════════════════════ */}
       {opened && (
-        <div>
+        <div style={{ position: 'relative', zIndex: 1 }}>
 
           {/* ── Hero banner ── */}
           <section
@@ -396,7 +406,7 @@ export function CanvaBaseTemplate({
           </section>
 
           {/* ── Quote / Bismillah ── */}
-          <section style={{ background: c.bgLight, padding: '56px 28px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+          <section style={{ background: contBg ? 'transparent' : c.bgLight, padding: '56px 28px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
             {theme.inner?.SectionHeaderDecor && <theme.inner.SectionHeaderDecor />}
             {dec.SectionBgDecor && (
               <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
@@ -423,7 +433,7 @@ export function CanvaBaseTemplate({
           {/* ── Mempelai ── */}
           <section
             ref={setRef('mempelai')}
-            style={{ background: bgLight2, padding: '48px 20px 56px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}
+            style={{ background: contBg ? 'transparent' : bgLight2, padding: '48px 20px 56px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}
           >
             {theme.inner?.SectionHeaderDecor && <theme.inner.SectionHeaderDecor />}
             {dec.MempelaiSectionDecor && (
@@ -478,7 +488,7 @@ export function CanvaBaseTemplate({
           </section>
 
           {/* ── Acara ── */}
-          <section ref={setRef('acara')} style={{ background: c.bgDark, padding: '56px 24px' }}>
+          <section ref={setRef('acara')} style={{ background: contBg ? 'rgba(26,42,74,0.82)' : c.bgDark, padding: '56px 24px' }}>
             {theme.inner?.SectionHeaderDecor && <theme.inner.SectionHeaderDecor />}
             <FadeIn>
               <div style={{ textAlign: 'center', marginBottom: 36 }}>
@@ -612,7 +622,7 @@ export function CanvaBaseTemplate({
 
           {/* ── Countdown ── */}
           {countdownTarget && (
-            <section style={{ background: c.bgDark, padding: '52px 24px', textAlign: 'center', borderTop: `1px solid ${c.primaryDark}22` }}>
+            <section style={{ background: contBg ? 'rgba(26,42,74,0.82)' : c.bgDark, padding: '52px 24px', textAlign: 'center', borderTop: `1px solid ${c.primaryDark}22` }}>
               {theme.inner?.SectionHeaderDecor && <theme.inner.SectionHeaderDecor />}
               <FadeIn>
                 <p style={{ fontFamily: f.subheading, fontSize: 14, fontStyle: 'italic', color: c.primaryDark, marginBottom: 6 }}>
@@ -628,7 +638,7 @@ export function CanvaBaseTemplate({
 
           {/* ── Galeri ── */}
           {data.galeri.length > 0 && (
-            <section ref={setRef('galeri')} style={{ background: c.bgLight, padding: '56px 20px' }}>
+            <section ref={setRef('galeri')} style={{ background: contBg ? 'transparent' : c.bgLight, padding: '56px 20px' }}>
               {theme.inner?.SectionHeaderDecor && <theme.inner.SectionHeaderDecor />}
               <FadeIn>
                 <SectionTitle theme={theme} Divider={Divider}>Galeri</SectionTitle>
@@ -666,7 +676,7 @@ export function CanvaBaseTemplate({
 
           {/* ── Love Story ── */}
           {data.loveStory.length > 0 && (
-            <section style={{ background: bgLight2, padding: '56px 24px' }}>
+            <section style={{ background: contBg ? 'transparent' : bgLight2, padding: '56px 24px' }}>
               <FadeIn>
                 <SectionTitle theme={theme} Divider={Divider} sub="Perjalanan cinta kami">Love Story</SectionTitle>
               </FadeIn>
@@ -701,7 +711,7 @@ export function CanvaBaseTemplate({
 
           {/* ── RSVP ── */}
           {data.rsvpAktif && (
-            <section ref={setRef('ucapan')} style={{ background: c.bgDark, padding: '56px 24px' }}>
+            <section ref={setRef('ucapan')} style={{ background: contBg ? 'rgba(26,42,74,0.82)' : c.bgDark, padding: '56px 24px' }}>
               <FadeIn>
                 <div style={{ textAlign: 'center', marginBottom: 32 }}>
                   <Divider />
@@ -719,7 +729,7 @@ export function CanvaBaseTemplate({
 
           {/* ── Buku Tamu ── */}
           {data.guestbookAktif && (
-            <section style={{ background: c.bgLight, padding: '56px 24px' }}>
+            <section style={{ background: contBg ? 'transparent' : c.bgLight, padding: '56px 24px' }}>
               <FadeIn>
                 <SectionTitle theme={theme} Divider={Divider} sub="Sampaikan doa dan ucapan terbaik Anda">Buku Tamu</SectionTitle>
               </FadeIn>
@@ -731,7 +741,7 @@ export function CanvaBaseTemplate({
 
           {/* ── Amplop Digital ── */}
           {data.amplopDigital.aktif && (
-            <section style={{ background: bgLight2, padding: '56px 24px' }}>
+            <section style={{ background: contBg ? 'transparent' : bgLight2, padding: '56px 24px' }}>
               <FadeIn>
                 <SectionTitle theme={theme} Divider={Divider} sub="Hadiah terbaik adalah doa restu Anda">Amplop Digital</SectionTitle>
               </FadeIn>
@@ -743,7 +753,7 @@ export function CanvaBaseTemplate({
 
           {/* ── Livestream ── */}
           {data.livestream.aktif && data.livestream.url && (
-            <section style={{ background: c.bgDark, padding: '56px 24px', textAlign: 'center' }}>
+            <section style={{ background: contBg ? 'rgba(26,42,74,0.82)' : c.bgDark, padding: '56px 24px', textAlign: 'center' }}>
               <FadeIn>
                 <Divider />
                 <h2 style={{ fontFamily: f.body, fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: c.primaryDark, margin: '10px 0 12px' }}>

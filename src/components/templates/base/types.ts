@@ -6,6 +6,8 @@ export interface CanvaTemplateTheme {
     openAcaraCards?: boolean;
     /** Floral accent rendered at the top of each major inner section */
     SectionHeaderDecor?: ComponentType;
+    /** Use a single fixed background image behind all inner sections (Art-Forest style) */
+    continuousBg?: boolean;
   };
   slug: string;
   assets: {

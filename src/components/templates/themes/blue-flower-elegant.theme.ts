@@ -32,6 +32,7 @@ export const BlueFlowerElegantTheme: CanvaTemplateTheme = {
   },
   inner: {
     openAcaraCards: true,
+    continuousBg: true,
     SectionHeaderDecor: BlueFlowerSectionHeader,
   },
 };
