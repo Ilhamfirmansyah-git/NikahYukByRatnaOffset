@@ -403,9 +403,9 @@ export default function EditInvitationPage() {
             <SectionCard key={i} title={`Acara ${i + 1}${acara.nama ? ` — ${acara.nama}` : ''}`}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <Input label="Nama Acara" value={acara.nama} onChange={e => { const a = [...data.acara]; a[i] = { ...a[i], nama: e.target.value }; updateData('acara', a); }} placeholder="Akad Nikah" />
-                <Input type="date" label="Tanggal" className="[font-size:95%]" value={acara.tanggal} onChange={e => { const a = [...data.acara]; a[i] = { ...a[i], tanggal: e.target.value }; updateData('acara', a); }} />
-                <Input type="time" label="Waktu Mulai" className="[font-size:95%]" value={acara.waktuMulai} onChange={e => { const a = [...data.acara]; a[i] = { ...a[i], waktuMulai: e.target.value }; updateData('acara', a); }} />
-                <Input type="time" label="Waktu Selesai" className="[font-size:95%]" value={acara.waktuSelesai} onChange={e => { const a = [...data.acara]; a[i] = { ...a[i], waktuSelesai: e.target.value }; updateData('acara', a); }} />
+                <Input type="date" label="Tanggal" className="w-[95%]" value={acara.tanggal} onChange={e => { const a = [...data.acara]; a[i] = { ...a[i], tanggal: e.target.value }; updateData('acara', a); }} />
+                <Input type="time" label="Waktu Mulai" className="w-[95%]" value={acara.waktuMulai} onChange={e => { const a = [...data.acara]; a[i] = { ...a[i], waktuMulai: e.target.value }; updateData('acara', a); }} />
+                <Input type="time" label="Waktu Selesai" className="w-[95%]" value={acara.waktuSelesai} onChange={e => { const a = [...data.acara]; a[i] = { ...a[i], waktuSelesai: e.target.value }; updateData('acara', a); }} />
                 <LocationSearch
                     label="Nama Lokasi"
                     value={acara.lokasi}
