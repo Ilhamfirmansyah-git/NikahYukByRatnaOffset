@@ -65,7 +65,7 @@ export const authOptions: NextAuthOptions = {
       }
       return true;
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger, session }) {
       // On credentials login, user object has DB id
       if (user && account?.provider === 'credentials') {
         token.id = user.id;
@@ -80,6 +80,10 @@ export const authOptions: NextAuthOptions = {
           token.id = dbUser.id;
           token.role = dbUser.role;
         }
+      }
+      // Propagate name update from client-side session.update() call
+      if (trigger === 'update' && session?.name !== undefined) {
+        token.name = session.name;
       }
       return token;
     },

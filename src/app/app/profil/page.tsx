@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -11,6 +12,7 @@ interface UserProfile {
 }
 
 export default function ProfilPage() {
+  const { update: updateSession } = useSession();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -48,6 +50,7 @@ export default function ProfilPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Gagal menyimpan');
       setProfile(prev => prev ? { ...prev, name: data.name } : prev);
+      await updateSession({ name: data.name });
       toast.success('Nama berhasil diperbarui!');
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Gagal menyimpan nama');
