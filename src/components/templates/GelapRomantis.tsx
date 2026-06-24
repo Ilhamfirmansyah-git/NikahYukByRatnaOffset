@@ -348,18 +348,19 @@ export default function GelapRomantis({
                 ))}
               </div>
 
-              {/* Quranic verse */}
-              <FadeIn delay={300}>
-                <div style={{ marginTop: 36, padding: 24, textAlign: 'center', borderTop: `1px solid ${GOLD}20`, borderBottom: `1px solid ${GOLD}20` }}>
-                  <p style={{ fontFamily: "'Noto Naskh Arabic', serif", fontSize: 18, color: GOLD, lineHeight: 2.2, marginBottom: 14 }}>
-                    وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً
-                  </p>
-                  <p style={{ fontSize: 12, color: MUTED, fontStyle: 'italic', lineHeight: 1.7 }}>
-                    &ldquo;Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu isteri-isteri dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya, dan dijadikan-Nya di antaramu rasa kasih dan sayang.&rdquo;
-                  </p>
-                  <p style={{ fontSize: 11, color: GOLD, marginTop: 10, letterSpacing: '0.2em' }}>QS. Ar-Rum: 21</p>
-                </div>
-              </FadeIn>
+              {/* Quranic verse — from database */}
+              {data.quote?.teks && (
+                <FadeIn delay={300}>
+                  <div style={{ marginTop: 36, padding: 24, textAlign: 'center', borderTop: `1px solid ${GOLD}20`, borderBottom: `1px solid ${GOLD}20` }}>
+                    <p style={{ fontSize: 12, color: MUTED, fontStyle: 'italic', lineHeight: 1.7 }}>
+                      &ldquo;{data.quote.teks}&rdquo;
+                    </p>
+                    {data.quote.sumber && (
+                      <p style={{ fontSize: 11, color: GOLD, marginTop: 10, letterSpacing: '0.2em' }}>{data.quote.sumber}</p>
+                    )}
+                  </div>
+                </FadeIn>
+              )}
             </div>
           </section>
 
@@ -512,7 +513,7 @@ export default function GelapRomantis({
               <div style={{ maxWidth: 480, margin: '0 auto' }}>
                 <FadeIn><STitle sub="Mohon konfirmasi kehadiran Anda">Konfirmasi Hadir</STitle></FadeIn>
                 <FadeIn delay={150}>
-                  <RsvpForm slug={slug} rsvps={rsvps} onSubmit={onRsvpSubmit} primaryColor={GOLD} />
+                  <RsvpForm slug={slug} rsvps={rsvps} onSubmit={onRsvpSubmit} primaryColor={GOLD} guestName={guestName} />
                 </FadeIn>
               </div>
             </section>

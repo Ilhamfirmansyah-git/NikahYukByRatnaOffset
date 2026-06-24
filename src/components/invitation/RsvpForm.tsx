@@ -16,6 +16,7 @@ interface RsvpFormProps {
   onSubmit: (data: { name: string; attendance: 'HADIR' | 'TIDAK_HADIR' | 'RAGU'; guestCount: number }) => Promise<void>;
   primaryColor?: string;
   className?: string;
+  guestName?: string;
 }
 
 const ATTENDANCE_LABELS: Record<string, string> = {
@@ -24,8 +25,8 @@ const ATTENDANCE_LABELS: Record<string, string> = {
   RAGU: 'Masih Ragu',
 };
 
-export default function RsvpForm({ rsvps, onSubmit, primaryColor = '#8B5E3C', className = '' }: RsvpFormProps) {
-  const [name, setName] = useState('');
+export default function RsvpForm({ rsvps, onSubmit, primaryColor = '#8B5E3C', className = '', guestName }: RsvpFormProps) {
+  const [name, setName] = useState(guestName ?? '');
   const [attendance, setAttendance] = useState<'HADIR' | 'TIDAK_HADIR' | 'RAGU'>('HADIR');
   const [guestCount, setGuestCount] = useState(1);
   const [loading, setLoading] = useState(false);

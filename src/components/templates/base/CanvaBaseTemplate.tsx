@@ -401,8 +401,8 @@ export function CanvaBaseTemplate({
                 <dec.SectionBgDecor />
               </div>
             )}
-            <FadeIn>
-              {data.quote.teks ? (
+            {data.quote?.teks && (
+              <FadeIn>
                 <div style={{ maxWidth: 520, margin: '0 auto' }}>
                   <p style={{ fontFamily: f.subheading, fontSize: 18, fontStyle: 'italic', color: c.text, lineHeight: 1.8, marginBottom: 12 }}>
                     &ldquo;{data.quote.teks}&rdquo;
@@ -413,17 +413,8 @@ export function CanvaBaseTemplate({
                     </p>
                   )}
                 </div>
-              ) : (
-                <div style={{ maxWidth: 480, margin: '0 auto' }}>
-                  <p style={{ fontFamily: f.subheading, fontSize: 18, fontStyle: 'italic', color: c.textMuted, lineHeight: 1.9 }}>
-                    &ldquo;Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu istri-istri dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya.&rdquo;
-                  </p>
-                  <p style={{ fontFamily: f.body, fontSize: 10, letterSpacing: '0.28em', textTransform: 'uppercase', color: c.primaryDark, marginTop: 10, opacity: 0.7 }}>
-                    — Q.S. Ar-Rum: 21
-                  </p>
-                </div>
-              )}
-            </FadeIn>
+              </FadeIn>
+            )}
             <Divider />
           </section>
 
@@ -659,7 +650,7 @@ export function CanvaBaseTemplate({
                 </div>
               </FadeIn>
               <div style={{ maxWidth: 480, margin: '0 auto' }}>
-                <RsvpForm slug={slug} onSubmit={onRsvpSubmit} rsvps={rsvps} primaryColor={c.primary} />
+                <RsvpForm slug={slug} onSubmit={onRsvpSubmit} rsvps={rsvps} primaryColor={c.primary} guestName={guestName} />
               </div>
             </section>
           )}
