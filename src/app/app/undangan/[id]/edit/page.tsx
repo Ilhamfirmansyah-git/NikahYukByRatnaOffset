@@ -748,28 +748,19 @@ export default function EditInvitationPage() {
                 </p>
               )}
 
-              <div className="flex items-center gap-3 flex-wrap">
-                <Button
-                  variant={invitation?.isPublished ? 'danger' : 'primary'}
-                  onClick={handlePublish}
-                  loading={publishing}
+              {invitation?.isPublished && (
+                <a
+                  href={getInvitationUrl()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 text-sm text-primary hover:underline font-medium"
                 >
-                  {invitation?.isPublished ? 'Sembunyikan Undangan' : 'Publikasikan Undangan'}
-                </Button>
-                {invitation?.isPublished && (
-                  <a
-                    href={getInvitationUrl()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-sm text-primary hover:underline font-medium"
-                  >
-                    Lihat Undangan
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  </a>
-                )}
-              </div>
+                  Lihat Undangan
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              )}
             </div>
           </SectionCard>
 
