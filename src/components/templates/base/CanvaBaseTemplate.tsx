@@ -380,12 +380,15 @@ export function CanvaBaseTemplate({
           <section
             ref={setRef('beranda')}
             style={{
-              position: 'relative', height: 280, overflow: 'hidden',
-              backgroundImage: `url('${heroBg}')`,
-              backgroundSize: 'cover', backgroundPosition: 'top center',
+              position: 'relative', height: 280,
+              ...(contBg ? {} : {
+                overflow: 'hidden',
+                backgroundImage: `url('${heroBg}')`,
+                backgroundSize: 'cover', backgroundPosition: 'top center',
+              }),
             }}
           >
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.65) 100%)' }} />
+            {!contBg && <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.65) 100%)' }} />}
             <div style={{
               position: 'relative', zIndex: 1, height: '100%',
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
@@ -488,7 +491,7 @@ export function CanvaBaseTemplate({
           </section>
 
           {/* ── Acara ── */}
-          <section ref={setRef('acara')} style={{ background: contBg ? 'rgba(26,42,74,0.82)' : c.bgDark, padding: '56px 24px' }}>
+          <section ref={setRef('acara')} style={{ background: contBg ? 'linear-gradient(to bottom, transparent 0%, rgba(26,42,74,0.92) 7%, rgba(26,42,74,0.92) 93%, transparent 100%)' : c.bgDark, padding: '56px 24px' }}>
             {theme.inner?.SectionHeaderDecor && <theme.inner.SectionHeaderDecor />}
             <FadeIn>
               <div style={{ textAlign: 'center', marginBottom: 36 }}>
@@ -622,7 +625,7 @@ export function CanvaBaseTemplate({
 
           {/* ── Countdown ── */}
           {countdownTarget && (
-            <section style={{ background: contBg ? 'rgba(26,42,74,0.82)' : c.bgDark, padding: '52px 24px', textAlign: 'center', borderTop: `1px solid ${c.primaryDark}22` }}>
+            <section style={{ background: contBg ? 'linear-gradient(to bottom, transparent 0%, rgba(26,42,74,0.92) 7%, rgba(26,42,74,0.92) 93%, transparent 100%)' : c.bgDark, padding: '52px 24px', textAlign: 'center', borderTop: contBg ? 'none' : `1px solid ${c.primaryDark}22` }}>
               {theme.inner?.SectionHeaderDecor && <theme.inner.SectionHeaderDecor />}
               <FadeIn>
                 <p style={{ fontFamily: f.subheading, fontSize: 14, fontStyle: 'italic', color: c.primaryDark, marginBottom: 6 }}>
@@ -711,7 +714,7 @@ export function CanvaBaseTemplate({
 
           {/* ── RSVP ── */}
           {data.rsvpAktif && (
-            <section ref={setRef('ucapan')} style={{ background: contBg ? 'rgba(26,42,74,0.82)' : c.bgDark, padding: '56px 24px' }}>
+            <section ref={setRef('ucapan')} style={{ background: contBg ? 'linear-gradient(to bottom, transparent 0%, rgba(26,42,74,0.92) 7%, rgba(26,42,74,0.92) 93%, transparent 100%)' : c.bgDark, padding: '56px 24px' }}>
               <FadeIn>
                 <div style={{ textAlign: 'center', marginBottom: 32 }}>
                   <Divider />
@@ -753,7 +756,7 @@ export function CanvaBaseTemplate({
 
           {/* ── Livestream ── */}
           {data.livestream.aktif && data.livestream.url && (
-            <section style={{ background: contBg ? 'rgba(26,42,74,0.82)' : c.bgDark, padding: '56px 24px', textAlign: 'center' }}>
+            <section style={{ background: contBg ? 'linear-gradient(to bottom, transparent 0%, rgba(26,42,74,0.92) 7%, rgba(26,42,74,0.92) 93%, transparent 100%)' : c.bgDark, padding: '56px 24px', textAlign: 'center' }}>
               <FadeIn>
                 <Divider />
                 <h2 style={{ fontFamily: f.body, fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: c.primaryDark, margin: '10px 0 12px' }}>
@@ -780,11 +783,15 @@ export function CanvaBaseTemplate({
 
           {/* ── Footer ── */}
           <section style={{
-            backgroundImage: `url('${footerBg}')`,
-            backgroundSize: 'cover', backgroundPosition: 'top center',
-            padding: '64px 24px', textAlign: 'center', position: 'relative', overflow: 'hidden',
+            ...(contBg ? {} : {
+              backgroundImage: `url('${footerBg}')`,
+              backgroundSize: 'cover', backgroundPosition: 'top center',
+              overflow: 'hidden',
+            }),
+            padding: '64px 24px', textAlign: 'center', position: 'relative',
+            background: contBg ? 'linear-gradient(to bottom, transparent 0%, rgba(26,42,74,0.94) 8%, rgba(26,42,74,0.97) 100%)' : undefined,
           }}>
-            <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.82)' }} />
+            {!contBg && <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.82)' }} />}
             <div style={{ position: 'relative', zIndex: 1 }}>
               <FadeIn>
                 <p style={{ fontFamily: f.subheading, fontSize: 12, letterSpacing: '0.3em', color: c.primaryDark, fontStyle: 'italic', marginBottom: 8 }}>
