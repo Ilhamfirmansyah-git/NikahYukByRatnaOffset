@@ -76,14 +76,14 @@ export default function AdminBlogPage() {
           <Link href="/admin/blog/new" className="text-primary font-semibold hover:underline">Tulis artikel pertama →</Link>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="bg-white rounded-xl border border-gray-200 overflow-x-auto">
+          <table className="w-full text-xs sm:text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="text-left px-4 py-3 font-semibold text-gray-600">Judul</th>
-                <th className="text-left px-4 py-3 font-semibold text-gray-600">Kategori</th>
+                <th className="text-left px-4 py-3 font-semibold text-gray-600 hidden sm:table-cell">Kategori</th>
                 <th className="text-left px-4 py-3 font-semibold text-gray-600">Status</th>
-                <th className="text-left px-4 py-3 font-semibold text-gray-600">Tanggal</th>
+                <th className="text-left px-4 py-3 font-semibold text-gray-600 hidden md:table-cell">Tanggal</th>
                 <th className="text-right px-4 py-3 font-semibold text-gray-600">Aksi</th>
               </tr>
             </thead>
@@ -94,7 +94,7 @@ export default function AdminBlogPage() {
                     <div className="font-medium text-gray-900 max-w-xs truncate">{post.title}</div>
                     <div className="text-xs text-gray-400 truncate max-w-xs">/blog/{post.slug}</div>
                   </td>
-                  <td className="px-4 py-3 text-gray-600">{CATEGORY_LABELS[post.category] ?? post.category}</td>
+                  <td className="px-4 py-3 text-gray-600 hidden sm:table-cell">{CATEGORY_LABELS[post.category] ?? post.category}</td>
                   <td className="px-4 py-3">
                     <button
                       onClick={() => handleTogglePublish(post)}
@@ -107,9 +107,9 @@ export default function AdminBlogPage() {
                       {post.isPublished ? 'Published' : 'Draft'}
                     </button>
                   </td>
-                  <td className="px-4 py-3 text-gray-500">{formatDate(post.publishedAt ?? post.createdAt)}</td>
+                  <td className="px-4 py-3 text-gray-500 hidden md:table-cell">{formatDate(post.publishedAt ?? post.createdAt)}</td>
                   <td className="px-4 py-3">
-                    <div className="flex items-center justify-end gap-2">
+                    <div className="flex flex-col sm:flex-row items-end sm:items-center justify-end gap-1 sm:gap-2">
                       {post.isPublished && (
                         <a href={`/blog/${post.slug}`} target="_blank" rel="noopener noreferrer" className="text-xs text-gray-400 hover:text-primary">
                           Lihat

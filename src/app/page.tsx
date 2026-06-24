@@ -275,7 +275,7 @@ export default function HomePage() {
 
       {/* HERO */}
       <section className="min-h-screen flex items-center bg-gradient-to-br from-warm-50 via-cream-100 to-warm-100 pt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 md:py-28">
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary rounded-full px-4 py-1.5 text-sm font-medium mb-6">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -358,7 +358,7 @@ export default function HomePage() {
       </section>
 
       {/* FEATURES */}
-      <section id="fitur" className="py-20 md:py-28 bg-white">
+      <section id="fitur" className="py-10 sm:py-16 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <h2 className="font-display text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
@@ -369,7 +369,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
             {features.map((feature) => (
               <div
                 key={feature.title}
@@ -387,7 +387,7 @@ export default function HomePage() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="py-20 md:py-28 gradient-warm">
+      <section className="py-10 sm:py-16 md:py-28 gradient-warm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <h2 className="font-display text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
@@ -398,7 +398,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
             {steps.map((step, idx) => (
               <div key={step.number} className="relative text-center">
                 {idx < steps.length - 1 && (
@@ -416,7 +416,7 @@ export default function HomePage() {
       </section>
 
       {/* TEMPLATE PREVIEW */}
-      <section className="py-20 md:py-28 bg-white">
+      <section className="py-10 sm:py-16 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <h2 className="font-display text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
@@ -427,7 +427,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-8">
             {templates.length === 0
               ? Array.from({ length: 3 }).map((_, i) => (
                   <div key={i} className="card animate-pulse">
@@ -470,7 +470,7 @@ export default function HomePage() {
       </section>
 
       {/* PRICING TEASER */}
-      <section className="py-20 md:py-28 gradient-warm">
+      <section className="py-10 sm:py-16 md:py-28 gradient-warm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <h2 className="font-display text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
@@ -481,7 +481,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
             {packages.length === 0
               ? [1, 2, 3].map((i) => (
                   <div key={i} className="rounded-2xl border-2 border-cream-200 bg-white p-6 animate-pulse">
@@ -517,7 +517,7 @@ export default function HomePage() {
                       key={pkg.id}
                       className={`relative rounded-2xl p-6 border-2 transition-all ${
                         isHighlight
-                          ? "border-primary bg-primary text-white shadow-xl scale-105"
+                          ? "border-primary bg-primary text-white shadow-xl sm:scale-105"
                           : "border-cream-200 bg-white hover:border-primary/40"
                       }`}
                     >
@@ -599,7 +599,7 @@ export default function HomePage() {
       </section>
 
       {/* TESTIMONIALS */}
-      <section className="py-20 md:py-28 bg-white">
+      <section className="py-10 sm:py-16 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <h2 className="font-display text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
@@ -610,7 +610,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
             {testimonials.map((t) => (
               <div key={t.name} className="bg-cream-50 rounded-2xl p-6 border border-cream-200">
                 <div className="flex mb-3">
@@ -637,7 +637,7 @@ export default function HomePage() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="py-20 md:py-28 gradient-warm">
+      <section id="faq" className="py-10 sm:py-16 md:py-28 gradient-warm">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <h2 className="font-display text-3xl sm:text-4xl font-bold text-gray-900 mb-4">

@@ -201,7 +201,7 @@ export default function TemplatePage() {
                   <p className="text-gray-500">Coba pilih kategori lain.</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5 lg:gap-6">
                   {filtered.map(template => (
                     <div
                       key={template.id}
@@ -254,7 +254,7 @@ export default function TemplatePage() {
         </section>
 
         {/* CTA */}
-        <section className="py-16 bg-primary">
+        <section className="py-10 sm:py-16 bg-primary">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-white mb-3">
               Tidak Menemukan yang Cocok?

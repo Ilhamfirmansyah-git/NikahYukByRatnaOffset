@@ -33,10 +33,10 @@ export default async function BlogPage({ searchParams }: { searchParams: { categ
   return (
     <div className="min-h-screen bg-cream-50">
       {/* Hero */}
-      <section className="bg-white border-b border-cream-200 py-16 px-4">
+      <section className="bg-white border-b border-cream-200 py-10 sm:py-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-primary font-semibold text-sm tracking-wider uppercase mb-3">Blog</p>
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4">Tips & Inspirasi Pernikahan</h1>
+          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">Tips & Inspirasi Pernikahan</h1>
           <p className="text-gray-500 text-lg">Panduan lengkap membuat undangan pernikahan digital yang elegan dan berkesan.</p>
         </div>
       </section>
@@ -64,15 +64,15 @@ export default async function BlogPage({ searchParams }: { searchParams: { categ
             <p className="text-lg">Belum ada artikel di kategori ini.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
             {posts.map(post => (
               <Link key={post.id} href={`/blog/${post.slug}`} className="group bg-white rounded-2xl border border-cream-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col">
                 {post.coverImage ? (
-                  <div className="relative h-48 w-full overflow-hidden">
+                  <div className="relative h-40 sm:h-48 w-full overflow-hidden">
                     <Image src={post.coverImage} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
                   </div>
                 ) : (
-                  <div className="h-48 bg-gradient-to-br from-cream-100 to-cream-200 flex items-center justify-center">
+                  <div className="h-40 sm:h-48 bg-gradient-to-br from-cream-100 to-cream-200 flex items-center justify-center">
                     <span className="text-primary/30 text-5xl font-display font-bold">N</span>
                   </div>
                 )}
@@ -100,8 +100,8 @@ export default async function BlogPage({ searchParams }: { searchParams: { categ
       </div>
 
       {/* CTA */}
-      <section className="py-16 px-4">
-        <div className="max-w-2xl mx-auto text-center bg-white rounded-3xl border border-cream-200 p-10 shadow-sm">
+      <section className="py-10 sm:py-16 px-4">
+        <div className="max-w-2xl mx-auto text-center bg-white rounded-3xl border border-cream-200 p-6 sm:p-10 shadow-sm">
           <h2 className="font-display text-2xl font-bold text-gray-900 mb-3">Siap Buat Undangan Digital?</h2>
           <p className="text-gray-500 mb-6">Buat undangan pernikahan online yang elegan dalam hitungan menit.</p>
           <Link href="/daftar" className="inline-flex items-center gap-2 bg-primary text-white px-7 py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors">

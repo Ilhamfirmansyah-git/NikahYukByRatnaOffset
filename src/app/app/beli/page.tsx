@@ -264,7 +264,7 @@ export default function BeliPage() {
       {/* Step 1: Package */}
       {step === 1 && (
         <div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6 pt-3">
             {packages.map((pkg) => {
               const isPopular = pkg.name === 'Premium';
               const tmplCount = pkg.templateIds.length;
@@ -388,7 +388,7 @@ export default function BeliPage() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-5">
               {availableTemplates.map((tmpl) => (
                 <div
                   key={tmpl.id}
@@ -399,7 +399,7 @@ export default function BeliPage() {
                       : 'border-cream-200 hover:border-primary/40'
                   }`}
                 >
-                  <div className="h-32 sm:h-48 bg-gradient-to-br from-cream-200 to-cream-300 flex items-center justify-center relative group overflow-hidden">
+                  <div className="h-24 sm:h-36 md:h-48 bg-gradient-to-br from-cream-200 to-cream-300 flex items-center justify-center relative group overflow-hidden">
                     {tmpl.thumbnail ? (
                       <div className="absolute inset-0" style={{ backgroundImage: `url(${tmpl.thumbnail})`, backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} />
                     ) : (

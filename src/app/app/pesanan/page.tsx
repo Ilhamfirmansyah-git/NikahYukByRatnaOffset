@@ -48,12 +48,12 @@ export default async function PesananPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-display font-semibold text-gray-900">Pesanan Saya</h1>
+        <h1 className="text-xl sm:text-2xl font-display font-semibold text-gray-900">Pesanan Saya</h1>
         <p className="text-gray-500 mt-1">Riwayat pembelian dan status pembayaran Anda.</p>
       </div>
 
       {orders.length === 0 ? (
-        <div className="bg-white rounded-xl border border-cream-200 p-16 text-center">
+        <div className="bg-white rounded-xl border border-cream-200 p-8 sm:p-16 text-center">
           <div className="w-12 h-12 bg-cream-100 rounded-full flex items-center justify-center mx-auto mb-3">
             <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
@@ -107,7 +107,7 @@ export default async function PesananPage() {
                     )}
                   </div>
 
-                  <div className="text-right space-y-1 flex-shrink-0">
+                  <div className="text-left sm:text-right space-y-1 flex-shrink-0">
                     <p className="text-lg font-bold text-gray-900">{formatRupiah(order.amount)}</p>
                     {order.discountAmount > 0 && (
                       <p className="text-xs text-green-600 font-medium">

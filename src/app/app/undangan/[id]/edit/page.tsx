@@ -36,7 +36,7 @@ function Toggle({ checked, onChange, label, description }: { checked: boolean; o
 
 function SectionCard({ title, description, children }: { title: string; description?: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-2xl border border-cream-200 p-5 mb-4">
+    <div className="bg-white rounded-2xl border border-cream-200 p-4 sm:p-5 mb-4">
       <div className="mb-4">
         <h3 className="font-semibold text-gray-900">{title}</h3>
         {description && <p className="text-xs text-gray-400 mt-0.5">{description}</p>}
@@ -316,7 +316,7 @@ export default function EditInvitationPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-shrink-0 px-3 py-2 rounded-xl text-sm font-medium transition-all ${
+              className={`flex-shrink-0 px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
                 activeTab === tab.id
                   ? 'bg-primary text-white shadow-sm'
                   : 'text-gray-500 hover:text-gray-800 hover:bg-cream-50'
@@ -881,7 +881,7 @@ export default function EditInvitationPage() {
       )}
 
       {/* Bottom save bar on mobile */}
-      <div className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-10">
+      <div className="fixed bottom-24 sm:bottom-20 md:bottom-6 right-4 md:right-6 z-10">
         <button
           onClick={handleSave}
           disabled={saving}

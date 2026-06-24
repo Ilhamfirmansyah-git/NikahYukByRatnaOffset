@@ -36,8 +36,8 @@ export default function Footer() {
 
   return (
     <footer className="bg-primary-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
           {/* Brand */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
@@ -149,7 +149,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-primary-700 flex flex-col sm:flex-row justify-between items-center gap-2">
+        <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-primary-700 flex flex-col sm:flex-row justify-between items-center gap-2">
           <p className="text-sm text-primary-300">
             &copy; {currentYear} Nikah Yuk by Ratna Offset. Seluruh hak dilindungi.
           </p>

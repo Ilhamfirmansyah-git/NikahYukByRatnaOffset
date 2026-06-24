@@ -70,14 +70,14 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
             <span>/</span>
             <Link href="/blog" className="hover:text-primary transition-colors">Blog</Link>
             <span>/</span>
-            <span className="text-gray-600 truncate max-w-[200px]">{post.title}</span>
+            <span className="text-gray-600 truncate max-w-[140px] sm:max-w-[250px] md:max-w-none">{post.title}</span>
           </nav>
         </div>
 
         {/* Cover image */}
         {post.coverImage && (
           <div className="max-w-4xl mx-auto px-4 pt-6">
-            <div className="relative h-64 md:h-96 w-full rounded-2xl overflow-hidden border border-cream-200">
+            <div className="relative h-48 sm:h-64 md:h-80 lg:h-96 w-full rounded-2xl overflow-hidden border border-cream-200">
               <Image src={post.coverImage} alt={post.title} fill className="object-cover" priority />
             </div>
           </div>
@@ -93,10 +93,10 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
               <span className="text-sm text-gray-400">{formatDate(post.publishedAt)}</span>
             )}
           </div>
-          <h1 className="font-display text-3xl md:text-4xl font-bold text-gray-900 leading-snug mb-4">
+          <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 leading-snug mb-4">
             {post.title}
           </h1>
-          <p className="text-gray-500 text-lg leading-relaxed border-b border-cream-200 pb-8">
+          <p className="text-gray-500 text-base sm:text-lg leading-relaxed border-b border-cream-200 pb-8">
             {post.excerpt}
           </p>
         </div>
@@ -108,7 +108,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
 
         {/* CTA */}
         <div className="max-w-3xl mx-auto px-4 pb-16">
-          <div className="bg-cream-50 rounded-3xl border border-cream-200 p-8 text-center">
+          <div className="bg-cream-50 rounded-3xl border border-cream-200 p-5 sm:p-8 text-center">
             <h2 className="font-display text-2xl font-bold text-gray-900 mb-2">Buat Undangan Anda Sekarang</h2>
             <p className="text-gray-500 mb-6 text-sm">Undangan digital elegan dalam hitungan menit. Mulai gratis, tanpa kartu kredit.</p>
             <div className="flex items-center justify-center gap-3 flex-wrap">
