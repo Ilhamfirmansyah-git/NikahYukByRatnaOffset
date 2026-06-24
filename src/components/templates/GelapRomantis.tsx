@@ -6,6 +6,7 @@ import MusicPlayer from '@/components/invitation/MusicPlayer';
 import RsvpForm from '@/components/invitation/RsvpForm';
 import GuestbookForm from '@/components/invitation/GuestbookForm';
 import AmplopDigitalComponent from '@/components/invitation/AmplopDigital';
+import GoogleMapsEmbed from '@/components/invitation/GoogleMapsEmbed';
 
 const GOLD = '#c9a84c';
 const GOLD_DIM = '#8a6d2e';
@@ -385,6 +386,7 @@ export default function GelapRomantis({
                         <p style={{ fontSize: 12, color: MUTED, margin: 0 }}>{a.waktuMulai} – {a.waktuSelesai} WIB</p>
                         <p style={{ fontSize: 13, fontWeight: 500, color: WHITE, margin: '4px 0 0' }}>{a.lokasi}</p>
                         <p style={{ fontSize: 12, color: MUTED, margin: 0 }}>{a.alamat}</p>
+                        <GoogleMapsEmbed lokasi={a.lokasi} alamat={a.alamat} />
                         {a.mapsUrl && (
                           <a href={a.mapsUrl} target="_blank" rel="noopener noreferrer"
                             style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 12, color: GOLD, marginTop: 6, textDecoration: 'none' }}>

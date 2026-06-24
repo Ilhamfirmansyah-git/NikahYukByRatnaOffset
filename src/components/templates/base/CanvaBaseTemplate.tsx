@@ -8,6 +8,7 @@ import RsvpForm from '@/components/invitation/RsvpForm';
 import GuestbookForm from '@/components/invitation/GuestbookForm';
 import AmplopDigitalComponent from '@/components/invitation/AmplopDigital';
 import ShareButton from '@/components/invitation/ShareButton';
+import GoogleMapsEmbed from '@/components/invitation/GoogleMapsEmbed';
 
 // ── Shared utilities ───────────────────────────────────────────────────────────
 
@@ -531,6 +532,7 @@ export function CanvaBaseTemplate({
                         </div>
                       </div>
                     </div>
+                    <GoogleMapsEmbed lokasi={acara.lokasi} alamat={acara.alamat} />
                     {acara.mapsUrl && (
                       <a
                         href={acara.mapsUrl} target="_blank" rel="noopener noreferrer"

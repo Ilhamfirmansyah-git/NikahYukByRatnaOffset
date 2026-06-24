@@ -8,6 +8,7 @@ import RsvpForm from '@/components/invitation/RsvpForm';
 import GuestbookForm from '@/components/invitation/GuestbookForm';
 import AmplopDigitalComponent from '@/components/invitation/AmplopDigital';
 import ShareButton from '@/components/invitation/ShareButton';
+import GoogleMapsEmbed from '@/components/invitation/GoogleMapsEmbed';
 
 const GOLD = '#C9A84C';
 const DARK = '#1A1209';
@@ -201,6 +202,7 @@ export default function EleganGold({ data, guestName, slug, onRsvpSubmit, onGues
                       <p className="opacity-80">{acara.waktuMulai} – {acara.waktuSelesai} WIB</p>
                       <p className="font-semibold mt-2">{acara.lokasi}</p>
                       <p className="opacity-70">{acara.alamat}</p>
+                      <GoogleMapsEmbed lokasi={acara.lokasi} alamat={acara.alamat} />
                       {acara.mapsUrl && (
                         <a
                           href={acara.mapsUrl}

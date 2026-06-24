@@ -8,6 +8,7 @@ import RsvpForm from '@/components/invitation/RsvpForm';
 import GuestbookForm from '@/components/invitation/GuestbookForm';
 import AmplopDigitalComponent from '@/components/invitation/AmplopDigital';
 import ShareButton from '@/components/invitation/ShareButton';
+import GoogleMapsEmbed from '@/components/invitation/GoogleMapsEmbed';
 
 const PRIMARY = '#374151'; // gray-700
 const ACCENT = '#6B7280'; // gray-500
@@ -181,6 +182,7 @@ export default function MinimalisPutih({ data, guestName, slug, onRsvpSubmit, on
                       <p className="text-gray-700 font-medium mt-2">{acara.lokasi}</p>
                       <p>{acara.alamat}</p>
                     </div>
+                    <GoogleMapsEmbed lokasi={acara.lokasi} alamat={acara.alamat} />
                     {acara.mapsUrl && (
                       <a
                         href={acara.mapsUrl}

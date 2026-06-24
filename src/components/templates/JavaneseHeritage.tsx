@@ -8,6 +8,7 @@ import RsvpForm from '@/components/invitation/RsvpForm';
 import GuestbookForm from '@/components/invitation/GuestbookForm';
 import AmplopDigitalComponent from '@/components/invitation/AmplopDigital';
 import ShareButton from '@/components/invitation/ShareButton';
+import GoogleMapsEmbed from '@/components/invitation/GoogleMapsEmbed';
 
 const GOLD = '#C9A057';
 const SOGA = '#5C2E0E';
@@ -522,6 +523,7 @@ export default function JavaneseHeritage({
                       </p>
                       <p style={{ fontWeight:600, color:SOGA, fontSize:'0.9rem' }}>{acara.lokasi}</p>
                       <p style={{ fontSize:'0.78rem', color:TEXT, opacity:0.65, margin:'0.25rem 0 0.75rem' }}>{acara.alamat}</p>
+                      <GoogleMapsEmbed lokasi={acara.lokasi} alamat={acara.alamat} />
                       {acara.mapsUrl && (
                         <a
                           href={acara.mapsUrl} target="_blank" rel="noopener noreferrer"
