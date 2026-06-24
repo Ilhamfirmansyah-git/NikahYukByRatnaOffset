@@ -121,6 +121,22 @@ export default function EditInvitationPage() {
         body: JSON.stringify(data),
       });
       if (!res.ok) throw new Error('Gagal menyimpan');
+
+      // Auto-update slug from couple names on every save
+      const namaPria = data.mempelai.pria.namaPanggilan || data.mempelai.pria.namaLengkap;
+      const namaWanita = data.mempelai.wanita.namaPanggilan || data.mempelai.wanita.namaLengkap;
+      if (namaPria && namaWanita) {
+        const slugRes = await fetch(`/api/invitations/${id}/slug`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ namaPria, namaWanita }),
+        });
+        if (slugRes.ok) {
+          const slugResult = await slugRes.json();
+          setInvitation(prev => prev ? { ...prev, slug: slugResult.slug } : prev);
+        }
+      }
+
       toast.success('Perubahan berhasil disimpan!');
     } catch {
       toast.error('Gagal menyimpan perubahan');
@@ -703,19 +719,11 @@ export default function EditInvitationPage() {
                 </div>
               </div>
 
-              {/* Non-exclusive: button to generate slug from couple names */}
+              {/* Slug auto-updates when saving — info hint for non-custom-domain */}
               {packageFeatures?.customDomain !== true && (
-                <div className="flex items-center gap-3 p-3 bg-cream-50 border border-cream-200 rounded-xl">
-                  <div className="flex-1">
-                    <p className="text-xs text-gray-600 font-medium">Buat link dari nama pengantin</p>
-                    <p className="text-xs text-gray-400 mt-0.5">
-                      Contoh: <span className="font-mono">budi-siti</span> → <span className="font-mono">/u/budi-siti</span>
-                    </p>
-                  </div>
-                  <Button size="sm" variant="outline" onClick={handleGenerateSlugFromNames} loading={regeneratingSlug}>
-                    Perbarui
-                  </Button>
-                </div>
+                <p className="text-xs text-gray-400">
+                  Link otomatis diperbarui dari nama pengantin setiap kali Anda menyimpan.
+                </p>
               )}
 
               <div className="flex items-center gap-3 flex-wrap">
