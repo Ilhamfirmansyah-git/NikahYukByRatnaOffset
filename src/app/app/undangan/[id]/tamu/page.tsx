@@ -22,8 +22,7 @@ const GROUP_OPTIONS = [
 
 const VALID_GROUPS = GROUP_OPTIONS.map(o => o.value);
 
-function buildDefaultTemplate(priaNama: string, wanitaNama: string): string {
-  return `Kepada Yth.
+const DEFAULT_TEMPLATE = `Kepada Yth.
 Bapak/Ibu/Saudara/i {nama}
 
 Assalamu'alaikum Wr. Wb.
@@ -31,9 +30,9 @@ Assalamu'alaikum Wr. Wb.
 Bismillahirahmanirrahim.
 Tanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i, teman sekaligus sahabat, untuk menghadiri acara pernikahan kami:
 
-${priaNama}
+{pria}
            &
-${wanitaNama}
+{wanita}
 
 Berikut klik link untuk info lengkap dari acara kami :
 
@@ -46,8 +45,7 @@ Wassalamu'alaikum Wr. Wb.
 Terima Kasih..
 
 Hormat kami,
-${priaNama} & ${wanitaNama}`;
-}
+{pria} & {wanita}`;
 
 function parseCSV(text: string): Array<{ name: string; group: string }> {
   const lines = text.trim().split(/\r?\n/);
@@ -103,8 +101,9 @@ export default function TamuPage() {
   const [importing, setImporting] = useState(false);
   const [invitationSlug, setInvitationSlug] = useState('');
   const [customDomain, setCustomDomain] = useState('');
-  const [waTemplate, setWaTemplate] = useState('');
-  const [defaultTemplate, setDefaultTemplate] = useState('');
+  const [priaNama, setPriaNama] = useState('');
+  const [wanitaNama, setWanitaNama] = useState('');
+  const [waTemplate, setWaTemplate] = useState(DEFAULT_TEMPLATE);
   const appDomain = process.env.NEXT_PUBLIC_APP_DOMAIN ?? 'ratnaoffset.com';
   const [showTemplate, setShowTemplate] = useState(false);
   const [search, setSearch] = useState('');
@@ -131,11 +130,8 @@ export default function TamuPage() {
       setCustomDomain(invData.customDomain ?? '');
 
       const data = invData.data as InvitationData;
-      const priaNama = data?.mempelai?.pria?.namaLengkap || data?.mempelai?.pria?.namaPanggilan || 'Mempelai Pria';
-      const wanitaNama = data?.mempelai?.wanita?.namaLengkap || data?.mempelai?.wanita?.namaPanggilan || 'Mempelai Wanita';
-      const template = buildDefaultTemplate(priaNama, wanitaNama);
-      setDefaultTemplate(template);
-      setWaTemplate(template);
+      setPriaNama(data?.mempelai?.pria?.namaLengkap || data?.mempelai?.pria?.namaPanggilan || '');
+      setWanitaNama(data?.mempelai?.wanita?.namaLengkap || data?.mempelai?.wanita?.namaPanggilan || '');
     } catch {
       toast.error('Gagal memuat data tamu');
     } finally {
@@ -197,7 +193,9 @@ export default function TamuPage() {
     const personalLink = getPersonalLink(guestName);
     const message = waTemplate
       .replace(/\{nama\}/g, guestName)
-      .replace(/\{link\}/g, personalLink);
+      .replace(/\{link\}/g, personalLink)
+      .replace(/\{pria\}/g, priaNama)
+      .replace(/\{wanita\}/g, wanitaNama);
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
   }
 
@@ -393,13 +391,13 @@ export default function TamuPage() {
             <div className="flex items-center justify-between mt-4 mb-2">
               <p className="text-xs text-gray-500">
                 Gunakan{' '}
-                <code className="bg-gray-100 px-1 py-0.5 rounded text-green-700 font-mono">{'{nama}'}</code>
-                {' '}dan{' '}
-                <code className="bg-gray-100 px-1 py-0.5 rounded text-green-700 font-mono">{'{link}'}</code>
+                {['{nama}', '{link}', '{pria}', '{wanita}'].map(v => (
+                  <code key={v} className="bg-gray-100 px-1 py-0.5 rounded text-green-700 font-mono mr-1">{v}</code>
+                ))}
               </p>
-              {waTemplate !== defaultTemplate && (
+              {waTemplate !== DEFAULT_TEMPLATE && (
                 <button
-                  onClick={() => setWaTemplate(defaultTemplate)}
+                  onClick={() => setWaTemplate(DEFAULT_TEMPLATE)}
                   className="text-xs text-primary hover:underline flex-shrink-0 ml-3"
                 >
                   Reset
