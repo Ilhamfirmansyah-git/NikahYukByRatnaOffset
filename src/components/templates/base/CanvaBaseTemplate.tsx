@@ -589,11 +589,13 @@ export function CanvaBaseTemplate({
                         cursor: 'zoom-in', borderRadius: 8, overflow: 'hidden',
                         border: `1.5px solid ${c.primaryDark}`, aspectRatio: '1/1',
                         transition: 'transform 0.3s, box-shadow 0.3s',
+                        position: 'relative', width: '100%',
+                        background: c.bgLight,
                       }}
                       onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'scale(1.03)'; }}
                       onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'scale(1)'; }}
                     >
-                      <img src={src} alt={`Foto ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                      <img src={src} alt={`Foto ${i + 1}`} loading="lazy" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                     </div>
                   </FadeIn>
                 ))}

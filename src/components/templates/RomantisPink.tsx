@@ -537,9 +537,11 @@ export default function RomantisPink({
                       <button key={i} onClick={() => setLightboxImg(src)} style={{
                         aspectRatio: '1', overflow: 'hidden', borderRadius: 12,
                         border: `2px solid ${ROSE_P}`, cursor: 'pointer',
-                        padding: 0, background: 'none', display: 'block', position: 'relative',
+                        padding: 0, background: '#f8e0e8', display: 'block',
+                        position: 'relative', width: '100%',
                       }}>
-                        <img src={src} alt={`Foto ${i + 1}`} style={{
+                        <img src={src} alt={`Foto ${i + 1}`} loading="lazy" style={{
+                          position: 'absolute', inset: 0,
                           width: '100%', height: '100%', objectFit: 'cover', display: 'block',
                           transition: 'transform 0.4s, filter 0.4s',
                         }}
