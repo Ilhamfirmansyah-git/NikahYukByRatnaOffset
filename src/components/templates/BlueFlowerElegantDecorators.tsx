@@ -119,3 +119,35 @@ export function BlueFlowerBouquets() {
     </>
   );
 }
+
+export function BlueFlowerSectionBg() {
+  const B = '/assets/templates/blue-flower-elegant/bouquet.png';
+  return (
+    <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+      <img src={B} alt="" style={{
+        position: 'absolute', bottom: '-10%', right: '-5%', width: '55%',
+        opacity: 0.12, transform: 'rotate(-8deg)',
+      }} />
+      <img src={B} alt="" style={{
+        position: 'absolute', top: '-10%', left: '-5%', width: '45%',
+        opacity: 0.10, transform: 'rotate(175deg) scaleX(-1)',
+      }} />
+    </div>
+  );
+}
+
+export function BlueFlowerSectionHeader() {
+  const B = '/assets/templates/blue-flower-elegant/bouquet.png';
+  return (
+    <div style={{ position: 'relative', height: 70, overflow: 'hidden', pointerEvents: 'none' }}>
+      <img src={B} alt="" style={{
+        position: 'absolute', top: '-90%', left: '-4%', width: '38%',
+        transform: 'rotate(155deg) scaleX(-1)', opacity: 0.7,
+      }} />
+      <img src={B} alt="" style={{
+        position: 'absolute', top: '-90%', right: '-4%', width: '38%',
+        transform: 'rotate(185deg)', opacity: 0.7,
+      }} />
+    </div>
+  );
+}

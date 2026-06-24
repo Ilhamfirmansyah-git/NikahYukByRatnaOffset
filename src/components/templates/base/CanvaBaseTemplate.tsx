@@ -397,6 +397,7 @@ export function CanvaBaseTemplate({
 
           {/* ── Quote / Bismillah ── */}
           <section style={{ background: c.bgLight, padding: '56px 28px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+            {theme.inner?.SectionHeaderDecor && <theme.inner.SectionHeaderDecor />}
             {dec.SectionBgDecor && (
               <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
                 <dec.SectionBgDecor />
@@ -424,6 +425,7 @@ export function CanvaBaseTemplate({
             ref={setRef('mempelai')}
             style={{ background: bgLight2, padding: '48px 20px 56px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}
           >
+            {theme.inner?.SectionHeaderDecor && <theme.inner.SectionHeaderDecor />}
             {dec.MempelaiSectionDecor && (
               <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
                 <dec.MempelaiSectionDecor />
@@ -477,6 +479,7 @@ export function CanvaBaseTemplate({
 
           {/* ── Acara ── */}
           <section ref={setRef('acara')} style={{ background: c.bgDark, padding: '56px 24px' }}>
+            {theme.inner?.SectionHeaderDecor && <theme.inner.SectionHeaderDecor />}
             <FadeIn>
               <div style={{ textAlign: 'center', marginBottom: 36 }}>
                 <Divider />
@@ -487,66 +490,121 @@ export function CanvaBaseTemplate({
               </div>
             </FadeIn>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 20, maxWidth: 480, margin: '0 auto' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: theme.inner?.openAcaraCards ? 0 : 20, maxWidth: 480, margin: '0 auto' }}>
               {data.acara.map((acara, i) => (
                 <FadeIn key={i} delay={i * 150}>
-                  <div style={{
-                    background: 'rgba(255,255,255,0.04)', border: `1px solid ${c.primaryDark}`,
-                    borderRadius: 12, padding: '28px 24px', textAlign: 'center', position: 'relative', overflow: 'hidden',
-                  }}>
-                    {dec.AcaraCardDecor && (
-                      <>
-                        <dec.AcaraCardDecor pos="tl" />
-                        <dec.AcaraCardDecor pos="tr" />
-                      </>
-                    )}
-                    <h3 style={{ fontFamily: f.subheading, fontSize: 22, fontStyle: 'italic', color: c.primaryLight, marginBottom: 16 }}>
-                      {acara.nama}
-                    </h3>
-                    <GoldLine theme={theme} />
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
-                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, justifyContent: 'center' }}>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill={c.primaryDark} style={{ flexShrink: 0, marginTop: 2 }}>
-                          <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z" />
-                        </svg>
-                        <div>
-                          <p style={{ fontFamily: f.subheading, fontSize: 15, color: 'rgba(255,255,255,0.85)', margin: 0, fontStyle: 'italic' }}>
-                            {fmt(acara.tanggal)}
-                          </p>
-                          {(acara.waktuMulai || acara.waktuSelesai) && (
-                            <p style={{ fontFamily: f.body, fontSize: 11, color: c.primaryDark, margin: '2px 0 0', letterSpacing: '0.1em' }}>
-                              {fmtTime(acara.waktuMulai)}{acara.waktuSelesai ? ` – ${fmtTime(acara.waktuSelesai)}` : ''} WIB
+                  {theme.inner?.openAcaraCards ? (
+                    <div style={{
+                      padding: '28px 0',
+                      borderBottom: i < data.acara.length - 1 ? `1px solid ${c.primaryDark}33` : 'none',
+                      textAlign: 'center',
+                    }}>
+                      <h3 style={{ fontFamily: f.subheading, fontSize: 22, fontStyle: 'italic', color: c.primaryLight, marginBottom: 16 }}>
+                        {acara.nama}
+                      </h3>
+                      <GoldLine theme={theme} />
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, justifyContent: 'center' }}>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill={c.primaryDark} style={{ flexShrink: 0, marginTop: 2 }}>
+                            <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z" />
+                          </svg>
+                          <div>
+                            <p style={{ fontFamily: f.subheading, fontSize: 15, color: 'rgba(255,255,255,0.85)', margin: 0, fontStyle: 'italic' }}>
+                              {fmt(acara.tanggal)}
                             </p>
-                          )}
+                            {(acara.waktuMulai || acara.waktuSelesai) && (
+                              <p style={{ fontFamily: f.body, fontSize: 11, color: c.primaryDark, margin: '2px 0 0', letterSpacing: '0.1em' }}>
+                                {fmtTime(acara.waktuMulai)}{acara.waktuSelesai ? ` – ${fmtTime(acara.waktuSelesai)}` : ''} WIB
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, justifyContent: 'center' }}>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill={c.primaryDark} style={{ flexShrink: 0, marginTop: 2 }}>
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                          </svg>
+                          <div>
+                            <p style={{ fontFamily: f.subheading, fontSize: 15, color: 'rgba(255,255,255,0.85)', margin: 0 }}>{acara.lokasi}</p>
+                            {acara.alamat && (
+                              <p style={{ fontFamily: f.body, fontSize: 11, color: c.primaryDark, margin: '2px 0 0', lineHeight: 1.5 }}>{acara.alamat}</p>
+                            )}
+                          </div>
                         </div>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, justifyContent: 'center' }}>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill={c.primaryDark} style={{ flexShrink: 0, marginTop: 2 }}>
-                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                        </svg>
-                        <div>
-                          <p style={{ fontFamily: f.subheading, fontSize: 15, color: 'rgba(255,255,255,0.85)', margin: 0 }}>{acara.lokasi}</p>
-                          {acara.alamat && (
-                            <p style={{ fontFamily: f.body, fontSize: 11, color: c.primaryDark, margin: '2px 0 0', lineHeight: 1.5 }}>{acara.alamat}</p>
-                          )}
-                        </div>
-                      </div>
+                      <GoogleMapsEmbed lokasi={acara.lokasi} alamat={acara.alamat} />
+                      {acara.mapsUrl && (
+                        <a
+                          href={acara.mapsUrl} target="_blank" rel="noopener noreferrer"
+                          style={{
+                            display: 'inline-block', marginTop: 20, padding: '9px 28px',
+                            border: `1px solid ${c.primaryDark}`, color: c.primary, borderRadius: 4,
+                            fontFamily: f.body, fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase',
+                            textDecoration: 'none', transition: 'background 0.2s',
+                          }}
+                        >
+                          Lihat Peta
+                        </a>
+                      )}
                     </div>
-                    <GoogleMapsEmbed lokasi={acara.lokasi} alamat={acara.alamat} />
-                    {acara.mapsUrl && (
-                      <a
-                        href={acara.mapsUrl} target="_blank" rel="noopener noreferrer"
-                        style={{
-                          display: 'inline-block', marginTop: 20, padding: '9px 28px',
-                          border: `1px solid ${c.primaryDark}`, color: c.primary, borderRadius: 4,
-                          fontFamily: f.body, fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase',
-                          textDecoration: 'none', transition: 'background 0.2s',
-                        }}
-                      >
-                        Lihat Peta
-                      </a>
-                    )}
-                  </div>
+                  ) : (
+                    <div style={{
+                      background: 'rgba(255,255,255,0.04)', border: `1px solid ${c.primaryDark}`,
+                      borderRadius: 12, padding: '28px 24px', textAlign: 'center', position: 'relative', overflow: 'hidden',
+                    }}>
+                      {dec.AcaraCardDecor && (
+                        <>
+                          <dec.AcaraCardDecor pos="tl" />
+                          <dec.AcaraCardDecor pos="tr" />
+                        </>
+                      )}
+                      <h3 style={{ fontFamily: f.subheading, fontSize: 22, fontStyle: 'italic', color: c.primaryLight, marginBottom: 16 }}>
+                        {acara.nama}
+                      </h3>
+                      <GoldLine theme={theme} />
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, justifyContent: 'center' }}>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill={c.primaryDark} style={{ flexShrink: 0, marginTop: 2 }}>
+                            <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z" />
+                          </svg>
+                          <div>
+                            <p style={{ fontFamily: f.subheading, fontSize: 15, color: 'rgba(255,255,255,0.85)', margin: 0, fontStyle: 'italic' }}>
+                              {fmt(acara.tanggal)}
+                            </p>
+                            {(acara.waktuMulai || acara.waktuSelesai) && (
+                              <p style={{ fontFamily: f.body, fontSize: 11, color: c.primaryDark, margin: '2px 0 0', letterSpacing: '0.1em' }}>
+                                {fmtTime(acara.waktuMulai)}{acara.waktuSelesai ? ` – ${fmtTime(acara.waktuSelesai)}` : ''} WIB
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, justifyContent: 'center' }}>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill={c.primaryDark} style={{ flexShrink: 0, marginTop: 2 }}>
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                          </svg>
+                          <div>
+                            <p style={{ fontFamily: f.subheading, fontSize: 15, color: 'rgba(255,255,255,0.85)', margin: 0 }}>{acara.lokasi}</p>
+                            {acara.alamat && (
+                              <p style={{ fontFamily: f.body, fontSize: 11, color: c.primaryDark, margin: '2px 0 0', lineHeight: 1.5 }}>{acara.alamat}</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <GoogleMapsEmbed lokasi={acara.lokasi} alamat={acara.alamat} />
+                      {acara.mapsUrl && (
+                        <a
+                          href={acara.mapsUrl} target="_blank" rel="noopener noreferrer"
+                          style={{
+                            display: 'inline-block', marginTop: 20, padding: '9px 28px',
+                            border: `1px solid ${c.primaryDark}`, color: c.primary, borderRadius: 4,
+                            fontFamily: f.body, fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase',
+                            textDecoration: 'none', transition: 'background 0.2s',
+                          }}
+                        >
+                          Lihat Peta
+                        </a>
+                      )}
+                    </div>
+                  )}
                 </FadeIn>
               ))}
             </div>
@@ -555,6 +613,7 @@ export function CanvaBaseTemplate({
           {/* ── Countdown ── */}
           {countdownTarget && (
             <section style={{ background: c.bgDark, padding: '52px 24px', textAlign: 'center', borderTop: `1px solid ${c.primaryDark}22` }}>
+              {theme.inner?.SectionHeaderDecor && <theme.inner.SectionHeaderDecor />}
               <FadeIn>
                 <p style={{ fontFamily: f.subheading, fontSize: 14, fontStyle: 'italic', color: c.primaryDark, marginBottom: 6 }}>
                   Menghitung hari menuju hari bahagia
@@ -570,6 +629,7 @@ export function CanvaBaseTemplate({
           {/* ── Galeri ── */}
           {data.galeri.length > 0 && (
             <section ref={setRef('galeri')} style={{ background: c.bgLight, padding: '56px 20px' }}>
+              {theme.inner?.SectionHeaderDecor && <theme.inner.SectionHeaderDecor />}
               <FadeIn>
                 <SectionTitle theme={theme} Divider={Divider}>Galeri</SectionTitle>
               </FadeIn>

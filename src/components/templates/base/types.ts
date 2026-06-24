@@ -1,6 +1,12 @@
 import type { ComponentType, ReactNode } from 'react';
 
 export interface CanvaTemplateTheme {
+  inner?: {
+    /** Remove bordered card layout for acara items; use open divider-separated rows instead */
+    openAcaraCards?: boolean;
+    /** Floral accent rendered at the top of each major inner section */
+    SectionHeaderDecor?: ComponentType;
+  };
   slug: string;
   assets: {
     coverBg: string;
