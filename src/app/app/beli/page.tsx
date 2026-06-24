@@ -424,7 +424,7 @@ export default function BeliPage() {
                       </div>
                     )}
                     {/* Preview hover overlay — desktop only, completely removed from DOM on mobile */}
-                    <div className="absolute inset-0 bg-black/50 hidden sm:flex sm:opacity-0 sm:group-hover:opacity-100 transition-opacity items-center justify-center">
+                    <div className="absolute inset-0 bg-black/50 hidden lg:flex lg:opacity-0 lg:group-hover:opacity-100 transition-opacity items-center justify-center">
                       <a
                         href={`/preview/${tmpl.slug}${selectedPackage ? `?packageId=${selectedPackage.id}` : ''}`}
                         target="_blank"
