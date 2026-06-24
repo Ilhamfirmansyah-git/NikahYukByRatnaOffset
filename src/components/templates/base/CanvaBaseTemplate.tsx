@@ -42,7 +42,7 @@ export function FadeIn({ children, delay = 0, from = 'bottom' }: {
 }
 
 // ── Countdown timer ────────────────────────────────────────────────────────────
-function BaseCountdown({ targetDate, theme }: { targetDate: string; theme: CanvaTemplateTheme }) {
+function BaseCountdown({ targetDate, theme, contBg = false }: { targetDate: string; theme: CanvaTemplateTheme; contBg?: boolean }) {
   const calc = () => {
     const diff = new Date(targetDate).getTime() - Date.now();
     if (diff <= 0) return { d: 0, h: 0, m: 0, s: 0 };
@@ -59,11 +59,15 @@ function BaseCountdown({ targetDate, theme }: { targetDate: string; theme: Canva
       {units.map(u => (
         <div key={u.l} style={{ textAlign: 'center', minWidth: 64 }}>
           <div style={{
-            background: c.bgDark, border: `1.5px solid ${c.primaryDark}`, borderRadius: 10,
+            background: contBg ? 'rgba(255,255,255,0.35)' : c.bgDark,
+            border: `1.5px solid ${c.primary}`,
+            borderRadius: 10,
             padding: '10px 6px', marginBottom: 6,
-            boxShadow: `0 2px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)`,
+            boxShadow: contBg
+              ? `0 2px 16px rgba(201,168,76,0.18), inset 0 1px 0 rgba(255,255,255,0.6)`
+              : `0 2px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)`,
           }}>
-            <span style={{ fontFamily: f.subheading, fontSize: 36, fontWeight: 600, color: c.primaryLight, display: 'block', lineHeight: 1 }}>
+            <span style={{ fontFamily: f.subheading, fontSize: 36, fontWeight: 600, color: contBg ? c.text : c.primaryLight, display: 'block', lineHeight: 1 }}>
               {pad(u.v)}
             </span>
           </div>
@@ -185,6 +189,12 @@ export function CanvaBaseTemplate({
   const subCol    = theme.cover.subtitleColor;
   const dateCol   = theme.cover.dateColor ?? subCol;
   const contBg    = theme.inner?.continuousBg ?? false;
+  // Color helpers for sections that were "dark" — in contBg mode the bg is light, so text flips dark
+  const sd = {
+    text:    contBg ? c.text          : 'rgba(255,255,255,0.88)' as string,
+    heading: contBg ? c.primary       : c.primaryLight           as string,
+    footer:  contBg ? c.primaryLight  : titleCol                 as string,
+  };
 
   // Derived components (stable via useMemo — theme is constant per template)
   const Divider: ComponentType = useMemo(
@@ -394,17 +404,26 @@ export function CanvaBaseTemplate({
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
               textAlign: 'center', padding: '0 24px',
             }}>
-              <p style={{ fontFamily: f.subheading, fontSize: 11, letterSpacing: '0.3em', color: c.primaryDark, fontStyle: 'italic', marginBottom: 8 }}>
-                The Wedding of
-              </p>
-              <h2 style={{ fontFamily: f.heading, fontSize: 48, color: titleCol, margin: 0 }}>
-                {m1.namaPanggilan || m1.namaLengkap} &amp; {m2.namaPanggilan || m2.namaLengkap}
-              </h2>
-              {firstAcara && (
-                <p style={{ fontFamily: f.body, fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: c.primaryDark, marginTop: 12 }}>
-                  {fmt(firstAcara.tanggal)}
+              <div style={contBg ? {
+                background: 'rgba(255,255,255,0.62)',
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+                borderRadius: 16,
+                padding: '24px 32px',
+                boxShadow: `0 4px 32px rgba(0,0,0,0.08), 0 0 0 1px ${c.primaryDark}33`,
+              } : {}}>
+                <p style={{ fontFamily: f.subheading, fontSize: 11, letterSpacing: '0.3em', color: c.primaryDark, fontStyle: 'italic', marginBottom: 8 }}>
+                  The Wedding of
                 </p>
-              )}
+                <h2 style={{ fontFamily: f.heading, fontSize: 48, color: titleCol, margin: 0 }}>
+                  {m1.namaPanggilan || m1.namaLengkap} &amp; {m2.namaPanggilan || m2.namaLengkap}
+                </h2>
+                {firstAcara && (
+                  <p style={{ fontFamily: f.body, fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: c.primaryDark, marginTop: 12 }}>
+                    {fmt(firstAcara.tanggal)}
+                  </p>
+                )}
+              </div>
             </div>
           </section>
 
@@ -456,7 +475,7 @@ export function CanvaBaseTemplate({
                   <FrameWrapper>
                     {m.foto && (
                       <div style={{ marginBottom: 16 }}>
-                        <img src={m.foto} alt={m.namaLengkap} style={{ width: 100, height: 100, borderRadius: '50%', objectFit: 'cover', border: `3px solid ${c.primaryDark}`, boxShadow: `0 4px 20px rgba(0,0,0,0.15)` }} />
+                        <img src={m.foto} alt={m.namaLengkap} style={{ width: 120, height: 120, borderRadius: '50%', objectFit: 'cover', border: `3px solid ${c.primaryDark}`, boxShadow: contBg ? `0 0 0 6px rgba(201,168,76,0.22), 0 0 0 9px ${c.primaryDark}40, 0 8px 28px rgba(0,0,0,0.18)` : `0 4px 20px rgba(0,0,0,0.15)` }} />
                       </div>
                     )}
                     <h3 style={{ fontFamily: f.heading, fontSize: 40, color: c.text, margin: '0 0 4px', lineHeight: 1.1 }}>
@@ -491,7 +510,7 @@ export function CanvaBaseTemplate({
           </section>
 
           {/* ── Acara ── */}
-          <section ref={setRef('acara')} style={{ background: contBg ? 'linear-gradient(to bottom, transparent 0%, rgba(26,42,74,0.92) 7%, rgba(26,42,74,0.92) 93%, transparent 100%)' : c.bgDark, padding: '56px 24px' }}>
+          <section ref={setRef('acara')} style={{ background: contBg ? 'transparent' : c.bgDark, padding: '56px 24px' }}>
             {theme.inner?.SectionHeaderDecor && <theme.inner.SectionHeaderDecor />}
             <FadeIn>
               <div style={{ textAlign: 'center', marginBottom: 36 }}>
@@ -512,7 +531,7 @@ export function CanvaBaseTemplate({
                       borderBottom: i < data.acara.length - 1 ? `1px solid ${c.primaryDark}33` : 'none',
                       textAlign: 'center',
                     }}>
-                      <h3 style={{ fontFamily: f.subheading, fontSize: 22, fontStyle: 'italic', color: c.primaryLight, marginBottom: 16 }}>
+                      <h3 style={{ fontFamily: f.subheading, fontSize: 22, fontStyle: 'italic', color: sd.heading, marginBottom: 16 }}>
                         {acara.nama}
                       </h3>
                       <GoldLine theme={theme} />
@@ -522,7 +541,7 @@ export function CanvaBaseTemplate({
                             <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z" />
                           </svg>
                           <div>
-                            <p style={{ fontFamily: f.subheading, fontSize: 15, color: 'rgba(255,255,255,0.85)', margin: 0, fontStyle: 'italic' }}>
+                            <p style={{ fontFamily: f.subheading, fontSize: 15, color: sd.text, margin: 0, fontStyle: 'italic' }}>
                               {fmt(acara.tanggal)}
                             </p>
                             {(acara.waktuMulai || acara.waktuSelesai) && (
@@ -537,7 +556,7 @@ export function CanvaBaseTemplate({
                             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                           </svg>
                           <div>
-                            <p style={{ fontFamily: f.subheading, fontSize: 15, color: 'rgba(255,255,255,0.85)', margin: 0 }}>{acara.lokasi}</p>
+                            <p style={{ fontFamily: f.subheading, fontSize: 15, color: sd.text, margin: 0 }}>{acara.lokasi}</p>
                             {acara.alamat && (
                               <p style={{ fontFamily: f.body, fontSize: 11, color: c.primaryDark, margin: '2px 0 0', lineHeight: 1.5 }}>{acara.alamat}</p>
                             )}
@@ -561,7 +580,8 @@ export function CanvaBaseTemplate({
                     </div>
                   ) : (
                     <div style={{
-                      background: 'rgba(255,255,255,0.04)', border: `1px solid ${c.primaryDark}`,
+                      background: contBg ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.04)',
+                      border: `1px solid ${c.primaryDark}`,
                       borderRadius: 12, padding: '28px 24px', textAlign: 'center', position: 'relative', overflow: 'hidden',
                     }}>
                       {dec.AcaraCardDecor && (
@@ -570,7 +590,7 @@ export function CanvaBaseTemplate({
                           <dec.AcaraCardDecor pos="tr" />
                         </>
                       )}
-                      <h3 style={{ fontFamily: f.subheading, fontSize: 22, fontStyle: 'italic', color: c.primaryLight, marginBottom: 16 }}>
+                      <h3 style={{ fontFamily: f.subheading, fontSize: 22, fontStyle: 'italic', color: sd.heading, marginBottom: 16 }}>
                         {acara.nama}
                       </h3>
                       <GoldLine theme={theme} />
@@ -580,7 +600,7 @@ export function CanvaBaseTemplate({
                             <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z" />
                           </svg>
                           <div>
-                            <p style={{ fontFamily: f.subheading, fontSize: 15, color: 'rgba(255,255,255,0.85)', margin: 0, fontStyle: 'italic' }}>
+                            <p style={{ fontFamily: f.subheading, fontSize: 15, color: sd.text, margin: 0, fontStyle: 'italic' }}>
                               {fmt(acara.tanggal)}
                             </p>
                             {(acara.waktuMulai || acara.waktuSelesai) && (
@@ -595,7 +615,7 @@ export function CanvaBaseTemplate({
                             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                           </svg>
                           <div>
-                            <p style={{ fontFamily: f.subheading, fontSize: 15, color: 'rgba(255,255,255,0.85)', margin: 0 }}>{acara.lokasi}</p>
+                            <p style={{ fontFamily: f.subheading, fontSize: 15, color: sd.text, margin: 0 }}>{acara.lokasi}</p>
                             {acara.alamat && (
                               <p style={{ fontFamily: f.body, fontSize: 11, color: c.primaryDark, margin: '2px 0 0', lineHeight: 1.5 }}>{acara.alamat}</p>
                             )}
@@ -625,16 +645,16 @@ export function CanvaBaseTemplate({
 
           {/* ── Countdown ── */}
           {countdownTarget && (
-            <section style={{ background: contBg ? 'linear-gradient(to bottom, transparent 0%, rgba(26,42,74,0.92) 7%, rgba(26,42,74,0.92) 93%, transparent 100%)' : c.bgDark, padding: '52px 24px', textAlign: 'center', borderTop: contBg ? 'none' : `1px solid ${c.primaryDark}22` }}>
+            <section style={{ background: contBg ? 'transparent' : c.bgDark, padding: '52px 24px', textAlign: 'center', borderTop: contBg ? 'none' : `1px solid ${c.primaryDark}22` }}>
               {theme.inner?.SectionHeaderDecor && <theme.inner.SectionHeaderDecor />}
               <FadeIn>
                 <p style={{ fontFamily: f.subheading, fontSize: 14, fontStyle: 'italic', color: c.primaryDark, marginBottom: 6 }}>
                   Menghitung hari menuju hari bahagia
                 </p>
-                <h3 style={{ fontFamily: f.heading, fontSize: 36, color: c.primaryLight, marginBottom: 28 }}>
+                <h3 style={{ fontFamily: f.heading, fontSize: 36, color: sd.heading, marginBottom: 28 }}>
                   {m1.namaPanggilan || m1.namaLengkap} &amp; {m2.namaPanggilan || m2.namaLengkap}
                 </h3>
-                <BaseCountdown targetDate={countdownTarget} theme={theme} />
+                <BaseCountdown targetDate={countdownTarget} theme={theme} contBg={contBg} />
               </FadeIn>
             </section>
           )}
@@ -714,7 +734,7 @@ export function CanvaBaseTemplate({
 
           {/* ── RSVP ── */}
           {data.rsvpAktif && (
-            <section ref={setRef('ucapan')} style={{ background: contBg ? 'linear-gradient(to bottom, transparent 0%, rgba(26,42,74,0.92) 7%, rgba(26,42,74,0.92) 93%, transparent 100%)' : c.bgDark, padding: '56px 24px' }}>
+            <section ref={setRef('ucapan')} style={{ background: contBg ? 'transparent' : c.bgDark, padding: '56px 24px' }}>
               <FadeIn>
                 <div style={{ textAlign: 'center', marginBottom: 32 }}>
                   <Divider />
@@ -756,7 +776,7 @@ export function CanvaBaseTemplate({
 
           {/* ── Livestream ── */}
           {data.livestream.aktif && data.livestream.url && (
-            <section style={{ background: contBg ? 'linear-gradient(to bottom, transparent 0%, rgba(26,42,74,0.92) 7%, rgba(26,42,74,0.92) 93%, transparent 100%)' : c.bgDark, padding: '56px 24px', textAlign: 'center' }}>
+            <section style={{ background: contBg ? 'transparent' : c.bgDark, padding: '56px 24px', textAlign: 'center' }}>
               <FadeIn>
                 <Divider />
                 <h2 style={{ fontFamily: f.body, fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: c.primaryDark, margin: '10px 0 12px' }}>
@@ -794,21 +814,21 @@ export function CanvaBaseTemplate({
             {!contBg && <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.82)' }} />}
             <div style={{ position: 'relative', zIndex: 1 }}>
               <FadeIn>
-                <p style={{ fontFamily: f.subheading, fontSize: 12, letterSpacing: '0.3em', color: c.primaryDark, fontStyle: 'italic', marginBottom: 8 }}>
+                <p style={{ fontFamily: f.subheading, fontSize: 12, letterSpacing: '0.3em', color: contBg ? c.primaryLight : c.primaryDark, fontStyle: 'italic', marginBottom: 8 }}>
                   Kami yang berbahagia
                 </p>
-                <h2 style={{ fontFamily: f.heading, fontSize: 52, color: titleCol, margin: '0 0 4px' }}>
+                <h2 style={{ fontFamily: f.heading, fontSize: 52, color: sd.footer, margin: '0 0 4px' }}>
                   {m1.namaPanggilan || m1.namaLengkap}
                 </h2>
                 <div style={{ fontFamily: f.subheading, fontSize: 24, color: c.primary, fontStyle: 'italic', margin: '6px 0' }}>&amp;</div>
-                <h2 style={{ fontFamily: f.heading, fontSize: 52, color: titleCol, margin: '0 0 28px' }}>
+                <h2 style={{ fontFamily: f.heading, fontSize: 52, color: sd.footer, margin: '0 0 28px' }}>
                   {m2.namaPanggilan || m2.namaLengkap}
                 </h2>
                 <GoldLine theme={theme} />
-                <p style={{ fontFamily: f.subheading, fontSize: 13, color: c.primaryDark, fontStyle: 'italic', margin: '20px 0 28px', opacity: 0.8 }}>
+                <p style={{ fontFamily: f.subheading, fontSize: 13, color: contBg ? c.primaryDark : c.primaryDark, fontStyle: 'italic', margin: '20px 0 28px', opacity: 0.8 }}>
                   Terima kasih atas doa dan kehadiran Anda. Merupakan kehormatan bagi kami.
                 </p>
-                <p style={{ fontFamily: f.body, fontSize: 8, letterSpacing: '0.35em', textTransform: 'uppercase', color: c.primaryDark, opacity: 0.4, marginTop: 32 }}>
+                <p style={{ fontFamily: f.body, fontSize: 8, letterSpacing: '0.35em', textTransform: 'uppercase', color: contBg ? c.primaryLight : c.primaryDark, opacity: 0.4, marginTop: 32 }}>
                   Nikah Yuk · By Ratna Offset
                 </p>
               </FadeIn>
