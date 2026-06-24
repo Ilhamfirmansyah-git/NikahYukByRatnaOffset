@@ -494,6 +494,28 @@ export default function EditInvitationPage() {
 
           <SectionCard title="Kutipan" description="Ayat atau kata-kata yang ingin ditampilkan di undangan">
             <div className="space-y-4">
+              <div>
+                <p className="text-xs font-medium text-gray-500 mb-2">Pilih kutipan:</p>
+                <div className="flex flex-col gap-2">
+                  {([
+                    { teks: 'Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu istri-istri dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya, dan dijadikan-Nya di antaramu rasa kasih dan sayang.', sumber: 'QS. Ar-Rum: 21' },
+                    { teks: 'Dan kawinkanlah orang-orang yang sendirian di antara kamu, dan orang-orang yang layak (berkawin) dari hamba-hamba sahayamu yang lelaki dan hamba-hamba sahayamu yang perempuan.', sumber: 'QS. An-Nur: 32' },
+                    { teks: 'Mereka (istri-istrimu) adalah pakaian bagimu, dan kamu adalah pakaian bagi mereka.', sumber: 'QS. Al-Baqarah: 187' },
+                    { teks: 'Ya Tuhan kami, anugerahkanlah kepada kami istri-istri kami dan keturunan kami sebagai penyenang hati (kami), dan jadikanlah kami imam bagi orang-orang yang bertakwa.', sumber: 'QS. Al-Furqan: 74' },
+                    { teks: 'Cinta bukan tentang seberapa lama kita bersama, tapi tentang seberapa besar kita saling memahami dan menghargai satu sama lain.', sumber: '' },
+                  ] as { teks: string; sumber: string }[]).map((q, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => updateData('quote', { teks: q.teks, sumber: q.sumber })}
+                      className={`text-left text-xs px-3 py-2 rounded-lg border transition-all ${data.quote.teks === q.teks ? 'border-primary bg-cream-50 text-primary-700' : 'border-gray-200 hover:border-primary/40 text-gray-600 hover:bg-cream-50'}`}
+                    >
+                      <span className="line-clamp-2">{q.teks}</span>
+                      {q.sumber && <span className="block mt-0.5 opacity-60 font-medium">{q.sumber}</span>}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <TextArea label="Teks Kutipan" value={data.quote.teks ?? ''} onChange={v => updateData('quote', { ...data.quote, teks: v })} placeholder="Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu istri-istri dari jenismu sendiri..." rows={4} />
               <Input label="Sumber" value={data.quote.sumber ?? ''} onChange={e => updateData('quote', { ...data.quote, sumber: e.target.value })} placeholder="QS. Ar-Rum: 21" />
             </div>
