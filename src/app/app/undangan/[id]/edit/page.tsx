@@ -817,19 +817,21 @@ export default function EditInvitationPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">Nama subdomain Anda</label>
-                  <div className="flex items-center gap-0">
-                    <input
-                      type="text"
-                      value={customDomainInput}
-                      onChange={e => setCustomDomainInput(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                      placeholder="budi-siti"
-                      maxLength={40}
-                      className="flex-1 px-4 py-2.5 border border-r-0 border-gray-200 rounded-l-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary bg-gray-50 focus:bg-white font-mono"
-                    />
-                    <div className="px-3 py-2.5 bg-gray-100 border border-gray-200 text-sm text-gray-500 font-mono whitespace-nowrap">
-                      .{appDomain}
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-0">
+                    <div className="flex items-center flex-1 min-w-0">
+                      <input
+                        type="text"
+                        value={customDomainInput}
+                        onChange={e => setCustomDomainInput(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                        placeholder="budi-siti"
+                        maxLength={40}
+                        className="flex-1 min-w-0 px-4 py-2.5 border border-r-0 border-gray-200 rounded-l-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary bg-gray-50 focus:bg-white font-mono"
+                      />
+                      <div className="px-2 sm:px-3 py-2.5 bg-gray-100 border border-gray-200 text-xs sm:text-sm text-gray-500 font-mono whitespace-nowrap flex-shrink-0 rounded-r-xl sm:rounded-r-none">
+                        .{appDomain}
+                      </div>
                     </div>
-                    <Button size="sm" onClick={handleSaveDomain} loading={savingDomain} className="rounded-l-none ml-2">
+                    <Button size="sm" onClick={handleSaveDomain} loading={savingDomain} className="sm:rounded-l-none sm:ml-2 w-full sm:w-auto">
                       Simpan
                     </Button>
                   </div>
