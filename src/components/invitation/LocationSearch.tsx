@@ -4,8 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 
 declare global {
   interface Window {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    google: any;
+    google: any; // eslint-disable-line
     _gmapsLoading?: boolean;
     _gmapsLoaded?: boolean;
   }
