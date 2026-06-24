@@ -102,8 +102,10 @@ export default function TamuPage() {
   const [adding, setAdding] = useState(false);
   const [importing, setImporting] = useState(false);
   const [invitationSlug, setInvitationSlug] = useState('');
+  const [customDomain, setCustomDomain] = useState('');
   const [waTemplate, setWaTemplate] = useState('');
   const [defaultTemplate, setDefaultTemplate] = useState('');
+  const appDomain = process.env.NEXT_PUBLIC_APP_DOMAIN ?? 'ratnaoffset.com';
   const [showTemplate, setShowTemplate] = useState(false);
   const [search, setSearch] = useState('');
   const [importPreview, setImportPreview] = useState<Array<{ name: string; group: string }> | null>(null);
@@ -126,10 +128,11 @@ export default function TamuPage() {
       const guestsData = await guestsRes.json();
       setGuests(Array.isArray(guestsData) ? guestsData : []);
       setInvitationSlug(invData.slug ?? '');
+      setCustomDomain(invData.customDomain ?? '');
 
       const data = invData.data as InvitationData;
-      const priaNama = data?.mempelai?.pria?.namaLengkap ?? 'Mempelai Pria';
-      const wanitaNama = data?.mempelai?.wanita?.namaLengkap ?? 'Mempelai Wanita';
+      const priaNama = data?.mempelai?.pria?.namaLengkap || data?.mempelai?.pria?.namaPanggilan || 'Mempelai Pria';
+      const wanitaNama = data?.mempelai?.wanita?.namaLengkap || data?.mempelai?.wanita?.namaPanggilan || 'Mempelai Wanita';
       const template = buildDefaultTemplate(priaNama, wanitaNama);
       setDefaultTemplate(template);
       setWaTemplate(template);
@@ -179,8 +182,10 @@ export default function TamuPage() {
   }
 
   function getPersonalLink(guestName: string): string {
-    const base = typeof window !== 'undefined' ? window.location.origin : '';
-    return `${base}/u/${invitationSlug}?to=${encodeURIComponent(guestName)}`;
+    const base = customDomain
+      ? `https://${customDomain}.${appDomain}`
+      : `${typeof window !== 'undefined' ? window.location.origin : `https://${appDomain}`}/u/${invitationSlug}`;
+    return `${base}?to=${encodeURIComponent(guestName)}`;
   }
 
   function copyLink(guestName: string) {
