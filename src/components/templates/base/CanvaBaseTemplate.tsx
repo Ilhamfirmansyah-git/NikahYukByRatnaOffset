@@ -301,21 +301,6 @@ export function CanvaBaseTemplate({
               The Wedding of
             </p>
 
-            {guestName && (
-              <div style={{
-                marginBottom: 20, padding: '10px 22px',
-                border: `1px solid ${c.primaryDark}`, borderRadius: 3,
-                background: 'rgba(0,0,0,0.35)',
-              }}>
-                <p style={{ fontFamily: f.body, fontSize: 9, letterSpacing: '0.4em', textTransform: 'uppercase', color: c.primaryDark, marginBottom: 4 }}>
-                  Kepada Yth.
-                </p>
-                <p style={{ fontFamily: f.heading, fontSize: 28, color: titleCol, margin: 0 }}>
-                  {guestName}
-                </p>
-              </div>
-            )}
-
             <h1 style={{ fontFamily: f.heading, fontSize: 58, color: titleCol, lineHeight: 1.1, margin: '0 0 4px' }}>
               {m1.namaPanggilan || m1.namaLengkap || '—'}
             </h1>
@@ -331,9 +316,24 @@ export function CanvaBaseTemplate({
             </h1>
 
             {firstAcara && (
-              <p style={{ fontFamily: f.body, fontSize: 10, letterSpacing: '0.28em', textTransform: 'uppercase', color: dateCol, marginBottom: 28, opacity: 0.9 }}>
+              <p style={{ fontFamily: f.body, fontSize: 10, letterSpacing: '0.28em', textTransform: 'uppercase', color: dateCol, marginBottom: 16, opacity: 0.9 }}>
                 {new Date(firstAcara.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
               </p>
+            )}
+
+            {guestName && (
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 6 }}>
+                  <div style={{ height: 0.5, flex: 1, background: c.primary, opacity: 0.6 }} />
+                  <span style={{ fontFamily: f.subheading, fontSize: 9, letterSpacing: '0.38em', textTransform: 'uppercase', color: c.primary, fontStyle: 'italic', opacity: 0.85 }}>
+                    Kepada Yth.
+                  </span>
+                  <div style={{ height: 0.5, flex: 1, background: c.primary, opacity: 0.6 }} />
+                </div>
+                <p style={{ fontFamily: f.heading, fontSize: 26, color: titleCol, margin: 0, lineHeight: 1.2 }}>
+                  {guestName}
+                </p>
+              </div>
             )}
 
             <button
