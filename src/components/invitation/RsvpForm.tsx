@@ -126,28 +126,6 @@ export default function RsvpForm({ rsvps, onSubmit, primaryColor = '#8B5E3C', cl
         </form>
       )}
 
-      {rsvps.length > 0 && (
-        <div className="mt-8">
-          <h4 className="font-semibold text-sm uppercase tracking-wider opacity-60 mb-3">
-            Tamu yang sudah konfirmasi ({rsvps.length})
-          </h4>
-          <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
-            {rsvps.map(r => (
-              <div key={r.id} className="flex items-center justify-between text-sm py-2 border-b border-gray-100">
-                <span className="font-medium">{r.name}</span>
-                <span className={`text-xs px-2 py-0.5 rounded-full ${
-                  r.attendance === 'HADIR' ? 'bg-green-100 text-green-700' :
-                  r.attendance === 'TIDAK_HADIR' ? 'bg-red-100 text-red-700' :
-                  'bg-yellow-100 text-yellow-700'
-                }`}>
-                  {ATTENDANCE_LABELS[r.attendance] || r.attendance}
-                  {r.attendance === 'HADIR' && r.guestCount > 1 ? ` (${r.guestCount} orang)` : ''}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
