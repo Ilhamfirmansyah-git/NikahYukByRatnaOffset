@@ -66,8 +66,8 @@ export default async function InvitationPage({ params, searchParams }: PageProps
     notFound();
   }
 
-  // Record visit (non-blocking)
-  void prisma.visit.create({ data: { invitationId: invitation.id } });
+  // Record visit — awaited so serverless function doesn't terminate before the write completes
+  await prisma.visit.create({ data: { invitationId: invitation.id } });
 
   // Serialize dates to strings for client component
   const serialized = {
