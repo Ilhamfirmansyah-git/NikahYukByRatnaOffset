@@ -65,3 +65,8 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #7A5235;
 }
+
+/* Sembunyikan badge reCAPTCHA (diganti teks Privacy di form sesuai policy Google) */
+.grecaptcha-badge {
+  visibility: hidden !important;
+}

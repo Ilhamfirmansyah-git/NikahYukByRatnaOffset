@@ -117,6 +117,12 @@ export default function RsvpForm({ rsvps, onSubmit, primaryColor = '#8B5E3C', cl
           >
             {loading ? 'Mengirim...' : 'Kirim Konfirmasi'}
           </button>
+          <p className="text-center text-xs opacity-40 mt-1">
+            Protected by reCAPTCHA —{' '}
+            <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="underline">Privacy</a>
+            {' & '}
+            <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className="underline">Terms</a>
+          </p>
         </form>
       )}
 
