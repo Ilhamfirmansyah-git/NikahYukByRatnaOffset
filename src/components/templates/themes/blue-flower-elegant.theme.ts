@@ -1,5 +1,6 @@
 import type { CanvaTemplateTheme } from '../base/types';
-import { BlueFlowerBouquets, BlueFlowerSectionBg, BlueFlowerSectionHeader } from '../BlueFlowerElegantDecorators';
+import { BlueFlowerBouquets, BlueFlowerSectionBg } from '../BlueFlowerElegantDecorators';
+import { BlueFlowerElegantInner } from '../BlueFlowerElegantInner';
 
 export const BlueFlowerElegantTheme: CanvaTemplateTheme = {
   slug: 'blue-flower-elegant',
@@ -31,8 +32,7 @@ export const BlueFlowerElegantTheme: CanvaTemplateTheme = {
     SectionBgDecor: BlueFlowerSectionBg,
   },
   inner: {
-    openAcaraCards: true,
     continuousBg: true,
-    SectionHeaderDecor: BlueFlowerSectionHeader,
+    InnerContent: BlueFlowerElegantInner,
   },
 };

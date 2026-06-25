@@ -385,6 +385,15 @@ export function CanvaBaseTemplate({
       {/* ════════════════════════ MAIN CONTENT ════════════════════════ */}
       {opened && (
         <div style={{ position: 'relative', zIndex: 1 }}>
+          {theme.inner?.InnerContent ? (
+            <theme.inner.InnerContent
+              data={data} guestName={guestName} slug={slug}
+              onRsvpSubmit={onRsvpSubmit} onGuestbookSubmit={onGuestbookSubmit}
+              rsvps={rsvps} guestbook={guestbook}
+              setRef={setRef} lightboxImg={lightboxImg} setLightboxImg={setLightboxImg}
+            />
+          ) : (
+            <>
 
           {/* ── Hero banner ── */}
           <section
@@ -834,6 +843,9 @@ export function CanvaBaseTemplate({
               </FadeIn>
             </div>
           </section>
+
+            </>
+          )}
 
           {/* ── Bottom nav ── */}
           <nav style={{
