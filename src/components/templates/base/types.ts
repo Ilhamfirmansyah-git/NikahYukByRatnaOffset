@@ -9,7 +9,6 @@ export interface CanvaTemplateTheme {
     /** Use a single fixed background image behind all inner sections (Art-Forest style) */
     continuousBg?: boolean;
     /** Fully custom inner content replacing all default sections (bottom nav stays in base) */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     InnerContent?: ComponentType<any>;
   };
   slug: string;
