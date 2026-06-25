@@ -71,6 +71,14 @@ async function main() {
       thumbnail: '/templates/blue-flower-elegant.svg',
       description: 'Elegansi bunga biru navy dan gold dengan bingkai watercolor yang mewah dan romantis.',
     },
+    {
+      name: 'Undangan4',
+      slug: 'undangan4',
+      componentKey: 'undangan4',
+      category: 'modern',
+      thumbnail: '/templates/undangan4.svg',
+      description: 'Desain minimalis modern dengan dua kolom, animasi gelombang, mode gelap/terang, dan tampilan mobile-first yang elegan.',
+    },
   ];
 
   for (const template of templates) {
