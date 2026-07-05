@@ -79,6 +79,14 @@ async function main() {
       thumbnail: '/templates/undangan4.svg',
       description: 'Desain minimalis modern dengan dua kolom, animasi gelombang, mode gelap/terang, dan tampilan mobile-first yang elegan.',
     },
+    {
+      name: 'Romantis Maroon',
+      slug: 'romantis-maroon',
+      componentKey: 'romantis-maroon',
+      category: 'romantis',
+      thumbnail: '/templates/romantis-maroon.svg',
+      description: 'Template elegan bernuansa merah maroon dengan amplop dekoratif, font kaligrafi eksklusif, dan ornamen bunga romantis.',
+    },
   ];
 
   for (const template of templates) {
